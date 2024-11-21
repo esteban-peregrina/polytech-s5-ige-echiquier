@@ -1,0 +1,7 @@
+.vscode/
+binaries/
+objects/
+.devcontainer/
+
+# For MacOS local repositories
+.DS_Store
