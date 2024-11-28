@@ -5,7 +5,7 @@
 #define BLANC 1
 
 typedef enum {
-    VIDE ,            
+    VIDE,            
     ROI,
     REINE,
     FOU,
