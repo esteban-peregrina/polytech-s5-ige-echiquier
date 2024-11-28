@@ -1,31 +1,27 @@
 #ifndef ECHIQUIER_H
 #define ECHIQUIER_H
 
-#define NOIR 0
-#define BLANC 1
-
-typedef enum {
-    VIDE,            
-    ROI,
-    REINE,
-    FOU,
-    CAVALIER,
-    TOUR,
-    PION,
-} Role;
-
 typedef struct Case {
     Piece* piece;
-    int couleur;            // Couleur de la case (? Necessaire ?)
+
+    int couleur;                        // Couleur de la case (? Necessaire ?)
     bool estSelectionne;
     bool estAtteignable;
 
-    Case* suivant;
-    Case* precedent;
+    Case* caseAtteignableSuivante;               
+    Case* caseAtteignablePrecedente;
 } Case;
 
-typedef struct ListeCoupsAtteignables {
-    Case* Tete;
-} ListeCoupsAtteignables;
+typedef struct ListeCasesAtteignables {
+    Case* tete;
+} ListeCasesAtteignables;
+
+Case* creationCase();
+void destructionCase(Case* Case);
+
+ListeCasesAtteignables* creationListeCasesAtteignables();
+void destructionListeCasesAtteignables();
+void insertionListeCasesAtteignables(Case* caseAtteignable, ListeCasesAtteignables* listeCasesAtteignables);
+void supressionListeCasesAtteignables(Case* caseAtteignable, ListeCasesAtteignables* listeCasesAtteignables);
 
 #endif // ECHIQUIER_H
