@@ -15,10 +15,17 @@ typedef enum {
 } Role;
 
 typedef struct Case {
-    Role role;
-    int couleur;            // Couleur de la piece
+    Piece* piece;
+    int couleur;            // Couleur de la case (? Necessaire ?)
     bool estSelectionne;
     bool estAtteignable;
+
+    Case* suivant;
+    Case* precedent;
 } Case;
+
+typedef struct ListeCoupsAtteignables {
+    Case* Tete;
+} ListeCoupsAtteignables;
 
 #endif // ECHIQUIER_H
