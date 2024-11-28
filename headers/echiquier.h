@@ -12,10 +12,10 @@ typedef enum {
     CAVALIER,
     TOUR,
     PION,
-} Piece;
+} Role;
 
 typedef struct Case {
-    Piece role;
+    Role role;
     int couleur;            // Couleur de la piece
     bool estSelectionne;
     bool estAtteignable;
