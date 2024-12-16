@@ -25,7 +25,7 @@ typedef struct Piece {
     Piece* pieceSuivant; 
     Piece* piecePrecedent;        
 
-    void (*calculAtteignable)(Piece* self);
+    void (*calculAtteignable)(Piece* self, Case Plateau[8][8]);
     ListeCasesAtteignables* casesAtteignables;
 
 } Piece;
