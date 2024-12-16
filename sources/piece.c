@@ -1,9 +1,8 @@
-#include <stdlib.h>
-#include <stdbool.h>
 #include ".././headers/echiquier.h"
 #include ".././headers/piece.h"
 
-
+#include <stdlib.h>
+#include <stdbool.h>
 
 void calculAtteignablePion(Piece* self, Case Plateau[8][8]){
     int xPiece = self->x;
