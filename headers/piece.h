@@ -22,8 +22,8 @@ typedef struct Piece {
     int x;
     int y;
 
-    Piece* pieceSuivant; 
-    Piece* piecePrecedent;        
+    Piece* pieceSuivante; 
+    Piece* piecePrecedente;        
 
     void (*calculAtteignable)(Piece* self, Case Plateau[8][8]);
     ListeCasesAtteignables* casesAtteignables;
@@ -34,7 +34,11 @@ typedef struct ListePiecesJoueur {
     Piece* tete;
 } ListePiecesJoueur;
 
+// Déclaration et suppresion de pièces
 Piece* creationPiece(Role role, Case* caseCourante);
 void destructionPiece(Piece* piece);
+
+// Opération sur les joueurs
+void initialiseJoueur(Piece Joueurs[2]);
 
 #endif // PIECE_H
