@@ -1,4 +1,3 @@
-#include <stdbool.h>
 #ifndef ECHIQUIER_H
 #define ECHIQUIER_H
 
