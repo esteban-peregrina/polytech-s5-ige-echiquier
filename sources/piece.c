@@ -4,6 +4,15 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+bool CaseExiste(int x, int y){
+    if(x<=8 && x>=1 && y<=8 && y >=1){
+        return true;
+    }
+    return false;
+}
+
+/* A corriger avec ma version locale !!!
+
 void calculAtteignablePion(Piece* self, Case Plateau[8][8]){
     int xPiece = self->x;
     int yPiece = self->y;
@@ -37,19 +46,16 @@ void calculAtteignablePion(Piece* self, Case Plateau[8][8]){
         }
         if(xPiece>1 && yPiece>1 && Plateau[xPiece+1][yPiece-1].piece!=NULL){
             insertionListeCaseAtteignables(&Plateau[xPiece-1][yPiece-1], self->casesAtteignables);
-        }
-    }
-}
-
-void calculAtteignableTour(Piece* self, Case Plateau[8][8]){
-    int xPiece = self->x;
-    int yPiece = self->y;
-    while(xPiece>=1 && xPiece<=8 && yPiece>=1 && yPiece<=8 && Plateau[xPiece][yPiece].piece!=NULL ){
-
-    }
-}
 
 void calculAtteignableCavalier(Piece* self, Case Plateau[8][8]) {
     int xPiece = self->x;
     int yPiece = self->y;
+}
+
+*/
+
+void calculAtteignableRoi(Piece* self, Case Plateau[8][8]){
+    int xPiece = self->x;
+    int yPiece = self->y;
+
 }
