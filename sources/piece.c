@@ -49,4 +49,7 @@ void calculAtteignableTour(Piece* self, Case Plateau[8][8]){
     }
 }
 
-void calculAtteignableCavalier() {}
+void calculAtteignableCavalier(Piece* self, Case Plateau[8][8]) {
+    int xPiece = self->x;
+    int yPiece = self->y;
+}
