@@ -37,4 +37,6 @@ void initialisePlateau(Case Plateau[8][8]);
 void actualiseCasesAtteignables(Piece* pieceCourante, Case Plateau[8][8]);
 void affichePlateau(Case Plateau[8][8]);
 
+void partieEchec();
+
 #endif // ECHIQUIER_H
