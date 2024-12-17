@@ -4,6 +4,37 @@
 #include ".././headers/piece.h"
 #include ".././headers/echiquier.h"
 
+Case* creationCase(int couleur) {
+    /*
+    Renvoie l'adresse d'une case vide dont la couleur est specifiée.
+    */
+
+    Case* Case = NULL;
+    Case = malloc(sizeof(Case));
+    if (Case == NULL) { exit(EXIT_FAILURE); }
+    
+    Case->couleur = couleur;
+    Case->estSelectionne = false;
+    Case->estAtteignable = false;
+
+    Case->caseAtteignableSuivante = NULL;
+    Case->caseAtteignablePrecedente = NULL;
+
+    return Case;
+}
+
+void destructionCase(Case* Case) {
+    /*
+    Libère la case à l'adresse 
+    */
+
+    if (Case == NULL) { exit(EXIT_FAILURE); } // On ne devrait pas passer de Case vide à cette fonction
+
+    Case->caseAtteignableSuivante = NULL;
+    Case->caseAtteignablePrecedente = NULL;
+    free(Case);
+}
+
 void insertionListeCasesAtteignables(Case* caseAtteignable, ListeCasesAtteignables* listeCasesAtteignables) {
     /*
     Insère caseAtteignable en tete de listeCasesAtteignables
