@@ -16,26 +16,31 @@ void insertionListeCasesAtteignables(Case* caseAtteignable, ListeCasesAtteignabl
     caseAtteignable->caseAtteignablePrecedente = NULL;
 }
 
-void initialisePlateau(Case Plateau[8][8]) {
+void initialisePlateau(Case* Plateau[8][8]) {
     /*
-    Rempli le plateau de cases vides aux bonnes couleurs.
+    Rempli le plateau de cases vides aux couleurs alternées.
     */
 
     for (int i = 0; i < 8; i++) {
         for (int j = 0; j < 8; j++) {
             if (i%2 == 0) {
-                if (j%2 == 0) {
-                    Plateau[i][j] = *(creationCase());
-                } else {
-
-                }
+                Plateau[i][j] = (j%2 == 0) ? creationCase(BLANC) : creationCase(NOIR);
             } else {
-                if (j%2 == 0) {
-
-                } else {
-
-                }
+                Plateau[i][j] = (j%2 == 0) ? creationCase(NOIR) : creationCase(BLANC);
             }
+        }
+    }
+}
+
+void videPlateau(Case* Plateau[8][8]) {
+    /*
+    Rempli le plateau de cases vides aux couleurs alternées.
+    */
+
+    for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 8; j++) {
+            destructionCase(Plateau[i][j]);
+            Plateau[i][j] = NULL;
         }
     }
 }
