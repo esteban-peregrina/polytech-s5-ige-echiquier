@@ -1,8 +1,8 @@
+#include <stdbool.h>
+#include <stdlib.h>
+
 #include ".././headers/piece.h"
 #include ".././headers/echiquier.h"
-
-#include <stdlib.h>
-#include <stdbool.h>
 
 void insertionListeCasesAtteignables(Case* caseAtteignable, ListeCasesAtteignables* listeCasesAtteignables) {
     /*
@@ -14,6 +14,30 @@ void insertionListeCasesAtteignables(Case* caseAtteignable, ListeCasesAtteignabl
     listeCasesAtteignables->tete = caseAtteignable;
     caseAtteignable->caseAtteignableSuivante = temp;
     caseAtteignable->caseAtteignablePrecedente = NULL;
+}
+
+void initialisePlateau(Case Plateau[8][8]) {
+    /*
+    Rempli le plateau de cases vides aux bonnes couleurs.
+    */
+
+    for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 8; j++) {
+            if (i%2 == 0) {
+                if (j%2 == 0) {
+                    Plateau[i][j] = *(creationCase());
+                } else {
+
+                }
+            } else {
+                if (j%2 == 0) {
+
+                } else {
+
+                }
+            }
+        }
+    }
 }
 
 void partieEchec() {
