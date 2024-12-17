@@ -22,19 +22,20 @@ typedef struct ListeCasesAtteignables {
 } ListeCasesAtteignables;
 
 // Déclaration et suppression de cases
-Case* creationCase();
+Case* creationCase(int couleur);
 void destructionCase(Case* Case);
 
 // Opérations sur les cases
 ListeCasesAtteignables* creationListeCasesAtteignables();
-void destructionListeCasesAtteignables();
+void destructionListeCasesAtteignables(ListeCasesAtteignables* ListeCasesAtteignables);
 void insertionListeCasesAtteignables(Case* caseAtteignable, ListeCasesAtteignables* listeCasesAtteignables);
 void supressionListeCasesAtteignables(Case* caseAtteignable, ListeCasesAtteignables* listeCasesAtteignables);
 
 // Opérations sur le plateau
-void initialisePlateau(Case Plateau[8][8]);
-void actualiseCasesAtteignables(Piece* pieceCourante, Case Plateau[8][8]);
-void affichePlateau(Case Plateau[8][8]);
+void initialisePlateau(Case* Plateau[8][8]);
+void videPlateau(Case* Plateau[8][8]);
+void actualiseCasesAtteignables(Piece* pieceCourante, Case* Plateau[8][8]);
+void affichePlateau(Case* Plateau[8][8]);
 
 void partieEchec();
 
