@@ -48,3 +48,5 @@ void calculAtteignableTour(Piece* self, Case Plateau[8][8]){
 
     }
 }
+
+void calculAtteignableCavalier() {}
