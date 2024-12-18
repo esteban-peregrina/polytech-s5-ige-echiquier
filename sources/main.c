@@ -7,15 +7,15 @@
 
 int main() {
 
-    // Test de l'affichage du Plateau vide
-    Case* Plateau[8][8]; // Déclaration du Plateau
-    initialisePlateau(Plateau); // Initialisation du plateau (chaque case est vide, non selectionnée ni atteignable, et de la bonne couleur)
-    Plateau[0][1]->estAtteignable = true;
-    Plateau[1][1]->estAtteignable = true;
-    Plateau[1][0]->estAtteignable = true;
-    Plateau[0][0]->estSelectionne = true;
-    affichePlateau(Plateau);
-    videPlateau(Plateau);
+    // Test de l'affichage du Echiquier vide
+    Case* Echiquier[8][8]; // Déclaration du Echiquier
+    initialiseEchiquier(Echiquier); // Initialisation du Echiquier (chaque case est vide, non selectionnée ni atteignable, et de la bonne couleur)
+    Echiquier[0][1]->estAtteignable = true;
+    Echiquier[1][1]->estAtteignable = true;
+    Echiquier[1][0]->estAtteignable = true;
+    Echiquier[0][0]->estSelectionne = true;
+    afficheEchiquier(Echiquier);
+    videEchiquier(Echiquier);
 
 
     return 0;
