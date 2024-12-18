@@ -41,6 +41,6 @@ Piece* creationPiece(Role role, Case* caseCourante);
 void destructionPiece(Piece* piece);
 
 // Opération sur les joueurs
-void initialiseJoueur(Piece Joueurs[2]);
+void initialiseJoueur(Piece* Joueurs[2]);
 
 #endif // PIECE_H
