@@ -37,8 +37,21 @@ typedef struct ListePiecesJoueur {
 } ListePiecesJoueur;
 
 // Déclaration et suppresion de pièces
-Piece* creationPiece(Role role, Case* caseCourante);
+Piece* creationPiece(Role role, int x, int y);
 void destructionPiece(Piece* piece);
+
+// Opérations sur les pièces
+void calculAtteignablePion(Piece* self, Case* Echiquier[8][8], Piece* Joueurs[2]);
+void calculAtteignableTour(Piece* self, Case* Echiquier[8][8], Piece* Joueurs[2]);
+void calculAtteignableCavalier(Piece* self, Case* Echiquier[8][8], Piece* Joueurs[2]);
+void calculAtteignableFou(Piece* self, Case* Echiquier[8][8], Piece* Joueurs[2]);
+void calculAtteignableReine(Piece* self, Case* Echiquier[8][8], Piece* Joueurs[2]);
+void calculAtteignableRoi(Piece* self, Case* Echiquier[8][8], Piece* Joueurs[2]);
+void actualiseCasesAtteignables(Piece* piecePrecedente, Piece* pieceCourante, Case* Echiquier[8][8]); // Vide ListeCasesAtteignables de piecePrecedente et rempli celle de pieceCourante
+
+// Opérations sur le Roi
+bool suisjeAtteignable(int xCible, int yCible, Case* Echiquier[8][8]);
+bool leaveRoi(Piece* self, int xCible, int yCible, Piece* Joueurs[2], Case* Echiquier[8][8]);
 
 // Opération sur les joueurs
 void initialiseJoueur(Piece* Joueurs[2]);
