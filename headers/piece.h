@@ -14,18 +14,21 @@ typedef enum {
     PION,
 } Role;
 
+typedef struct Case Case; // Pour que le compilateur les reconnaissent
+typedef struct ListeCasesAtteignables ListeCasesAtteignables; // Pour que le compilateur les reconnaissent
+
 typedef struct Piece {
     Role role;                   // Utile ?
-    
+
     char forme;
     int couleur;                 // Couleur de la piece
     int x;
     int y;
 
-    Piece* pieceSuivante; 
-    Piece* piecePrecedente;        
+    struct Piece* pieceSuivante; 
+    struct Piece* piecePrecedente;        
 
-    void (*calculAtteignable)(Piece* self, Case* Plateau[8][8]);
+    void (*calculAtteignable)(struct Piece* self, Case* Plateau[8][8]);
     ListeCasesAtteignables* casesAtteignables;
 
 } Piece;
