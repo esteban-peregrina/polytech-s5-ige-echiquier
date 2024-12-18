@@ -45,45 +45,45 @@ void insertionListeCasesAtteignables(Case* caseAtteignable, ListeCasesAtteignabl
     caseAtteignable->caseAtteignablePrecedente = NULL;
 }
 
-void initialisePlateau(Case* Plateau[8][8]) {
+void initialiseEchiquier(Case* Echiquier[8][8]) {
     /*
-    Rempli le plateau de cases vides aux couleurs alternées.
+    Rempli l'echiquier de cases vides aux couleurs alternées.
     */
 
     for (int i = 0; i < 8; i++) {
         for (int j = 0; j < 8; j++) {
             if (i%2 == 0) {
-                Plateau[i][j] = (j%2 == 0) ? creationCase(BLANC) : creationCase(NOIR);
+                Echiquier[i][j] = (j%2 == 0) ? creationCase(BLANC) : creationCase(NOIR);
             } else {
-                Plateau[i][j] = (j%2 == 0) ? creationCase(NOIR) : creationCase(BLANC);
+                Echiquier[i][j] = (j%2 == 0) ? creationCase(NOIR) : creationCase(BLANC);
             }
         }
     }
 }
 
-void videPlateau(Case* Plateau[8][8]) {
+void videEchiquier(Case* Echiquier[8][8]) {
     /*
-    Vide le plateau.
+    Vide l'echiquier.
     */
 
     for (int i = 0; i < 8; i++) {
         for (int j = 0; j < 8; j++) {
-            destructionCase(Plateau[i][j]);
-            Plateau[i][j] = NULL;
+            destructionCase(Echiquier[i][j]);
+            Echiquier[i][j] = NULL;
         }
     }
 }
 
-void affichePlateau(Case* Plateau[8][8]) {
+void afficheEchiquier(Case* Echiquier[8][8]) {
     /*
-    Affiche le plateau.
+    Affiche l'echiquier.
     */
 
     const int CELL_HEIGHT = 3; // Impair pour avoir un milieu
     const int CELL_WIDTH = CELL_HEIGHT * 2 + 1; // Le ratio largeur:hauteur ASCII est 1:2 mais j'ai besoin d'un centre
     
     printf("\033[H\033[J"); // Vide le terminal
-    printf("Plateau :\n");
+    printf("Echiquier :\n");
 
     for (int l = 0; l < 8 * CELL_WIDTH + 4; l++) {printf("\033[46m ");} // Bordure supérieure
     printf("\033[0m \n"); // Réinitialise la couleur par défaut et saute la ligne
@@ -92,8 +92,8 @@ void affichePlateau(Case* Plateau[8][8]) {
         for (int row = 0; row < CELL_HEIGHT; row++) { // Chaque ligne de la case affichée
             printf("\033[46m  "); // Bordure gauche
             for (int j = 0; j < 8; j++) {
-                // Pour chaque case réelle du plateau
-                Case* caseCourante = Plateau[i][j];
+                // Pour chaque case réelle du Echiquier
+                Case* caseCourante = Echiquier[i][j];
                 Piece* contenuCase = caseCourante->piece;
                 caseCourante->couleur == BLANC ? printf("\033[47m") : printf("\033[40m");
                 for (int column = 0; column < CELL_WIDTH; column++) {
@@ -136,15 +136,15 @@ void partieEchec() {
     // TODO - Proposer de charger une sauvegarde
     // TODO - Proposer de jouer contre un joueur ou contre une IA
 
-    Case* Plateau[8][8]; // Déclaration du Plateau
-    initialisePlateau(Plateau); // Initialisation du plateau (chaque case est vide, non selectionnée ni atteignable, et de la bonne couleur)
+    Case* Echiquier[8][8]; // Déclaration du Echiquier
+    initialiseEchiquier(Echiquier); // Initialisation de l'echiquier (chaque case est vide, non selectionnée ni atteignable, et de la bonne couleur)
     Piece* Joueurs[2];
     //TODO - initialiseJoueur(Joueurs[2]);; // Déclaration des pièces des 2 joueurs, le roi est stocké comme tete de liste circulaire dans le tableau, index 0 pour Noir et 1 pour Blanc
     bool enEchec = false;
     int joueur = NOIR;
 
     while (!enEchec) {
-        affichePlateau(Plateau); // TODO - Renommer car affiche aussi le menu (différent selon si piece ou coups)
+        afficheEchiquier(Echiquier); // TODO - Renommer car affiche aussi le menu (différent selon si piece ou coups)
         bool aJoue = false;
         Menu menu = PIECES;
         joueur = (joueur == NOIR) ? BLANC : NOIR; // On commute de joueur
@@ -172,8 +172,8 @@ void partieEchec() {
                         } else { // ->
                             pieceCourante = pieceCourante->pieceSuivante;
                         }
-                        //TODO - actualiseCasesAtteignables(pieceCourante, Plateau);
-                        affichePlateau(Plateau);
+                        //TODO - actualiseCasesAtteignables(pieceCourante, Echiquier);
+                        afficheEchiquier(Echiquier);
 
                     } else { // menu == COUPS
                         if (actionJoueur == 'D') { // <-
@@ -185,7 +185,7 @@ void partieEchec() {
                             caseCourante = caseCourante->caseAtteignableSuivante;
                             caseCourante->estSelectionne = true;
                         }
-                        affichePlateau(Plateau);
+                        afficheEchiquier(Echiquier);
                     }
                 }
                 
