@@ -6,6 +6,8 @@ typedef enum {
     COUPS,
 } Menu;
 
+typedef struct Piece Piece; // Pour que le compilateur les reconnaissent
+
 typedef struct Case {
     Piece* piece;
 
@@ -13,8 +15,8 @@ typedef struct Case {
     bool estSelectionne;
     bool estAtteignable;
 
-    Case* caseAtteignableSuivante;               
-    Case* caseAtteignablePrecedente;
+    struct Case* caseAtteignableSuivante;               
+    struct Case* caseAtteignablePrecedente;
 } Case;
 
 typedef struct ListeCasesAtteignables {
