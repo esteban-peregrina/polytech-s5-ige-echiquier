@@ -66,33 +66,33 @@ void calculAtteignablePion(Piece* self, Case* Echiquier[8][8], Piece* Joueurs[2]
     int yEchiquier = yPiece-1;
 
     if (self->couleur == BLANC){      
-        if(xPiece<8 && Echiquier[xEchiquier+1][yEchiquier]->piece==NULL){                                                //Déplacements classique
+        if(xPiece<8 && Echiquier[xEchiquier+1][yEchiquier]->piece==NULL && !leaveRoi(self,xPiece+1,yPiece,Joueurs,Echiquier)){                                                //Déplacements classique
             insertionListeCasesAtteignables(Echiquier[xEchiquier+1][yEchiquier], self->casesAtteignables);
         }
         if(xPiece == 2){
-            if(Echiquier[xEchiquier+2][yEchiquier]->piece==NULL){                                                        //Avance de deux s'il est sur la ligne de départ
+            if(Echiquier[xEchiquier+2][yEchiquier]->piece==NULL && !leaveRoi(self,xPiece+2,yPiece,Joueurs,Echiquier)){                                                        //Avance de deux s'il est sur la ligne de départ
                 insertionListeCasesAtteignables(Echiquier[xEchiquier+2][yEchiquier], self->casesAtteignables);
             }
         }
-        if(xPiece<8 && yPiece<8 && Echiquier[xEchiquier+1][yEchiquier+1]->piece!=NULL && (Echiquier[xEchiquier+1][yEchiquier+1]->piece)->couleur != self->couleur && leaveRoi(self,xPiece+1,yPiece+1,Joueurs,Echiquier)){                                  //Possibilité de manger en diagonale
+        if(xPiece<8 && yPiece<8 && Echiquier[xEchiquier+1][yEchiquier+1]->piece!=NULL && (Echiquier[xEchiquier+1][yEchiquier+1]->piece)->couleur != self->couleur && !leaveRoi(self,xPiece+1,yPiece+1,Joueurs,Echiquier)){                                  //Possibilité de manger en diagonale
             insertionListeCasesAtteignables(Echiquier[xEchiquier+1][yEchiquier+1], self->casesAtteignables);
         }
-        if(xPiece<8 && yPiece>1 && Echiquier[xEchiquier+1][yEchiquier-1]->piece!=NULL && (Echiquier[xEchiquier+1][yEchiquier+1]->piece)->couleur != self->couleur && leaveRoi(self,xPiece+1,yPiece+1,Joueurs,Echiquier)){
+        if(xPiece<8 && yPiece>1 && Echiquier[xEchiquier+1][yEchiquier-1]->piece!=NULL && (Echiquier[xEchiquier+1][yEchiquier+1]->piece)->couleur != self->couleur && !leaveRoi(self,xPiece+1,yPiece+1,Joueurs,Echiquier)){
             insertionListeCasesAtteignables(Echiquier[xEchiquier+1][yEchiquier-1], self->casesAtteignables);
         }
     }else{
-        if(xPiece >1 && Echiquier[xEchiquier-1][yPiece]->piece==NULL){
+        if(xPiece >1 && Echiquier[xEchiquier-1][yPiece]->piece==NULL && !leaveRoi(self,xPiece-1,yPiece,Joueurs,Echiquier)){
             insertionListeCasesAtteignables(Echiquier[xEchiquier-1][yEchiquier], self->casesAtteignables);
         }
         if(xPiece == 7){
-            if(Echiquier[xEchiquier-2][yEchiquier]->piece==NULL){
+            if(Echiquier[xEchiquier-2][yEchiquier]->piece==NULL && !leaveRoi(self,xPiece-2,yPiece,Joueurs,Echiquier)){
                 insertionListeCasesAtteignables(Echiquier[xEchiquier-2][yEchiquier], self->casesAtteignables);
             }
         }
-        if(xPiece>1 && yPiece<8 && Echiquier[xEchiquier-1][yEchiquier+1]->piece!=NULL && (Echiquier[xEchiquier+1][yEchiquier+1]->piece)->couleur != self->couleur){
+        if(xPiece>1 && yPiece<8 && Echiquier[xEchiquier-1][yEchiquier+1]->piece!=NULL && (Echiquier[xEchiquier-1][yEchiquier+1]->piece)->couleur != self->couleur && !leaveRoi(self,xPiece-1,yPiece+1,Joueurs,Echiquier)){
             insertionListeCasesAtteignables(Echiquier[xEchiquier-1][yEchiquier+1], self->casesAtteignables);
         }
-        if(xPiece>1 && yPiece>1 && Echiquier[xEchiquier+1][yEchiquier-1]->piece!=NULL && (Echiquier[xEchiquier+1][yEchiquier+1]->piece)->couleur != self->couleur){
+        if(xPiece>1 && yPiece>1 && Echiquier[xEchiquier-1][yEchiquier-1]->piece!=NULL && (Echiquier[xEchiquier-1][yEchiquier-1]->piece)->couleur != self->couleur && !leaveRoi(self,xPiece-1,yPiece-1,Joueurs,Echiquier)){
             insertionListeCasesAtteignables(Echiquier[xEchiquier-1][yEchiquier-1], self->casesAtteignables);
         }
     }
@@ -106,13 +106,13 @@ void calculAtteignableTour(Piece* self, Case* Echiquier[8][8], Piece* Joueurs[2]
 
     //Tour vers le haut (PDV des blancs)
 
-    while(xPiece<8 && Echiquier[xEchiquier+1][yEchiquier]->piece==NULL){                                      
+    while(xPiece<8 && Echiquier[xEchiquier+1][yEchiquier]->piece==NULL && !leaveRoi(self,xPiece+1,yPiece,Joueurs,Echiquier)){                                      
         insertionListeCasesAtteignables(Echiquier[xEchiquier+1][yEchiquier], self->casesAtteignables);
         xPiece++;
         xEchiquier++;
     }
-    if(xPiece != 8){
-        if((Echiquier[xEchiquier+1][yEchiquier]->piece)->couleur != self->couleur){
+    if(Echiquier[xEchiquier+1][yEchiquier]->piece!=NULL){
+        if((Echiquier[xEchiquier+1][yEchiquier]->piece)->couleur != self->couleur && !leaveRoi(self,xPiece+1,yPiece,Joueurs,Echiquier)){
             insertionListeCasesAtteignables(Echiquier[xEchiquier+1][yEchiquier], self->casesAtteignables);
         }
     }
@@ -121,12 +121,12 @@ void calculAtteignableTour(Piece* self, Case* Echiquier[8][8], Piece* Joueurs[2]
 
     //Tour vers le bas (PDV des blancs)
 
-    while(xPiece>1 && Echiquier[xEchiquier-1][yEchiquier]->piece==NULL){
+    while(xPiece>1 && Echiquier[xEchiquier-1][yEchiquier]->piece==NULL && !leaveRoi(self,xPiece-1,yPiece,Joueurs,Echiquier)){
         insertionListeCasesAtteignables(Echiquier[xEchiquier-1][yEchiquier], self->casesAtteignables);
         xPiece--;
         xEchiquier--;
     }
-    if(xPiece != 1){
+    if(Echiquier[xEchiquier-1][yEchiquier]->piece!=NULL){
         if((Echiquier[xEchiquier-1][yEchiquier]->piece)->couleur != self->couleur){
             insertionListeCasesAtteignables(Echiquier[xEchiquier+1][yEchiquier], self->casesAtteignables);
         }
@@ -136,12 +136,12 @@ void calculAtteignableTour(Piece* self, Case* Echiquier[8][8], Piece* Joueurs[2]
 
     //Tour vers la droite (PDV des blancs)
 
-    while(yPiece<8 && Echiquier[xEchiquier][yEchiquier+1]->piece==NULL ){
+    while(yPiece<8 && Echiquier[xEchiquier][yEchiquier+1]->piece==NULL && !leaveRoi(self,xPiece,yPiece+1,Joueurs,Echiquier)){
         insertionListeCasesAtteignables(Echiquier[xEchiquier][yEchiquier+1], self->casesAtteignables);
         yPiece++;
         yEchiquier++;
     }
-    if(yPiece != 8){
+    if(Echiquier[xEchiquier][yEchiquier+1]->piece!=NULL){
         if((Echiquier[xEchiquier][yEchiquier+1]->piece)->couleur != self->couleur){
             insertionListeCasesAtteignables(Echiquier[xEchiquier][yEchiquier+1], self->casesAtteignables);
         }
@@ -151,12 +151,12 @@ void calculAtteignableTour(Piece* self, Case* Echiquier[8][8], Piece* Joueurs[2]
 
     //Tour vers la gauche (PDV des blancs)
 
-    while(yPiece>1 && Echiquier[xEchiquier][yEchiquier-1]->piece==NULL ){
+    while(yPiece>1 && Echiquier[xEchiquier][yEchiquier-1]->piece==NULL && !leaveRoi(self,xPiece,yPiece-1,Joueurs,Echiquier)){
         insertionListeCasesAtteignables(Echiquier[xEchiquier][yEchiquier-1], self->casesAtteignables);
         yPiece--;
         yEchiquier--;
     }
-    if(yPiece != 1){
+    if(Echiquier[xEchiquier][yEchiquier-1]->piece!=NULL){
         if((Echiquier[xEchiquier][yEchiquier-1]->piece)->couleur != self->couleur){
             insertionListeCasesAtteignables(Echiquier[xEchiquier][yEchiquier-1], self->casesAtteignables);
         }
@@ -172,28 +172,28 @@ void calculAtteignableCavalier(Piece* self, Case* Echiquier[8][8], Piece* Joueur
     int xEchiquier = xPiece-1;
     int yEchiquier = yPiece-1;
 
-    if(CaseExiste(xPiece+2,yPiece+1) && Echiquier[xEchiquier+2][yEchiquier+1]->piece == NULL){
+    if(CaseExiste(xPiece+2,yPiece+1) && Echiquier[xEchiquier+2][yEchiquier+1]->piece == NULL && !leaveRoi(self,xPiece+2,yPiece+1,Joueurs,Echiquier)){
         insertionListeCasesAtteignables(Echiquier[xEchiquier+2][yEchiquier+1], self->casesAtteignables);
     }
-    if(CaseExiste(xPiece+2,yPiece-1) && Echiquier[xEchiquier+2][yEchiquier-1]->piece == NULL){
+    if(CaseExiste(xPiece+2,yPiece-1) && Echiquier[xEchiquier+2][yEchiquier-1]->piece == NULL && !leaveRoi(self,xPiece+2,yPiece-1,Joueurs,Echiquier)){
         insertionListeCasesAtteignables(Echiquier[xEchiquier+2][yEchiquier-1], self->casesAtteignables);
     }
-    if(CaseExiste(xPiece+1,yPiece+2) && Echiquier[xEchiquier+1][yEchiquier+2]->piece == NULL){
+    if(CaseExiste(xPiece+1,yPiece+2) && Echiquier[xEchiquier+1][yEchiquier+2]->piece == NULL && !leaveRoi(self,xPiece+1,yPiece+2,Joueurs,Echiquier)){
         insertionListeCasesAtteignables(Echiquier[xEchiquier+1][yEchiquier+2], self->casesAtteignables);
     }
-    if(CaseExiste(xPiece+1,yPiece-2) && Echiquier[xEchiquier+1][yEchiquier-2]->piece == NULL){
+    if(CaseExiste(xPiece+1,yPiece-2) && Echiquier[xEchiquier+1][yEchiquier-2]->piece == NULL && !leaveRoi(self,xPiece+1,yPiece-2,Joueurs,Echiquier)){
         insertionListeCasesAtteignables(Echiquier[xEchiquier+1][yEchiquier-2], self->casesAtteignables);
     }
-    if(CaseExiste(xPiece-1,yPiece-2) && Echiquier[xEchiquier-1][yEchiquier-2]->piece == NULL){
+    if(CaseExiste(xPiece-1,yPiece-2) && Echiquier[xEchiquier-1][yEchiquier-2]->piece == NULL && !leaveRoi(self,xPiece-1,yPiece-2,Joueurs,Echiquier)){
         insertionListeCasesAtteignables(Echiquier[xEchiquier-1][yEchiquier-2], self->casesAtteignables);
     }
-    if(CaseExiste(xPiece-1,yPiece+2) && Echiquier[xEchiquier-1][yEchiquier+2]->piece == NULL){
+    if(CaseExiste(xPiece-1,yPiece+2) && Echiquier[xEchiquier-1][yEchiquier+2]->piece == NULL && !leaveRoi(self,xPiece-1,yPiece+2,Joueurs,Echiquier)){
         insertionListeCasesAtteignables(Echiquier[xEchiquier-1][yEchiquier+2], self->casesAtteignables);
     }
-    if(CaseExiste(xPiece-2,yPiece-1) && Echiquier[xEchiquier-2][yEchiquier-1]->piece == NULL){
+    if(CaseExiste(xPiece-2,yPiece-1) && Echiquier[xEchiquier-2][yEchiquier-1]->piece == NULL && !leaveRoi(self,xPiece-2,yPiece-1,Joueurs,Echiquier)){
         insertionListeCasesAtteignables(Echiquier[xEchiquier-2][yEchiquier-1], self->casesAtteignables);
     }
-    if(CaseExiste(xPiece-2,yPiece+1) && Echiquier[xEchiquier-2][yEchiquier+1]->piece == NULL){
+    if(CaseExiste(xPiece-2,yPiece+1) && Echiquier[xEchiquier-2][yEchiquier+1]->piece == NULL && !leaveRoi(self,xPiece-2,yPiece+1,Joueurs,Echiquier)){
         insertionListeCasesAtteignables(Echiquier[xEchiquier-2][yEchiquier+1], self->casesAtteignables);
     }
 }
@@ -206,14 +206,14 @@ void calculAtteignableFou(Piece* self, Case* Echiquier[8][8], Piece* Joueurs[2])
 
     // fou diagonale haut-droit (PDV blancs)
 
-    while(CaseExiste(xPiece + 1, yPiece + 1) && Echiquier[xEchiquier+1][yEchiquier+1]->piece == NULL){
+    while(CaseExiste(xPiece + 1, yPiece + 1) && Echiquier[xEchiquier+1][yEchiquier+1]->piece == NULL && !leaveRoi(self,xPiece+1,yPiece+1,Joueurs,Echiquier)){
         insertionListeCasesAtteignables(Echiquier[xEchiquier+1][yEchiquier+1], self->casesAtteignables);
         xPiece++;
         xEchiquier++;
         yPiece++;
         yEchiquier++;
     }
-    if(CaseExiste(xPiece + 1, yPiece + 1)){
+    if(Echiquier[xEchiquier+1][yEchiquier+1]->piece != NULL){
         if((Echiquier[xEchiquier+1][yEchiquier+1]->piece)->couleur != self->couleur){
             insertionListeCasesAtteignables(Echiquier[xEchiquier+1][yEchiquier+1], self->casesAtteignables);
         }
@@ -225,14 +225,14 @@ void calculAtteignableFou(Piece* self, Case* Echiquier[8][8], Piece* Joueurs[2])
 
     // fou diagonale haut-gauche(PDV blancs)
 
-    while(CaseExiste(xPiece + 1, yPiece - 1) && Echiquier[xEchiquier+1][yEchiquier-1]->piece == NULL){
+    while(CaseExiste(xPiece + 1, yPiece - 1) && Echiquier[xEchiquier+1][yEchiquier-1]->piece == NULL && !leaveRoi(self,xPiece+1,yPiece-1,Joueurs,Echiquier)){
         insertionListeCasesAtteignables(Echiquier[xEchiquier+1][yEchiquier-1], self->casesAtteignables);
         xPiece++;
         xEchiquier++;
         yPiece--;
         yEchiquier--;
     }
-    if(CaseExiste(xPiece + 1, yPiece - 1)){
+    if(Echiquier[xEchiquier+1][yEchiquier-1]->piece != NULL){
         if((Echiquier[xEchiquier+1][yEchiquier-1]->piece)->couleur != self->couleur){
             insertionListeCasesAtteignables(Echiquier[xEchiquier+1][yEchiquier-1], self->casesAtteignables);
         }
@@ -244,14 +244,14 @@ void calculAtteignableFou(Piece* self, Case* Echiquier[8][8], Piece* Joueurs[2])
 
     // fou diagonale bas-droit (PDV blancs)
 
-    while(CaseExiste(xPiece - 1, yPiece + 1) && Echiquier[xEchiquier-1][yEchiquier+1]->piece == NULL){
+    while(CaseExiste(xPiece - 1, yPiece + 1) && Echiquier[xEchiquier-1][yEchiquier+1]->piece == NULL && !leaveRoi(self,xPiece-1,yPiece+1,Joueurs,Echiquier)){
         insertionListeCasesAtteignables(Echiquier[xEchiquier-1][yEchiquier+1], self->casesAtteignables);
         xPiece--;
         xEchiquier--;
         yPiece++;
         yEchiquier++;
     }
-    if(CaseExiste(xPiece - 1, yPiece + 1)){
+    if(Echiquier[xEchiquier-1][yEchiquier+1]->piece != NULL){
         if((Echiquier[xEchiquier-1][yEchiquier+1]->piece)->couleur != self->couleur){
             insertionListeCasesAtteignables(Echiquier[xEchiquier-1][yEchiquier+1], self->casesAtteignables);
         }
@@ -263,14 +263,14 @@ void calculAtteignableFou(Piece* self, Case* Echiquier[8][8], Piece* Joueurs[2])
 
     // fou diagonale bas-gauche (PDV blancs)
 
-    while(CaseExiste(xPiece - 1, yPiece - 1) && Echiquier[xEchiquier-1][yEchiquier-1]->piece == NULL){
+    while(CaseExiste(xPiece - 1, yPiece - 1) && Echiquier[xEchiquier-1][yEchiquier-1]->piece == NULL && !leaveRoi(self,xPiece-1,yPiece-1,Joueurs,Echiquier)){
         insertionListeCasesAtteignables(Echiquier[xEchiquier-1][yEchiquier-1], self->casesAtteignables);
         xPiece--;
         xEchiquier--;
         yPiece--;
         yEchiquier--;
     }
-    if(CaseExiste(xPiece - 1, yPiece - 1)){
+    if(Echiquier[xEchiquier-1][yEchiquier-1]->piece == NULL){
         if((Echiquier[xEchiquier-1][yEchiquier-1]->piece)->couleur != self->couleur){
             insertionListeCasesAtteignables(Echiquier[xEchiquier-1][yEchiquier-1], self->casesAtteignables);
         }
