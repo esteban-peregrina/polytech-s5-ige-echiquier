@@ -1,4 +1,5 @@
 #include <stdbool.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 #include ".././headers/piece.h"
@@ -119,7 +120,7 @@ void partieEchec() {
     Case Plateau[8][8]; // Déclaration du Plateau
     initialisePlateau(Plateau); // Initialisation du plateau (chaque case est vide, non selectionnée ni atteignable, et de la bonne couleur)
     Piece* Joueurs[2];
-    initialiseJoueur(Joueurs[2]);; // Déclaration des pièces des 2 joueurs, le roi est stocké comme tete de liste circulaire dans le tableau, index 0 pour Noir et 1 pour Blanc
+    //TODO - initialiseJoueur(Joueurs[2]);; // Déclaration des pièces des 2 joueurs, le roi est stocké comme tete de liste circulaire dans le tableau, index 0 pour Noir et 1 pour Blanc
     bool enEchec = false;
     int joueur = NOIR;
 
@@ -152,7 +153,7 @@ void partieEchec() {
                         } else { // ->
                             pieceCourante = pieceCourante->pieceSuivante;
                         }
-                        actualiseCasesAtteignables(pieceCourante, Plateau);
+                        //TODO - actualiseCasesAtteignables(pieceCourante, Plateau);
                         affichePlateau(Plateau);
 
                     } else { // menu == COUPS
