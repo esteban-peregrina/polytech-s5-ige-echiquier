@@ -84,18 +84,28 @@ void affichePlateau(Case* Plateau[8][8]) {
     printf("Plateau :\n");
 
     for (int i = 0; i < 8; i++) {
-        for (int j = 0; j < 8; j++) {
-            // Pour chaque case du plateau
-            Case* caseCourante = Plateau[i][j];
-            Piece* contenuCase = caseCourante->piece;
-            caseCourante->couleur == BLANC ? printf("\033[47m") : printf("\033[40m");
-            
-            //TODO - Print un truc en 7*3 avec la piece en son centre
+        for (int row = 0; row < CELL_WIDTH; row++) { // Chaque ligne de la case affichée
+            for (int j = 0; j < 8; j++) {
+                // Pour chaque case réelle du plateau
+                Case* caseCourante = Plateau[i][j];
+                Piece* contenuCase = caseCourante->piece;
+                caseCourante->couleur == BLANC ? printf("\033[47m") : printf("\033[40m");
+                
+                //TODO - Print un truc en 7*3 avec la piece en son centre
+
+                for (int column = 0; column < CELL_WIDTH; column++) {
+                    if ( (row == CELL_HEIGHT / 2) && (column == CELL_WIDTH / 2) && (contenuCase->role != VIDE) ) { // Au centre de la case affichée
+                        contenuCase->couleur == BLANC ? printf("\033[37m%c", contenuCase->forme) : printf("\033[30m%c", contenuCase->forme); // Affiche la piece de la bonne couleur
+                    } else {
+                        printf(" "); 
+                    }
+                }
+                printf("\033[0m "); // Réinitialise et permet de laisser une colonne vide
+            }
+            printf("\n");
         }
+        printf("\n\n"); // Retourne à la ligne et laisse une ligne vide
     }
-
-    printf("\033[0m");
-
 }
 
 void partieEchec() {
