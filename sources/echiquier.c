@@ -92,35 +92,31 @@ void afficheEchiquier(Case* Echiquier[8][8]) {
         for (int row = 0; row < CELL_HEIGHT; row++) { // Chaque ligne de la case affichée
             printf("\033[46m  "); // Bordure gauche
             for (int j = 0; j < 8; j++) {
-                // Pour chaque case réelle du Echiquier
+                // Pour chaque case réelle de l'echiquier
                 Case* caseCourante = Echiquier[i][j];
                 Piece* contenuCase = caseCourante->piece;
-                caseCourante->couleur == BLANC ? printf("\033[47m") : printf("\033[40m");
+                caseCourante->couleur == BLANC ? printf("\033[47m") : printf("\033[40m"); // On active le fond de la bonne couleur
                 for (int column = 0; column < CELL_WIDTH; column++) {
-                    if ( (row == CELL_HEIGHT / 2) && (column == CELL_WIDTH / 2) && (contenuCase != NULL) ) { // Au centre de la case affichée
-                        contenuCase->couleur == BLANC ? printf("\033[37m%s", contenuCase->forme) : printf("\033[30m%s", contenuCase->forme); // Affiche la piece de la bonne couleur
-                    } 
-                    
                     if (caseCourante->estAtteignable == true) {
                         if (contenuCase != NULL) { // Une piece adverse est atteignable
-                            printf("\033[41m \033[0m");
+                            printf("\033[0;41m"); // On active le fond rouge
                         } else {
-                            printf("\033[42m \033[0m");
+                            printf("\033[0;42m"); // On active le fond vert
                         }
                         
                     } else if (caseCourante->estSelectionne == true) { //! - ATTENTION ELSE IF
-                        printf("\033[44m \033[0m");
+                        printf("\033[0;44m"); // On active le fond bleu
+                    }
 
+                    if ( (row == CELL_HEIGHT / 2) && (column == CELL_WIDTH / 2) && (contenuCase != NULL) ) { // Au centre de la case affichée
+                        contenuCase->couleur == BLANC ? printf("\033[37m%s\033[0m", contenuCase->forme) : printf("\033[32m%s\033[0m", contenuCase->forme); // TODO - Affiche la piece de la bonne couleur
                     } else {
-                        printf(" "); // Rempli la case
-
+                        printf(" ");
                     }
                 }
-                printf("\033[0m"); // Réinitialise et permet de laisser une colonne vide
+                printf("\033[0m"); // Réinitialise la couleur
             }
-            printf("\033[46m  "); // Bordure droite
-
-            printf("\033[0m \n"); // Réinitialise la couleur par défaut et saute la ligne
+            printf("\033[46m  \033[0m\n"); // Bordure droite
         }
     }
 
