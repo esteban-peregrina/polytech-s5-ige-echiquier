@@ -33,11 +33,10 @@ void destructionListeCasesAtteignables(ListeCasesAtteignables* ListeCasesAtteign
 void insertionListeCasesAtteignables(Case* caseAtteignable, ListeCasesAtteignables* listeCasesAtteignables);
 void supressionListeCasesAtteignables(Case* caseAtteignable, ListeCasesAtteignables* listeCasesAtteignables);
 
-// Opérations sur le plateau
-void initialisePlateau(Case* Plateau[8][8]);
-void videPlateau(Case* Plateau[8][8]);
-void actualiseCasesAtteignables(Piece* pieceCourante, Case* Plateau[8][8]);
-void affichePlateau(Case* Plateau[8][8]);
+// Opérations sur l'echiquier
+void initialiseEchiquier(Case* Echiquier[8][8]);
+void videEchiquier(Case* Echiquier[8][8]);
+void afficheEchiquier(Case* Echiquier[8][8]);
 
 void partieEchec();
 
