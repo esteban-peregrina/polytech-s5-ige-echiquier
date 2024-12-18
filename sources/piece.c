@@ -264,45 +264,59 @@ void calculAtteignableRoi(Piece* self, Case Plateau[8][8]){
     int yPiece = self->y;
     int xPlateau = xPiece-1;
     int yPlateau = yPiece-1;
-    if(CaseExiste(xPiece+1, yPiece) && !suisjeAtteignable(xPiece+1,yPiece, Plateau)){           //Si la case existe et n'est pas atteignable par une autre piece
-        if(Plateau[xPlateau+1][yPlateau].piece==NULL || (Plateau[xPlateau+1][yPlateau].piece)->couleur != self->couleur){   //Si la case est libre ou occupé par un ennemi
-            insertionListeCasesAtteignables(&Plateau[xPlateau+1][yPlateau], self->casesAtteignables);       //Alors on ajoute la case a la liste des cases atteignable
+    if(CaseExiste(xPiece+1, yPiece) && !suisjeAtteignable(xPiece+1,yPiece, Plateau)){                                           //Si la case existe et n'est pas atteignable par une autre piece
+        if(Plateau[xPlateau+1][yPlateau].piece==NULL || (Plateau[xPlateau+1][yPlateau].piece)->couleur != self->couleur){       //Si la case est libre ou occupé par un ennemi
+            insertionListeCasesAtteignables(&Plateau[xPlateau+1][yPlateau], self->casesAtteignables);                           //Alors on ajoute la case a la liste des cases atteignable
         }
     }
-    if(CaseExiste(xPiece+1, yPiece-1) && !suisjeAtteignable(xPiece+1,yPiece-1, Plateau)){           //Si la case existe et n'est pas atteignable par une autre piece
+    if(CaseExiste(xPiece+1, yPiece-1) && !suisjeAtteignable(xPiece+1,yPiece-1, Plateau)){                                       //Si la case existe et n'est pas atteignable par une autre piece
         if(Plateau[xPlateau+1][yPlateau-1].piece==NULL || (Plateau[xPlateau+1][yPlateau-1].piece)->couleur != self->couleur){   //Si la case est libre ou occupé par un ennemi
-            insertionListeCasesAtteignables(&Plateau[xPlateau+1][yPlateau-1], self->casesAtteignables);       //Alors on ajoute la case a la liste des cases atteignable
+            insertionListeCasesAtteignables(&Plateau[xPlateau+1][yPlateau-1], self->casesAtteignables);                         //Alors on ajoute la case a la liste des cases atteignable
         }
     }
-    if(CaseExiste(xPiece+1, yPiece+1) && !suisjeAtteignable(xPiece+1,yPiece+1, Plateau)){           //Si la case existe et n'est pas atteignable par une autre piece
+    if(CaseExiste(xPiece+1, yPiece+1) && !suisjeAtteignable(xPiece+1,yPiece+1, Plateau)){                                       //Si la case existe et n'est pas atteignable par une autre piece
         if(Plateau[xPlateau+1][yPlateau+1].piece==NULL || (Plateau[xPlateau+1][yPlateau+1].piece)->couleur != self->couleur){   //Si la case est libre ou occupé par un ennemi
-            insertionListeCasesAtteignables(&Plateau[xPlateau+1][yPlateau+1], self->casesAtteignables);       //Alors on ajoute la case a la liste des cases atteignable
+            insertionListeCasesAtteignables(&Plateau[xPlateau+1][yPlateau+1], self->casesAtteignables);                         //Alors on ajoute la case a la liste des cases atteignable
         }
     }
-    if(CaseExiste(xPiece-1, yPiece) && !suisjeAtteignable(xPiece-1,yPiece, Plateau)){           //Si la case existe et n'est pas atteignable par une autre piece
-        if(Plateau[xPlateau-1][yPlateau].piece==NULL || (Plateau[xPlateau-1][yPlateau].piece)->couleur != self->couleur){   //Si la case est libre ou occupé par un ennemi
-            insertionListeCasesAtteignables(&Plateau[xPlateau-1][yPlateau], self->casesAtteignables);       //Alors on ajoute la case a la liste des cases atteignable
+    if(CaseExiste(xPiece-1, yPiece) && !suisjeAtteignable(xPiece-1,yPiece, Plateau)){                                           //Si la case existe et n'est pas atteignable par une autre piece
+        if(Plateau[xPlateau-1][yPlateau].piece==NULL || (Plateau[xPlateau-1][yPlateau].piece)->couleur != self->couleur){       //Si la case est libre ou occupé par un ennemi
+            insertionListeCasesAtteignables(&Plateau[xPlateau-1][yPlateau], self->casesAtteignables);                           //Alors on ajoute la case a la liste des cases atteignable
         }
     }
-    if(CaseExiste(xPiece-1, yPiece+1) && !suisjeAtteignable(xPiece-1,yPiece+1, Plateau)){           //Si la case existe et n'est pas atteignable par une autre piece
+    if(CaseExiste(xPiece-1, yPiece+1) && !suisjeAtteignable(xPiece-1,yPiece+1, Plateau)){                                       //Si la case existe et n'est pas atteignable par une autre piece
         if(Plateau[xPlateau-1][yPlateau+1].piece==NULL || (Plateau[xPlateau-1][yPlateau+1].piece)->couleur != self->couleur){   //Si la case est libre ou occupé par un ennemi
-            insertionListeCasesAtteignables(&Plateau[xPlateau-1][yPlateau+1], self->casesAtteignables);       //Alors on ajoute la case a la liste des cases atteignable
+            insertionListeCasesAtteignables(&Plateau[xPlateau-1][yPlateau+1], self->casesAtteignables);                         //Alors on ajoute la case a la liste des cases atteignable
         }
     }
-    if(CaseExiste(xPiece-1, yPiece-1) && !suisjeAtteignable(xPiece-1,yPiece-1, Plateau)){           //Si la case existe et n'est pas atteignable par une autre piece
+    if(CaseExiste(xPiece-1, yPiece-1) && !suisjeAtteignable(xPiece-1,yPiece-1, Plateau)){                                       //Si la case existe et n'est pas atteignable par une autre piece
         if(Plateau[xPlateau-1][yPlateau-1].piece==NULL || (Plateau[xPlateau-1][yPlateau-1].piece)->couleur != self->couleur){   //Si la case est libre ou occupé par un ennemi
-            insertionListeCasesAtteignables(&Plateau[xPlateau-1][yPlateau-1], self->casesAtteignables);       //Alors on ajoute la case a la liste des cases atteignable
+            insertionListeCasesAtteignables(&Plateau[xPlateau-1][yPlateau-1], self->casesAtteignables);                         //Alors on ajoute la case a la liste des cases atteignable
         }
     }
-    if(CaseExiste(xPiece, yPiece+1) && !suisjeAtteignable(xPiece,yPiece+1, Plateau)){           //Si la case existe et n'est pas atteignable par une autre piece
-        if(Plateau[xPlateau][yPlateau+1].piece==NULL || (Plateau[xPlateau][yPlateau+1].piece)->couleur != self->couleur){   //Si la case est libre ou occupé par un ennemi
-            insertionListeCasesAtteignables(&Plateau[xPlateau][yPlateau+1], self->casesAtteignables);       //Alors on ajoute la case a la liste des cases atteignable
+    if(CaseExiste(xPiece, yPiece+1) && !suisjeAtteignable(xPiece,yPiece+1, Plateau)){                                           //Si la case existe et n'est pas atteignable par une autre piece
+        if(Plateau[xPlateau][yPlateau+1].piece==NULL || (Plateau[xPlateau][yPlateau+1].piece)->couleur != self->couleur){       //Si la case est libre ou occupé par un ennemi
+            insertionListeCasesAtteignables(&Plateau[xPlateau][yPlateau+1], self->casesAtteignables);                           //Alors on ajoute la case a la liste des cases atteignable
         }
     }
-    if(CaseExiste(xPiece, yPiece-1) && !suisjeAtteignable(xPiece,yPiece-1, Plateau)){           //Si la case existe et n'est pas atteignable par une autre piece
-        if(Plateau[xPlateau][yPlateau-1].piece==NULL || (Plateau[xPlateau][yPlateau-1].piece)->couleur != self->couleur){   //Si la case est libre ou occupé par un ennemi
-            insertionListeCasesAtteignables(&Plateau[xPlateau][yPlateau-1], self->casesAtteignables);       //Alors on ajoute la case a la liste des cases atteignable
+    if(CaseExiste(xPiece, yPiece-1) && !suisjeAtteignable(xPiece,yPiece-1, Plateau)){                                           //Si la case existe et n'est pas atteignable par une autre piece
+        if(Plateau[xPlateau][yPlateau-1].piece==NULL || (Plateau[xPlateau][yPlateau-1].piece)->couleur != self->couleur){       //Si la case est libre ou occupé par un ennemi
+            insertionListeCasesAtteignables(&Plateau[xPlateau][yPlateau-1], self->casesAtteignables);                           //Alors on ajoute la case a la liste des cases atteignable
         }
     }
     
 }
+
+bool leaveRoi(Piece* self, int x, int y, Piece* Joueurs[2], Case* Plateau[8][8]){                //(x,y) : case ou je souhaite me rendre
+    Piece* roi = (self->couleur == BLANC) ? Joueurs[BLANC] : Joueurs[NOIR];
+    int xPlateau = x-1;
+    int yPlateau = y-1;
+    Plateau[x-1][y-1]->piece = Plateau[self->x-1][self->y-1]->piece;
+    Plateau[self->x-1][self->y-1]->piece = NULL;
+    bool res = suisjeAtteignable(roi->x, roi->y, Plateau[8][8]);
+    Plateau[self->x-1][self->y-1]->piece = Plateau[x-1][y-1]->piece;
+    Plateau[x-1][y-1]->piece = NULL;
+    return res;
+}
+
+
