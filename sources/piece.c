@@ -1,8 +1,8 @@
-#include ".././headers/echiquier.h"
-#include ".././headers/piece.h"
-
 #include <stdlib.h>
 #include <stdbool.h>
+
+#include ".././headers/echiquier.h"
+#include ".././headers/piece.h"
 
 bool CaseExiste(int x, int y){
     if(x<=8 && x>=1 && y<=8 && y >=1){                  
