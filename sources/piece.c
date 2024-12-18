@@ -49,7 +49,12 @@ Piece* creationPiece(Role role, int couleur, int x, int y) {
 
 
 void destructionPiece(Piece* piece) {
+    /*
+    Libère la piece pointée.  
+    */
 
+    if (piece == NULL) { exit(EXIT_FAILURE); } // On ne devrait pas passer de Piece vide à cette fonction
+    free(piece);
 }
 
 bool CaseExiste(int x, int y){
