@@ -98,7 +98,7 @@ void afficheEchiquier(Case* Echiquier[8][8]) {
                 caseCourante->couleur == BLANC ? printf("\033[47m") : printf("\033[40m");
                 for (int column = 0; column < CELL_WIDTH; column++) {
                     if ( (row == CELL_HEIGHT / 2) && (column == CELL_WIDTH / 2) && (contenuCase != NULL) ) { // Au centre de la case affichée
-                        contenuCase->couleur == BLANC ? printf("\033[37m%c", contenuCase->forme) : printf("\033[30m%c", contenuCase->forme); // Affiche la piece de la bonne couleur
+                        contenuCase->couleur == BLANC ? printf("\033[37m%s", contenuCase->forme) : printf("\033[30m%s", contenuCase->forme); // Affiche la piece de la bonne couleur
                     } 
                     
                     if (caseCourante->estAtteignable == true) {
