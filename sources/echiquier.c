@@ -38,7 +38,7 @@ void insertionListeCasesAtteignables(Case* caseAtteignable, ListeCasesAtteignabl
     */
 
     Case* temp = listeCasesAtteignables->tete;
-    if (temp != NULL) { temp->caseAtteignablePrecedente == NULL; }
+    if (temp != NULL) { temp->caseAtteignablePrecedente = NULL; }
     listeCasesAtteignables->tete = caseAtteignable;
     caseAtteignable->caseAtteignableSuivante = temp;
     caseAtteignable->caseAtteignablePrecedente = NULL;
@@ -78,48 +78,24 @@ void affichePlateau(Case* Plateau[8][8]) {
     Affiche le plateau.
     */
 
-    const int CELL_WIDTH = 8;  
+    const int CELL_WIDTH = 7;  
     const int CELL_HEIGHT = 3;
 
     printf("Plateau :\n");
 
-    // Pour chaque ligne de l'écosystème
     for (int i = 0; i < 8; i++) {
-        // Ligne de séparation supérieure
         for (int j = 0; j < 8; j++) {
-            printf("+");
-            for (int k = 0; k < CELL_WIDTH; k++) {
-                printf("-");
-            }
-        }
-        printf("+\n");
-
-        for (int row = 0; row < CELL_HEIGHT; row++) { // 3 lignes par case
-            for (int j = 0; j < 8; j++) {
-                printf("|");
-                Case* caseCourante = Plateau[i][j];
-                Piece* piecePresente = caseCourante->piece;
-
-                // Afficher la ligne de la cellule
-                if (caseCourante->couleur == BLANC) { // La case courante est blanche
-                    //TODO - Activer en bleu (ou contour blanc et pièce noire --> Non galère, en fait comme on fait ligne par ligne faut uniquement changer les couleurs des pièces)
-                } else { // La case courante est noire
-                    //TODO - Activer en rouge 
-                }
-                if (piecePresente->role != VIDE) { printf("%-*s", CELL_WIDTH, piecePresente->forme); }
-            }
-            printf("|\n");
+            // Pour chaque case du plateau
+            Case* caseCourante = Plateau[i][j];
+            Piece* contenuCase = caseCourante->piece;
+            caseCourante->couleur == BLANC ? printf("\033[47m") : printf("\033[40m");
+            
+            //TODO - Print un truc en 7*3 avec la piece en son centre
         }
     }
 
-    // Dernière ligne de séparation inférieure
-    for (int j = 0; j < 8; j++) {
-        printf("+");
-        for (int k = 0; k < CELL_WIDTH; k++) {
-            printf("-");
-        }
-    }
-    printf("+\n");
+    printf("\033[0m");
+
 }
 
 void partieEchec() {
