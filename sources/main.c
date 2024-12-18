@@ -14,9 +14,13 @@ int main() {
     Echiquier[1][1]->estAtteignable = true;
     Echiquier[1][0]->estAtteignable = true;
     Echiquier[0][0]->estSelectionne = true;
-    afficheEchiquier(Echiquier);
-    videEchiquier(Echiquier);
 
+    Echiquier[0][0]->piece = creationPiece(FOU, BLANC, 0,0);
+
+    afficheEchiquier(Echiquier);
+
+    destructionPiece(Echiquier[0][0]->piece);
+    videEchiquier(Echiquier);
 
     return 0;
 }
