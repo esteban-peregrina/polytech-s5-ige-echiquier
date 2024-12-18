@@ -19,7 +19,7 @@ typedef struct ListeCasesAtteignables ListeCasesAtteignables; // Pour que le com
 typedef struct Piece {
     Role role;                   // Utile ?
 
-    char forme;
+    char* forme;
     int couleur;                 // Couleur de la piece
     int x;
     int y;
@@ -27,7 +27,7 @@ typedef struct Piece {
     struct Piece* pieceSuivante; 
     struct Piece* piecePrecedente;        
 
-    void (*calculAtteignable)(struct Piece* self, Case* Plateau[8][8]);
+    void (*calculAtteignable)(struct Piece* self, Case* Plateau[8][8], struct Piece* Joueurs[2]);
     ListeCasesAtteignables* casesAtteignables;
 
 } Piece;
@@ -37,7 +37,7 @@ typedef struct ListePiecesJoueur {
 } ListePiecesJoueur;
 
 // Déclaration et suppresion de pièces
-Piece* creationPiece(Role role, int x, int y);
+Piece* creationPiece(Role role, int couleur, int x, int y);
 void destructionPiece(Piece* piece);
 
 // Opérations sur les pièces
