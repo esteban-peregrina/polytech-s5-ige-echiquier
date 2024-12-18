@@ -99,8 +99,21 @@ void affichePlateau(Case* Plateau[8][8]) {
                 for (int column = 0; column < CELL_WIDTH; column++) {
                     if ( (row == CELL_HEIGHT / 2) && (column == CELL_WIDTH / 2) && (contenuCase != NULL) ) { // Au centre de la case affichée
                         contenuCase->couleur == BLANC ? printf("\033[37m%c", contenuCase->forme) : printf("\033[30m%c", contenuCase->forme); // Affiche la piece de la bonne couleur
+                    } 
+                    
+                    if (caseCourante->estAtteignable == true) {
+                        if (contenuCase != NULL) { // Une piece adverse est atteignable
+                            printf("\033[41m \033[0m");
+                        } else {
+                            printf("\033[42m \033[0m");
+                        }
+                        
+                    } else if (caseCourante->estSelectionne == true) { //! - ATTENTION ELSE IF
+                        printf("\033[44m \033[0m");
+
                     } else {
-                        printf(" "); 
+                        printf(" "); // Rempli la case
+
                     }
                 }
                 printf("\033[0m"); // Réinitialise et permet de laisser une colonne vide
