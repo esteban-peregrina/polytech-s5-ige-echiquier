@@ -4,8 +4,7 @@
 #define NOIR 0
 #define BLANC 1
 
-typedef enum {
-    VIDE,            
+typedef enum {          
     ROI,
     REINE,
     FOU,
