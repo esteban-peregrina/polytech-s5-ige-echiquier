@@ -10,18 +10,18 @@ Case* creationCase(int couleur) {
     Renvoie l'adresse d'une case vide dont la couleur est specifiée.
     */
 
-    Case* Case = NULL;
-    Case = malloc(sizeof(Case));
-    if (Case == NULL) { exit(EXIT_FAILURE); }
+    Case* caseCree = NULL;
+    caseCree = malloc(sizeof(Case));
+    if (caseCree == NULL) { exit(EXIT_FAILURE); }
     
-    Case->couleur = couleur;
-    Case->estSelectionne = false;
-    Case->estAtteignable = false;
+    caseCree->couleur = couleur;
+    caseCree->estSelectionne = false;
+    caseCree->estAtteignable = false;
 
-    Case->caseAtteignableSuivante = NULL;
-    Case->caseAtteignablePrecedente = NULL;
+    caseCree->caseAtteignableSuivante = NULL;
+    caseCree->caseAtteignablePrecedente = NULL;
 
-    return Case;
+    return caseCree;
 }
 
 void destructionCase(Case* Case) { // Nécessaire ?
@@ -63,7 +63,7 @@ void initialisePlateau(Case* Plateau[8][8]) {
 
 void videPlateau(Case* Plateau[8][8]) {
     /*
-    Rempli le plateau de cases vides aux couleurs alternées.
+    Vide le plateau.
     */
 
     for (int i = 0; i < 8; i++) {
@@ -163,7 +163,7 @@ void partieEchec() {
                             caseCourante->estSelectionne = true;
                         } else { // ->
                             caseCourante->estSelectionne = false;
-                            pieceCourante = caseCourante->caseAtteignableSuivante;
+                            caseCourante = caseCourante->caseAtteignableSuivante;
                             caseCourante->estSelectionne = true;
                         }
                         affichePlateau(Plateau);
