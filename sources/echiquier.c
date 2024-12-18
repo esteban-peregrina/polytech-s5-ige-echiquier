@@ -117,7 +117,7 @@ void partieEchec() {
     // TODO - Proposer de charger une sauvegarde
     // TODO - Proposer de jouer contre un joueur ou contre une IA
 
-    Case Plateau[8][8]; // Déclaration du Plateau
+    Case* Plateau[8][8]; // Déclaration du Plateau
     initialisePlateau(Plateau); // Initialisation du plateau (chaque case est vide, non selectionnée ni atteignable, et de la bonne couleur)
     Piece* Joueurs[2];
     //TODO - initialiseJoueur(Joueurs[2]);; // Déclaration des pièces des 2 joueurs, le roi est stocké comme tete de liste circulaire dans le tableau, index 0 pour Noir et 1 pour Blanc
@@ -128,7 +128,7 @@ void partieEchec() {
         affichePlateau(Plateau); // TODO - Renommer car affiche aussi le menu (différent selon si piece ou coups)
         bool aJoue = false;
         Menu menu = PIECES;
-        joueur == NOIR ? BLANC : NOIR; // On commute de joueur
+        joueur = (joueur == NOIR) ? BLANC : NOIR; // On commute de joueur
         Piece* pieceCourante = Joueurs[joueur]; // On commence par les blancs (comme par hasard)
         
         while (!aJoue) {
