@@ -395,3 +395,29 @@ void actualiseCasesAtteignables(Piece* piecePrecedente, Piece* pieceCourante, Ca
     }
     pieceCourante->calculAtteignable(pieceCourante, Echiquier, Joueurs);
 }
+
+void initialiseJoueur(Piece* Joueurs[2]) {
+    /*
+    Initialise les pièces de chacun des joueurs.
+    */
+
+    Joueurs[BLANC] = creationPiece(ROI, BLANC, 3, 7); 
+    insertionPieceJoueur(creationPiece(REINE, BLANC, 4, 7), Joueurs);
+    insertionPieceJoueur(creationPiece(FOU, BLANC, 2, 7), Joueurs);
+    insertionPieceJoueur(creationPiece(FOU, BLANC, 5, 7), Joueurs);
+    insertionPieceJoueur(creationPiece(CAVALIER, BLANC, 1, 7), Joueurs);
+    insertionPieceJoueur(creationPiece(CAVALIER, BLANC, 6, 7), Joueurs);
+    insertionPieceJoueur(creationPiece(TOUR, BLANC, 0, 7), Joueurs);
+    insertionPieceJoueur(creationPiece(TOUR, BLANC, 7, 7), Joueurs);
+    for (int x = 0; x < 8; x++) { insertionPieceJoueur(creationPiece(PION, BLANC, x, 7), Joueurs); }
+
+    Joueurs[NOIR] = creationPiece(ROI, NOIR, 3, 0);
+    insertionPieceJoueur(creationPiece(REINE, NOIR, 4, 0), Joueurs);
+    insertionPieceJoueur(creationPiece(FOU, NOIR, 2, 0), Joueurs);
+    insertionPieceJoueur(creationPiece(FOU, NOIR, 5, 0), Joueurs);
+    insertionPieceJoueur(creationPiece(CAVALIER, NOIR, 1, 0), Joueurs);
+    insertionPieceJoueur(creationPiece(CAVALIER, NOIR, 6, 0), Joueurs);
+    insertionPieceJoueur(creationPiece(TOUR, NOIR, 0, 0), Joueurs);
+    insertionPieceJoueur(creationPiece(TOUR, NOIR, 7, 0), Joueurs);
+    for (int x = 0; x < 8; x++) { insertionPieceJoueur(creationPiece(PION, NOIR, x, 1), Joueurs); }
+}
