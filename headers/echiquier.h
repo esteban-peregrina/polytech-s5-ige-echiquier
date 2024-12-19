@@ -29,9 +29,9 @@ void destructionCase(Case* Case);
 
 // Opérations sur les cases
 ListeCasesAtteignables* creationListeCasesAtteignables();
-void destructionListeCasesAtteignables(ListeCasesAtteignables* ListeCasesAtteignables);
+void destructionListeCasesAtteignables(ListeCasesAtteignables* caseObsolete);
 void insertionListeCasesAtteignables(Case* caseAtteignable, ListeCasesAtteignables* listeCasesAtteignables);
-void supressionListeCasesAtteignables(Case* caseAtteignable, ListeCasesAtteignables* listeCasesAtteignables);
+void supressionListeCasesAtteignables(Case* caseRetirable, ListeCasesAtteignables* listeCasesAtteignables);
 
 // Opérations sur l'echiquier
 bool CaseExiste(int x, int y);
