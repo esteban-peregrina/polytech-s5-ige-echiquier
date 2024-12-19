@@ -37,7 +37,7 @@ typedef struct ListePiecesJoueur {
 } ListePiecesJoueur;
 
 // Déclaration et suppresion de pièces
-Piece* creationPiece(Role role, int couleur, int x, int y);
+Piece* creationPiece(Role role, int couleur);
 void destructionPiece(Piece* piece);
 
 // Opérations sur les pièces
