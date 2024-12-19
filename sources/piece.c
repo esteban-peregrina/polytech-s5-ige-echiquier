@@ -396,28 +396,76 @@ void actualiseCasesAtteignables(Piece* piecePrecedente, Piece* pieceCourante, Ca
     pieceCourante->calculAtteignable(pieceCourante, Echiquier, Joueurs);
 }
 
-void initialiseJoueur(Piece* Joueurs[2]) {
+void insertionPieceJoueur(Piece* pieceAjoutable, Piece* Joueurs[2]) {
+    /*
+    Insère pieceAjoutable à la main du joueur de sa couleur. Les rois et reines sont déjà présents.
+    */
+
+    int couleur = pieceAjoutable->couleur;
+    Piece* temp = Joueurs[couleur]->pieceSuivante; //La piece juste après le roi
+    Joueurs[couleur]->pieceSuivante = pieceAjoutable; // On connecte le roi à la pice
+    pieceAjoutable->piecePrecedente = Joueurs[couleur]; // On connecte la piece au roi
+    pieceAjoutable->pieceSuivante = temp; // On connecte la piece à celle précédement après le roi
+    temp->piecePrecedente = pieceAjoutable; // On connecte celle précédemment après le roi à la pièce
+}
+
+// TODO - SuppressionPieceJoueur()
+
+void initialiseJoueur(Piece* Joueurs[2], Case* Echiquier[8][8]) {
     /*
     Initialise les pièces de chacun des joueurs.
     */
+    for (int couleur = NOIR; couleur < BLANC + 1; couleur++) {
+        // Roi
+        Echiquier[3][7]->piece = creationPiece(ROI, couleur);
+        Echiquier[3][7]->piece->x = 3;
+        Echiquier[3][7]->piece->y = 7;
+        Joueurs[couleur] = Echiquier[3][7]->piece;
 
-    Joueurs[BLANC] = creationPiece(ROI, BLANC, 3, 7); 
-    insertionPieceJoueur(creationPiece(REINE, BLANC, 4, 7), Joueurs);
-    insertionPieceJoueur(creationPiece(FOU, BLANC, 2, 7), Joueurs);
-    insertionPieceJoueur(creationPiece(FOU, BLANC, 5, 7), Joueurs);
-    insertionPieceJoueur(creationPiece(CAVALIER, BLANC, 1, 7), Joueurs);
-    insertionPieceJoueur(creationPiece(CAVALIER, BLANC, 6, 7), Joueurs);
-    insertionPieceJoueur(creationPiece(TOUR, BLANC, 0, 7), Joueurs);
-    insertionPieceJoueur(creationPiece(TOUR, BLANC, 7, 7), Joueurs);
-    for (int x = 0; x < 8; x++) { insertionPieceJoueur(creationPiece(PION, BLANC, x, 7), Joueurs); }
+        // Reine
+        Echiquier[4][7]->piece = creationPiece(REINE, couleur);
+        Echiquier[4][7]->piece->x = 4;
+        Echiquier[4][7]->piece->y = 7;
 
-    Joueurs[NOIR] = creationPiece(ROI, NOIR, 3, 0);
-    insertionPieceJoueur(creationPiece(REINE, NOIR, 4, 0), Joueurs);
-    insertionPieceJoueur(creationPiece(FOU, NOIR, 2, 0), Joueurs);
-    insertionPieceJoueur(creationPiece(FOU, NOIR, 5, 0), Joueurs);
-    insertionPieceJoueur(creationPiece(CAVALIER, NOIR, 1, 0), Joueurs);
-    insertionPieceJoueur(creationPiece(CAVALIER, NOIR, 6, 0), Joueurs);
-    insertionPieceJoueur(creationPiece(TOUR, NOIR, 0, 0), Joueurs);
-    insertionPieceJoueur(creationPiece(TOUR, NOIR, 7, 0), Joueurs);
-    for (int x = 0; x < 8; x++) { insertionPieceJoueur(creationPiece(PION, NOIR, x, 1), Joueurs); }
+        // Circulaire Roi - Reine
+        Joueurs[couleur]->pieceSuivante = Echiquier[4][7]->piece;
+        Joueurs[couleur]->piecePrecedente = Joueurs[couleur]->pieceSuivante;
+        Joueurs[couleur]->piecePrecedente->piecePrecedente = Joueurs[couleur];
+        Joueurs[couleur]->piecePrecedente->pieceSuivante = Joueurs[couleur];
+
+        // Insertions Fous
+        Echiquier[2][7]->piece = creationPiece(FOU, couleur);
+        Echiquier[2][7]->piece->x = 2;
+        Echiquier[2][7]->piece->y = 7;
+        insertionPieceJoueur(Echiquier[2][7]->piece, Joueurs);
+        Echiquier[5][7]->piece = creationPiece(FOU, couleur);
+        Echiquier[5][7]->piece->x = 5;
+        Echiquier[5][7]->piece->y = 7;
+        // Insertions Cavaliers
+        insertionPieceJoueur(Echiquier[5][7]->piece, Joueurs);
+        Echiquier[1][7]->piece = creationPiece(CAVALIER, couleur);
+        Echiquier[1][7]->piece->x = 1;
+        Echiquier[1][7]->piece->y = 7;
+        insertionPieceJoueur(Echiquier[1][7]->piece, Joueurs);
+        Echiquier[6][7]->piece = creationPiece(CAVALIER, couleur);
+        Echiquier[6][7]->piece->x = 6;
+        Echiquier[6][7]->piece->y = 7;
+        // Insertions Tours
+        insertionPieceJoueur(Echiquier[6][7]->piece, Joueurs);
+        Echiquier[0][7]->piece = creationPiece(TOUR, couleur);
+        Echiquier[0][7]->piece->x = 0;
+        Echiquier[0][7]->piece->y = 7;
+        insertionPieceJoueur(Echiquier[0][7]->piece, Joueurs);
+        Echiquier[7][7]->piece = creationPiece(TOUR, couleur);
+        Echiquier[7][7]->piece->x = 7;
+        Echiquier[7][7]->piece->y = 7;
+        insertionPieceJoueur(Echiquier[7][7]->piece, Joueurs);
+        // Insertions Pions
+        for (int x = 0; x < 8; x++) {
+            Echiquier[x][6]->piece = creationPiece(PION, couleur);
+            Echiquier[x][6]->piece->x = x;
+            Echiquier[x][6]->piece->y = 6;
+            insertionPieceJoueur(Echiquier[x][6]->piece, Joueurs); 
+        }
+    }
 }
