@@ -47,7 +47,7 @@ void calculAtteignableCavalier(Piece* self, Case* Echiquier[8][8], Piece* Joueur
 void calculAtteignableFou(Piece* self, Case* Echiquier[8][8], Piece* Joueurs[2]);
 void calculAtteignableReine(Piece* self, Case* Echiquier[8][8], Piece* Joueurs[2]);
 void calculAtteignableRoi(Piece* self, Case* Echiquier[8][8], Piece* Joueurs[2]);
-void actualiseCasesAtteignables(Piece* piecePrecedente, Piece* pieceCourante, Case* Echiquier[8][8]); // Vide ListeCasesAtteignables de piecePrecedente et rempli celle de pieceCourante
+void actualiseCasesAtteignables(Piece* piecePrecedente, Piece* pieceCourante, Case* Echiquier[8][8], Piece* Joueurs[2]); // Vide ListeCasesAtteignables de piecePrecedente et rempli celle de pieceCourante
 
 // Opérations sur le Roi
 bool suisjeAtteignable(int xCible, int yCible, Case* Echiquier[8][8]);
