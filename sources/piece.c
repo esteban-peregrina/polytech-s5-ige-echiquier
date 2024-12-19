@@ -117,7 +117,7 @@ void calculAtteignableTour(Piece* self, Case* Echiquier[8][8], Piece* Joueurs[2]
         xPiece++;
         xEchiquier++;
     }
-    if(Echiquier[xEchiquier+1][yEchiquier]->piece!=NULL){
+    if(CaseExiste(xPiece+1,yPiece) && Echiquier[xEchiquier+1][yEchiquier]->piece!=NULL){
         if((Echiquier[xEchiquier+1][yEchiquier]->piece)->couleur != self->couleur && !leaveRoi(self,xPiece+1,yPiece,Joueurs,Echiquier)){
             insertionListeCasesAtteignables(Echiquier[xEchiquier+1][yEchiquier], self->casesAtteignables);
         }
@@ -132,7 +132,7 @@ void calculAtteignableTour(Piece* self, Case* Echiquier[8][8], Piece* Joueurs[2]
         xPiece--;
         xEchiquier--;
     }
-    if(Echiquier[xEchiquier-1][yEchiquier]->piece!=NULL){
+    if(CaseExiste(xPiece-1,yPiece) && Echiquier[xEchiquier-1][yEchiquier]->piece!=NULL){
         if((Echiquier[xEchiquier-1][yEchiquier]->piece)->couleur != self->couleur){
             insertionListeCasesAtteignables(Echiquier[xEchiquier+1][yEchiquier], self->casesAtteignables);
         }
@@ -147,7 +147,7 @@ void calculAtteignableTour(Piece* self, Case* Echiquier[8][8], Piece* Joueurs[2]
         yPiece++;
         yEchiquier++;
     }
-    if(Echiquier[xEchiquier][yEchiquier+1]->piece!=NULL){
+    if(CaseExiste(xPiece,yPiece+1) && Echiquier[xEchiquier][yEchiquier+1]->piece!=NULL){
         if((Echiquier[xEchiquier][yEchiquier+1]->piece)->couleur != self->couleur){
             insertionListeCasesAtteignables(Echiquier[xEchiquier][yEchiquier+1], self->casesAtteignables);
         }
@@ -162,7 +162,7 @@ void calculAtteignableTour(Piece* self, Case* Echiquier[8][8], Piece* Joueurs[2]
         yPiece--;
         yEchiquier--;
     }
-    if(Echiquier[xEchiquier][yEchiquier-1]->piece!=NULL){
+    if(CaseExiste(xPiece,yPiece-1) && Echiquier[xEchiquier][yEchiquier-1]->piece!=NULL){
         if((Echiquier[xEchiquier][yEchiquier-1]->piece)->couleur != self->couleur){
             insertionListeCasesAtteignables(Echiquier[xEchiquier][yEchiquier-1], self->casesAtteignables);
         }
@@ -219,7 +219,7 @@ void calculAtteignableFou(Piece* self, Case* Echiquier[8][8], Piece* Joueurs[2])
         yPiece++;
         yEchiquier++;
     }
-    if(Echiquier[xEchiquier+1][yEchiquier+1]->piece != NULL){
+    if(CaseExiste(xPiece+1,yPiece+1) && Echiquier[xEchiquier+1][yEchiquier+1]->piece != NULL){
         if((Echiquier[xEchiquier+1][yEchiquier+1]->piece)->couleur != self->couleur){
             insertionListeCasesAtteignables(Echiquier[xEchiquier+1][yEchiquier+1], self->casesAtteignables);
         }
@@ -238,7 +238,7 @@ void calculAtteignableFou(Piece* self, Case* Echiquier[8][8], Piece* Joueurs[2])
         yPiece--;
         yEchiquier--;
     }
-    if(Echiquier[xEchiquier+1][yEchiquier-1]->piece != NULL){
+    if(CaseExiste(xPiece+1,yPiece-1) && Echiquier[xEchiquier+1][yEchiquier-1]->piece != NULL){
         if((Echiquier[xEchiquier+1][yEchiquier-1]->piece)->couleur != self->couleur){
             insertionListeCasesAtteignables(Echiquier[xEchiquier+1][yEchiquier-1], self->casesAtteignables);
         }
@@ -257,7 +257,7 @@ void calculAtteignableFou(Piece* self, Case* Echiquier[8][8], Piece* Joueurs[2])
         yPiece++;
         yEchiquier++;
     }
-    if(Echiquier[xEchiquier-1][yEchiquier+1]->piece != NULL){
+    if(CaseExiste(xPiece-1,yPiece+1) && Echiquier[xEchiquier-1][yEchiquier+1]->piece != NULL){
         if((Echiquier[xEchiquier-1][yEchiquier+1]->piece)->couleur != self->couleur){
             insertionListeCasesAtteignables(Echiquier[xEchiquier-1][yEchiquier+1], self->casesAtteignables);
         }
@@ -276,7 +276,7 @@ void calculAtteignableFou(Piece* self, Case* Echiquier[8][8], Piece* Joueurs[2])
         yPiece--;
         yEchiquier--;
     }
-    if(Echiquier[xEchiquier-1][yEchiquier-1]->piece == NULL){
+    if(CaseExiste(xPiece-1,yPiece-1) && Echiquier[xEchiquier-1][yEchiquier-1]->piece == NULL){
         if((Echiquier[xEchiquier-1][yEchiquier-1]->piece)->couleur != self->couleur){
             insertionListeCasesAtteignables(Echiquier[xEchiquier-1][yEchiquier-1], self->casesAtteignables);
         }
@@ -441,18 +441,18 @@ void initialiseJoueur(Piece* Joueurs[2], Case* Echiquier[8][8]) {
     int i = 0;
     for (int couleur = NOIR; couleur < BLANC + 1; couleur++) {
         // Roi
-        Echiquier[i][3]->piece = creationPiece(ROI, couleur);
-        Echiquier[i][3]->piece->x = 3;
-        Echiquier[i][3]->piece->y = i;
+        Echiquier[i][4]->piece = creationPiece(ROI, couleur);
+        Echiquier[i][4]->piece->x = 4;
+        Echiquier[i][4]->piece->y = i;
         Joueurs[couleur] = Echiquier[i][3]->piece;
 
         // Reine
-        Echiquier[i][4]->piece = creationPiece(REINE, couleur);
-        Echiquier[i][4]->piece->x = 4;
-        Echiquier[i][4]->piece->y = i;
+        Echiquier[i][3]->piece = creationPiece(REINE, couleur);
+        Echiquier[i][3]->piece->x = 3;
+        Echiquier[i][3]->piece->y = i;
 
         // Circulaire Roi - Reine
-        Joueurs[couleur]->pieceSuivante = Echiquier[i][4]->piece;
+        Joueurs[couleur]->pieceSuivante = Echiquier[i][3]->piece;
         Joueurs[couleur]->piecePrecedente = Joueurs[couleur]->pieceSuivante;
         Joueurs[couleur]->piecePrecedente->piecePrecedente = Joueurs[couleur];
         Joueurs[couleur]->piecePrecedente->pieceSuivante = Joueurs[couleur];
