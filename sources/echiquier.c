@@ -68,12 +68,14 @@ void insertionListeCasesAtteignables(Case* caseAtteignable, ListeCasesAtteignabl
 
 void supressionListeCasesAtteignables(Case* caseRetirable, ListeCasesAtteignables* listeCasesAtteignables) {
     /*
-    Supprrime caseRetirable de listeCasesAtteignables en mettant à jour les liens, sans la détruire !
+    Supprrime caseRetirable de listeCasesAtteignables en mettant à jour les liens. Ne détruit pas caseRetirable !
     */
 
     if (caseRetirable == NULL) { exit(EXIT_FAILURE); }
     if (caseRetirable->caseAtteignablePrecedente == NULL) {
-        if (caseRetirable->caseAtteignableSuivante != NULL) {
+        if (caseRetirable->caseAtteignableSuivante == NULL) {
+            listeCasesAtteignables->tete = NULL;
+        } else {
             caseRetirable->caseAtteignableSuivante->caseAtteignablePrecedente = NULL;
         }
     } else {
