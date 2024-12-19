@@ -138,7 +138,6 @@ void afficheEchiquier(Case* Echiquier[8][8]) {
                 // Pour chaque case réelle de l'echiquier
                 Case* caseCourante = Echiquier[i][j];
                 Piece* contenuCase = caseCourante->piece;
-                caseCourante->couleur == BLANC ? printf("\033[47m") : printf("\033[40m"); // On active le fond de la bonne couleur
                 for (int column = 0; column < CELL_WIDTH; column++) {
                     if (caseCourante->estAtteignable == true) {
                         if (contenuCase != NULL) { // Une piece adverse est atteignable
@@ -149,10 +148,12 @@ void afficheEchiquier(Case* Echiquier[8][8]) {
                         
                     } else if (caseCourante->estSelectionne == true) { //! - ATTENTION ELSE IF
                         printf("\033[0;44m"); // On active le fond bleu
+                    } else {
+                        caseCourante->couleur == BLANC ? printf("\033[47m") : printf("\033[40m"); // On active le fond de la bonne couleur neutre
                     }
 
                     if ( (row == CELL_HEIGHT / 2) && (column == CELL_WIDTH / 2) && (contenuCase != NULL) ) { // Au centre de la case affichée
-                        contenuCase->couleur == BLANC ? printf("\033[37m%s\033[0m", contenuCase->forme) : printf("\033[32m%s\033[0m", contenuCase->forme); // TODO - Affiche la piece de la bonne couleur
+                        contenuCase->couleur == BLANC ? printf("\033[34m%s\033[0m", contenuCase->forme) : printf("\033[31m%s\033[0m", contenuCase->forme); // TODO - Affiche la piece de la bonne couleur
                     } else {
                         printf(" ");
                     }
@@ -174,16 +175,18 @@ void partieEchec() {
     
     // TODO - Proposer de charger une sauvegarde
     // TODO - Proposer de jouer contre un joueur ou contre une IA
+    // TODO - Tant que liste joueur de l'un ou de l'autre est différente de nulle (roi enlevé ou non)
+
 
     Case* Echiquier[8][8]; // Déclaration du Echiquier
     initialiseEchiquier(Echiquier); // Initialisation de l'echiquier (chaque case est vide, non selectionnée ni atteignable, et de la bonne couleur)
     Piece* Joueurs[2];
-    //TODO - initialiseJoueur(Joueurs[2]);; // Déclaration des pièces des 2 joueurs, le roi est stocké comme tete de liste circulaire dans le tableau, index 0 pour Noir et 1 pour Blanc
+    initialiseJoueur(Joueurs, Echiquier); // Déclaration des pièces des 2 joueurs, le roi est stocké comme tete de liste circulaire dans le tableau, index 0 pour Noir et 1 pour Blanc
     bool enEchec = false;
     int joueur = NOIR;
 
     while (!enEchec) {
-        afficheEchiquier(Echiquier); // TODO - Renommer car affiche aussi le menu (différent selon si piece ou coups)
+        afficheEchiquier(Echiquier);
         bool aJoue = false;
         Menu menu = PIECES;
         joueur = (joueur == NOIR) ? BLANC : NOIR; // On commute de joueur
@@ -194,7 +197,7 @@ void partieEchec() {
             char actionJoueur = getchar();
 
             if (actionJoueur == '\033') {
-                Case* caseCourante = pieceCourante->casesAtteignables->tete;
+                Case* caseCourante = pieceCourante->casesAtteignables->tete; //! - Ne verifie pas si cette liste est nulle
 
                 for (int i = 0; i < 2; i++) { actionJoueur = getchar(); }
 
@@ -207,11 +210,11 @@ void partieEchec() {
                 } else if (actionJoueur == 'D' || actionJoueur == 'C') { // Si c'est <- ou ->
                     if (menu == PIECES) {
                         if (actionJoueur == 'D') { // <-
-                            pieceCourante = pieceCourante->piecePrecedente;
+                            pieceCourante = pieceCourante->piecePrecedente; 
                         } else { // ->
                             pieceCourante = pieceCourante->pieceSuivante;
                         }
-                        //TODO - actualiseCasesAtteignables(pieceCourante, Echiquier);
+                        actualiseCasesAtteignables(pieceCourante->piecePrecedente, pieceCourante, Echiquier, Joueurs);
                         afficheEchiquier(Echiquier);
 
                     } else { // menu == COUPS
