@@ -54,6 +54,8 @@ bool suisjeAtteignable(int xCible, int yCible, Case* Echiquier[8][8]);
 bool leaveRoi(Piece* self, int xCible, int yCible, Piece* Joueurs[2], Case* Echiquier[8][8]);
 
 // Opération sur les joueurs
+void insertionPieceJoueur(Piece* pieceAjoutable, Piece* Joueurs[2]);
+void supressionPieceJoueur(Piece* pieceAjoutable, Piece* Joueurs[2]);
 void initialiseJoueur(Piece* Joueurs[2]);
 
 #endif // PIECE_H
