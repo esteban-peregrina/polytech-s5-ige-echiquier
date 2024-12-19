@@ -42,7 +42,7 @@ Piece* creationPiece(Role role, int couleur, int x, int y) {
     pieceCree->pieceSuivante = NULL;
     pieceCree->piecePrecedente = NULL;
 
-    pieceCree->casesAtteignables = NULL;
+    pieceCree->casesAtteignables = creationListeCasesAtteignables();
 
     return pieceCree;
 }
@@ -54,6 +54,7 @@ void destructionPiece(Piece* piece) {
     */
 
     if (piece == NULL) { exit(EXIT_FAILURE); } // On ne devrait pas passer de Piece vide à cette fonction
+    destructionListeCasesAtteignables(piece->casesAtteignables);
     free(piece);
 }
 
