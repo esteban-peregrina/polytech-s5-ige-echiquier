@@ -33,16 +33,57 @@ void destructionCase(Case* Case) { // Nécessaire ?
     free(Case);
 }
 
+ListeCasesAtteignables* creationListeCasesAtteignables() {
+    /*
+    Renvoie l'adresse de la ListeCasesAtteignable créée.
+    */
+
+    ListeCasesAtteignables* nouvelleListe = NULL;
+    nouvelleListe = malloc(sizeof(ListeCasesAtteignables));
+    if (nouvelleListe == NULL) { exit(EXIT_FAILURE); }
+
+    return nouvelleListe;
+}
+
+void destructionListeCasesAtteignables(ListeCasesAtteignables* listeObsolete) {
+    /*
+    Libère la ListeCasesAtteignables pointée.  
+    */
+
+    if (listeObsolete == NULL) { exit(EXIT_FAILURE); } // On ne devrait pas passer de ListeCasesAtteignables vide à cette fonction
+    free(listeObsolete);
+}
+
 void insertionListeCasesAtteignables(Case* caseAtteignable, ListeCasesAtteignables* listeCasesAtteignables) {
     /*
     Insère caseAtteignable en tete de listeCasesAtteignables
     */
 
     Case* temp = listeCasesAtteignables->tete;
-    if (temp != NULL) { temp->caseAtteignablePrecedente = NULL; }
+    if (temp != NULL) { temp->caseAtteignablePrecedente = caseAtteignable; }
     listeCasesAtteignables->tete = caseAtteignable;
     caseAtteignable->caseAtteignableSuivante = temp;
     caseAtteignable->caseAtteignablePrecedente = NULL;
+}
+
+void supressionListeCasesAtteignables(Case* caseRetirable, ListeCasesAtteignables* listeCasesAtteignables) {
+    /*
+    Supprrime caseRetirable de listeCasesAtteignables en mettant à jour les liens, sans la détruire !
+    */
+
+    if (caseRetirable == NULL) { exit(EXIT_FAILURE); }
+    if (caseRetirable->caseAtteignablePrecedente == NULL) {
+        if (caseRetirable->caseAtteignableSuivante != NULL) {
+            caseRetirable->caseAtteignableSuivante->caseAtteignablePrecedente = NULL;
+        }
+    } else {
+        if (caseRetirable->caseAtteignableSuivante == NULL) {
+            caseRetirable->caseAtteignablePrecedente->caseAtteignableSuivante = NULL;
+        } else {
+            caseRetirable->caseAtteignablePrecedente->caseAtteignableSuivante = caseRetirable->caseAtteignableSuivante;
+            caseRetirable->caseAtteignableSuivante->caseAtteignablePrecedente = caseRetirable->caseAtteignablePrecedente;
+        }
+    }
 }
 
 void initialiseEchiquier(Case* Echiquier[8][8]) {
