@@ -5,7 +5,7 @@
 #include ".././headers/echiquier.h"
 #include ".././headers/piece.h"
 
-Piece* creationPiece(Role role, int couleur, int x, int y) {
+Piece* creationPiece(Role role, int couleur) {
     /*
     Renvoie l'adresse de la Piece créée, initialisée avec le role specifié.
     */
@@ -36,8 +36,8 @@ Piece* creationPiece(Role role, int couleur, int x, int y) {
         pieceCree->calculAtteignable = calculAtteignablePion;
     }
     pieceCree->couleur = couleur;
-    pieceCree->x = x;
-    pieceCree->y = y;
+    pieceCree->x = 0;
+    pieceCree->y = 0;
 
     pieceCree->pieceSuivante = NULL;
     pieceCree->piecePrecedente = NULL;
