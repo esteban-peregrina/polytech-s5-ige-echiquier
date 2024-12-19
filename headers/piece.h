@@ -56,6 +56,6 @@ bool leaveRoi(Piece* self, int xCible, int yCible, Piece* Joueurs[2], Case* Echi
 // Opération sur les joueurs
 void insertionPieceJoueur(Piece* pieceAjoutable, Piece* Joueurs[2]);
 void supressionPieceJoueur(Piece* pieceAjoutable, Piece* Joueurs[2]);
-void initialiseJoueur(Piece* Joueurs[2]);
+void initialiseJoueur(Piece* Joueurs[2], Case* Echiquier[8][8]);
 
 #endif // PIECE_H
