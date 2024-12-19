@@ -11,15 +11,14 @@ int main() {
     Case* Echiquier[8][8]; // Déclaration du Echiquier
     initialiseEchiquier(Echiquier); // Initialisation du Echiquier (chaque case est vide, non selectionnée ni atteignable, et de la bonne couleur)
     Echiquier[0][1]->estAtteignable = true;
-    Echiquier[1][1]->estAtteignable = true;
-    Echiquier[1][0]->estAtteignable = true;
+    Echiquier[3][1]->estAtteignable = true;
     Echiquier[0][0]->estSelectionne = true;
 
-    Echiquier[0][0]->piece = creationPiece(FOU, BLANC, 0,0);
+    Piece* Joueurs[2];
+    initialiseJoueur(Joueurs, Echiquier);
 
     afficheEchiquier(Echiquier);
 
-    destructionPiece(Echiquier[0][0]->piece);
     videEchiquier(Echiquier);
 
     return 0;
