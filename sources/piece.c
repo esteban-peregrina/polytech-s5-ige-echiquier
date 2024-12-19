@@ -383,3 +383,15 @@ bool leaveRoi(Piece* self, int x, int y, Piece* Joueurs[2], Case* Echiquier[8][8
         return res;                                                                        //Return true si le déplacement decouvre notre roi et false sinon
     }                                               
 }
+
+void actualiseCasesAtteignables(Piece* piecePrecedente, Piece* pieceCourante, Case* Echiquier[8][8], Piece* Joueurs[2]) {
+    /*
+    Vide la piecePrecedente->casesAtteignables et rempli pieceSuivante->casesAtteignables.
+    */
+
+    if (piecePrecedente == NULL || pieceCourante == NULL) { exit(EXIT_FAILURE); }
+    while(piecePrecedente->casesAtteignables->tete != NULL) {
+        supressionListeCasesAtteignables(piecePrecedente->casesAtteignables->tete, piecePrecedente->casesAtteignables);
+    }
+    pieceCourante->calculAtteignable(pieceCourante, Echiquier, Joueurs);
+}
