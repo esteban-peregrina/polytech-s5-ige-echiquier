@@ -21,6 +21,7 @@ typedef struct Case {
 
 typedef struct ListeCasesAtteignables {
     Case* tete;
+    //TODO - Ajouter attribut longueur pour mettre en place la circularité (deux premieres insertions)
 } ListeCasesAtteignables;
 
 // Déclaration et suppression de cases
