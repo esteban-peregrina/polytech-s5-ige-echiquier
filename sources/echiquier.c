@@ -1,7 +1,10 @@
 #include <stdbool.h>
 #include <stdio.h>
+#include <termios.h>
+#include <unistd.h>
 #include <stdlib.h>
 
+#include ".././headers/lecture.h"
 #include ".././headers/piece.h"
 #include ".././headers/echiquier.h"
 
@@ -175,8 +178,6 @@ void partieEchec() {
     
     // TODO - Proposer de charger une sauvegarde
     // TODO - Proposer de jouer contre un joueur ou contre une IA
-    // TODO - Tant que liste joueur de l'un ou de l'autre est différente de nulle (roi enlevé ou non)
-
 
     Case* Echiquier[8][8]; // Déclaration du Echiquier
     initialiseEchiquier(Echiquier); // Initialisation de l'echiquier (chaque case est vide, non selectionnée ni atteignable, et de la bonne couleur)
@@ -191,53 +192,57 @@ void partieEchec() {
         Menu menu = PIECES;
         joueur = (joueur == NOIR) ? BLANC : NOIR; // On commute de joueur
         Piece* pieceCourante = Joueurs[joueur]; // On commence par les blancs (comme par hasard)
-        
+        Case* caseCourante = pieceCourante->casesAtteignables->tete; //! - Ne verifie pas si cette liste est nulle
+
         while (!aJoue) {
-            printf("Sélectionnez une pièce à déplacer, puis validez avec Entrée");
-            char actionJoueur = getchar();
+            // Sauvegarder les paramètres originaux du terminal
+            struct termios orig_termios;
+            tcgetattr(STDIN_FILENO, &orig_termios);
 
-            if (actionJoueur == '\033') {
-                Case* caseCourante = pieceCourante->casesAtteignables->tete; //! - Ne verifie pas si cette liste est nulle
+            // Configurer le terminal en mode "raw"
+            set_terminal_raw_mode();
 
-                for (int i = 0; i < 2; i++) { actionJoueur = getchar(); }
+            printf("Sélectionnez une pièce à jouer à l'aide des touches directionnelles (appuyez sur 'q' pour quitter)\n");
 
-                if (menu != COUPS && actionJoueur == 'B') { // La pièce est sélectionnée
+            char actionJoueur;
+            if (read(STDIN_FILENO, &actionJoueur, 1) != 1) { exit(EXIT_FAILURE); } // Écrit l'entrée utilisateur lue dans &actionJoueur et vérifie que cela à fonctionné
+            
+            if (menu == PIECES) {
+                if (actionJoueur == 'b') { // La pièce est sélectionnée
+                    caseCourante = pieceCourante->casesAtteignables->tete;  //! - Ne verifie pas si cette liste est nulle
                     caseCourante->estSelectionne = true;
                     menu = COUPS;
-                } else if (menu != PIECES && actionJoueur == 'A') { // On retourne au choix des pièces
+                } else if (actionJoueur == 'd') { // <-
+                    pieceCourante = pieceCourante->piecePrecedente; 
+                } else if (actionJoueur == 'c') { // ->
+                    pieceCourante = pieceCourante->pieceSuivante;
+                }
+                actualiseCasesAtteignables(pieceCourante->piecePrecedente, pieceCourante, Echiquier, Joueurs);
+                afficheEchiquier(Echiquier);
+                
+            } else { //menu == COUPS
+                if (menu != PIECES && actionJoueur == 'a') { // On retourne au choix des pièces
                     caseCourante->estSelectionne = false;
                     menu = PIECES;
-                } else if (actionJoueur == 'D' || actionJoueur == 'C') { // Si c'est <- ou ->
-                    if (menu == PIECES) {
-                        if (actionJoueur == 'D') { // <-
-                            pieceCourante = pieceCourante->piecePrecedente; 
-                        } else { // ->
-                            pieceCourante = pieceCourante->pieceSuivante;
-                        }
-                        actualiseCasesAtteignables(pieceCourante->piecePrecedente, pieceCourante, Echiquier, Joueurs);
-                        afficheEchiquier(Echiquier);
+                } else if (actionJoueur == 'd') { // <-
+                    caseCourante->estSelectionne = false;
+                    caseCourante = caseCourante->caseAtteignablePrecedente;
+                    caseCourante->estSelectionne = true;
+                } else if (actionJoueur == 'c') { // ->
+                    caseCourante->estSelectionne = false;
+                    caseCourante = caseCourante->caseAtteignableSuivante;
+                    caseCourante->estSelectionne = true;
+                } else if (actionJoueur == '\n') { // Le coup est validé
+                    // TODO - Mettre à jour les coordonnées de la pièce
+                    // TODO - Détruire la pièce ennemie si il y en a une (suppression de la liste des pièces de l'adversaire) ON SUPPOSE QUE LES CASES ATTEIGNABLES SONT VALIDES
 
-                    } else { // menu == COUPS
-                        if (actionJoueur == 'D') { // <-
-                            caseCourante->estSelectionne = false;
-                            caseCourante = caseCourante->caseAtteignablePrecedente;
-                            caseCourante->estSelectionne = true;
-                        } else { // ->
-                            caseCourante->estSelectionne = false;
-                            caseCourante = caseCourante->caseAtteignableSuivante;
-                            caseCourante->estSelectionne = true;
-                        }
-                        afficheEchiquier(Echiquier);
-                    }
+                    aJoue = true;
+                    afficheEchiquier(Echiquier);
                 }
-                
-            } else if (menu == COUPS && actionJoueur == '\n') { // Le coup est validé
-                // TODO - Mettre à jour les coordonnées de la pièce
-                // TODO - Détruire la pièce ennemie si il y en a une (suppression de la liste des pièces de l'adversaire) ON SUPPOSE QUE LES CASES ATTEIGNABLES SONT VALIDES
-
-                aJoue = true;
             }
+
+            // Rétablir les paramètres originaux
+            reset_terminal_mode(&orig_termios);
         }
     }
-
 }
