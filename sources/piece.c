@@ -41,9 +41,7 @@ Piece* creationPiece(Role role, int couleur) {
     pieceCree->x = 0;
     pieceCree->y = 0;
 
-    for (int i = 0; i < 64; i++) {
-        pieceCree->casesAtteignables[i] = NULL;
-    }
+    for (int i = 0; i < 64; i++) { pieceCree->casesAtteignables[i] = NULL; }
 
     pieceCree->estSelectionnee = false; 
 
@@ -376,6 +374,15 @@ bool leaveRoi(Piece* self, int x, int y, Piece* Joueurs[2], Case* Echiquier[8][8
     }                                               
 }
 
+void actualiseCasesAtteignables(Case* Echiquier[8][8], Piece* Roi, Piece* pieceActualisable) {
+    /*
+    Vide puis remplis le tableau des cases atteignables de pieceActualisable.
+    */
+
+    for (int i = 0; i < 64; i++) { pieceActualisable->casesAtteignables[i] = NULL; }
+    pieceActualisable->calculAtteignable(Echiquier, Roi, pieceActualisable); // TODO - Update signatures
+}
+
 void initialiseJoueur(Case* Echiquier[8][8], Piece* Joueur[16], int couleur) {
     /*
     Initialise les pièces de chacun des joueurs.
@@ -392,6 +399,7 @@ void initialiseJoueur(Case* Echiquier[8][8], Piece* Joueur[16], int couleur) {
             rangeePions = 6;
             break;
     }
+
     // Roi
     Echiquier[rangeePromotion][4]->piece = creationPiece(ROI, couleur);
     Echiquier[rangeePromotion][4]->piece->x = rangeePromotion;
