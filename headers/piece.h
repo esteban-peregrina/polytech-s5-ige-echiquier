@@ -14,27 +14,22 @@ typedef enum {
 } Role;
 
 typedef struct Case Case; // Pour que le compilateur les reconnaissent
-typedef struct ListeCasesAtteignables ListeCasesAtteignables; // Pour que le compilateur les reconnaissent
 
 typedef struct Piece {
-    Role role;                   // Utile ?
+    Role role;                   // Évite d'utiliser l'attribut forme dans les conditions 
 
-    char* forme;
+    char* forme;                 
     int couleur;                 // Couleur de la piece
     int x;
-    int y;
+    int y;      
 
-    struct Piece* pieceSuivante; 
-    struct Piece* piecePrecedente;        
+    void (*calculAtteignable)(struct Piece* self, Case* Plateau[8][8], struct Piece* Joueur[16]);
 
-    void (*calculAtteignable)(struct Piece* self, Case* Plateau[8][8], struct Piece* Joueurs[2]);
-    ListeCasesAtteignables* casesAtteignables;
+    struct Case* casesAtteignables[64];
+    
+    bool estSelectionnee;
 
 } Piece;
-
-typedef struct ListePiecesJoueur {
-    Piece* tete;
-} ListePiecesJoueur;
 
 // Déclaration et suppresion de pièces
 Piece* creationPiece(Role role, int couleur);
