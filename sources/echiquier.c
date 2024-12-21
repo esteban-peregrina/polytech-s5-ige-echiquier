@@ -149,7 +149,7 @@ void afficheEchiquier(Case* Echiquier[8][8]) {
                             printf("\033[0;42m"); // On active le fond vert
                         }
                         
-                    } else if (caseCourante->estSelectionne == true) { //! - ATTENTION ELSE IF
+                    } else if ( (caseCourante->piece != NULL) && (caseCourante->piece->estSelectionnee == true) ) {
                         printf("\033[0;44m"); // On active le fond bleu
                     } else {
                         if (i%2 == 0) {
