@@ -7,7 +7,7 @@
 
 Piece* creationPiece(Role role, int couleur) {
     /*
-    Renvoie l'adresse de la Piece créée, initialisée avec le role specifié.
+    Renvoie l'adresse de la Piece créée, initialisée avec le role et la couleur specifié.
     */
 
     Piece* pieceCree = NULL;
@@ -39,10 +39,9 @@ Piece* creationPiece(Role role, int couleur) {
     pieceCree->x = 0;
     pieceCree->y = 0;
 
-    pieceCree->pieceSuivante = NULL;
-    pieceCree->piecePrecedente = NULL;
-
-    pieceCree->casesAtteignables = creationListeCasesAtteignables();
+    for (int i = 0; i < 64; i++) {
+        pieceCree->casesAtteignables[i] = NULL;
+    }
 
     return pieceCree;
 }
@@ -438,6 +437,8 @@ void initialiseJoueur(Piece* Joueurs[2], Case* Echiquier[8][8]) {
     /*
     Initialise les pièces de chacun des joueurs.
     */
+
+    //TODO - switch pour chaque coordonnees
     int i = 0;
     for (int couleur = NOIR; couleur < BLANC + 1; couleur++) {
         // Roi
