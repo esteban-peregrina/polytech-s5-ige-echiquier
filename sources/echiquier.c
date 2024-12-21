@@ -152,7 +152,11 @@ void afficheEchiquier(Case* Echiquier[8][8]) {
                     } else if (caseCourante->estSelectionne == true) { //! - ATTENTION ELSE IF
                         printf("\033[0;44m"); // On active le fond bleu
                     } else {
-                        caseCourante->couleur == BLANC ? printf("\033[47m") : printf("\033[40m"); // On active le fond de la bonne couleur neutre
+                        if (i%2 == 0) {
+                            Echiquier[i][j] = (j%2 == 0) ?  printf("\033[47m") : printf("\033[40m");;
+                        } else {
+                            Echiquier[i][j] = (j%2 == 0) ?  printf("\033[40m") : printf("\033[47m");;
+                        }
                     }
 
                     if ( (row == CELL_HEIGHT / 2) && (column == CELL_WIDTH / 2) && (contenuCase != NULL) ) { // Au centre de la case affichée
