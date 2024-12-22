@@ -17,78 +17,10 @@ Case* creationCase(int couleur) {
     caseCree = malloc(sizeof(Case));
     if (caseCree == NULL) { exit(EXIT_FAILURE); }
     
-    caseCree->couleur = couleur;
-    caseCree->estSelectionne = false;
     caseCree->estAtteignable = false;
-
-    caseCree->caseAtteignableSuivante = NULL;
-    caseCree->caseAtteignablePrecedente = NULL;
+    caseCree->estSelectionnee = false;
 
     return caseCree;
-}
-
-void destructionCase(Case* Case) { // Nécessaire ?
-    /*
-    Libère la case pointée.  
-    */
-
-    if (Case == NULL) { exit(EXIT_FAILURE); } // On ne devrait pas passer de Case vide à cette fonction
-    free(Case);
-}
-
-ListeCasesAtteignables* creationListeCasesAtteignables() {
-    /*
-    Renvoie l'adresse de la ListeCasesAtteignable créée.
-    */
-
-    ListeCasesAtteignables* nouvelleListe = NULL;
-    nouvelleListe = malloc(sizeof(ListeCasesAtteignables));
-    if (nouvelleListe == NULL) { exit(EXIT_FAILURE); }
-
-    return nouvelleListe;
-}
-
-void destructionListeCasesAtteignables(ListeCasesAtteignables* listeObsolete) {
-    /*
-    Libère la ListeCasesAtteignables pointée.  
-    */
-
-    if (listeObsolete == NULL) { exit(EXIT_FAILURE); } // On ne devrait pas passer de ListeCasesAtteignables vide à cette fonction
-    free(listeObsolete);
-}
-
-void insertionListeCasesAtteignables(Case* caseAtteignable, ListeCasesAtteignables* listeCasesAtteignables) {
-    /*
-    Insère caseAtteignable en tete de listeCasesAtteignables
-    */
-
-    Case* temp = listeCasesAtteignables->tete;
-    if (temp != NULL) { temp->caseAtteignablePrecedente = caseAtteignable; }
-    listeCasesAtteignables->tete = caseAtteignable;
-    caseAtteignable->caseAtteignableSuivante = temp;
-    caseAtteignable->caseAtteignablePrecedente = NULL;
-}
-
-void supressionListeCasesAtteignables(Case* caseRetirable, ListeCasesAtteignables* listeCasesAtteignables) {
-    /*
-    Supprrime caseRetirable de listeCasesAtteignables en mettant à jour les liens. Ne détruit pas caseRetirable !
-    */
-
-    if (caseRetirable == NULL) { exit(EXIT_FAILURE); }
-    if (caseRetirable->caseAtteignablePrecedente == NULL) {
-        if (caseRetirable->caseAtteignableSuivante == NULL) {
-            listeCasesAtteignables->tete = NULL;
-        } else {
-            caseRetirable->caseAtteignableSuivante->caseAtteignablePrecedente = NULL;
-        }
-    } else {
-        if (caseRetirable->caseAtteignableSuivante == NULL) {
-            caseRetirable->caseAtteignablePrecedente->caseAtteignableSuivante = NULL;
-        } else {
-            caseRetirable->caseAtteignablePrecedente->caseAtteignableSuivante = caseRetirable->caseAtteignableSuivante;
-            caseRetirable->caseAtteignableSuivante->caseAtteignablePrecedente = caseRetirable->caseAtteignablePrecedente;
-        }
-    }
 }
 
 void initialiseEchiquier(Case* Echiquier[8][8]) {
@@ -185,18 +117,22 @@ void partieEchec() {
 
     Case* Echiquier[8][8]; // Déclaration du Echiquier
     initialiseEchiquier(Echiquier); // Initialisation de l'echiquier (chaque case est vide, non selectionnée ni atteignable, et de la bonne couleur)
-    Piece* Joueurs[2];
-    initialiseJoueur(Joueurs, Echiquier); // Déclaration des pièces des 2 joueurs, le roi est stocké comme tete de liste circulaire dans le tableau, index 0 pour Noir et 1 pour Blanc
+    Piece* Blancs[16], Noirs[16];
+    initialiseJoueur(Echiquier, Blancs, BLANC); 
+    initialiseJoueur(Echiquier, Noirs, NOIR);
     bool enEchec = false;
-    int joueur = NOIR;
+    Piece** joueurCourant = Blancs; // Les blancs commences
 
     while (!enEchec) {
-        afficheEchiquier(Echiquier);
+        for (int i = 0; i < 16; i++) { actualiseCasesAtteignables(Echiquier, joueurCourant[4], joueurCourant[i]); } // On actualise chaque pièce du joueur
+
         bool aJoue = false;
-        Menu menu = PIECES;
-        joueur = (joueur == NOIR) ? BLANC : NOIR; // On commute de joueur
-        Piece* pieceCourante = Joueurs[joueur]; // On commence par les blancs (comme par hasard)
-        Case* caseCourante = pieceCourante->casesAtteignables->tete; //! - Ne verifie pas si cette liste est nulle
+        Menu menu = PIECES; // On commence par sélectionner une pièce
+        int indicePieceCourante = 0;
+        Piece* pieceCourante; // Une fois initialisé, les éléments du tableau ne sont jamais nul.
+        int indiceCaseCourante = 0;
+        Case* caseCourante;
+        // ! - Penser à free les cases et les pieces
 
         while (!aJoue) {
             // Sauvegarder les paramètres originaux du terminal
@@ -213,29 +149,30 @@ void partieEchec() {
             
             if (menu == PIECES) {
                 if (actionJoueur == 'b') { // La pièce est sélectionnée
-                    caseCourante = pieceCourante->casesAtteignables->tete;  //! - Ne verifie pas si cette liste est nulle
-                    caseCourante->estSelectionne = true;
+                    indiceCaseCourante = 0;
+                    caseCourante = pieceCourante->casesAtteignables[indiceCaseCourante];  //! - Ne verifie pas si ce premier élément est nul
+                    caseCourante->estSelectionnee = true;
+                    pieceCourante->estSelectionnee = true;
                     menu = COUPS;
                 } else if (actionJoueur == 'd') { // <-
-                    pieceCourante = pieceCourante->piecePrecedente; 
+                    pieceCourante = joueurCourant[indicePieceCourante--]; //! - If tout au bout ou piece capturée (~= NULL)
                 } else if (actionJoueur == 'c') { // ->
-                    pieceCourante = pieceCourante->pieceSuivante;
+                    pieceCourante = joueurCourant[indicePieceCourante++]; //! - If tout au bout ou piece capturée (~= NULL)
                 }
-                actualiseCasesAtteignables(pieceCourante->piecePrecedente, pieceCourante, Echiquier, Joueurs);
                 afficheEchiquier(Echiquier);
                 
             } else { //menu == COUPS
-                if (menu != PIECES && actionJoueur == 'a') { // On retourne au choix des pièces
-                    caseCourante->estSelectionne = false;
+                if (menu != PIECES && actionJoueur == 'a') { // On retourne au choix des pièces (pas besoin de réinitialiser l'indice)
+                    caseCourante->estSelectionnee = false;
                     menu = PIECES;
                 } else if (actionJoueur == 'd') { // <-
-                    caseCourante->estSelectionne = false;
-                    caseCourante = caseCourante->caseAtteignablePrecedente;
-                    caseCourante->estSelectionne = true;
+                    caseCourante->estSelectionnee = false;
+                    caseCourante = pieceCourante->casesAtteignables[indiceCaseCourante--]; //! - If tout au bout ou case NULL
+                    caseCourante->estSelectionnee = true;
                 } else if (actionJoueur == 'c') { // ->
-                    caseCourante->estSelectionne = false;
-                    caseCourante = caseCourante->caseAtteignableSuivante;
-                    caseCourante->estSelectionne = true;
+                    caseCourante->estSelectionnee = false;
+                    caseCourante = pieceCourante->casesAtteignables[indiceCaseCourante++]; //! - If tout au bout ou case NULL
+                    caseCourante->estSelectionnee = true;
                 } else if (actionJoueur == '\n') { // Le coup est validé
                     // TODO - Mettre à jour les coordonnées de la pièce
                     // TODO - Détruire la pièce ennemie si il y en a une (suppression de la liste des pièces de l'adversaire) ON SUPPOSE QUE LES CASES ATTEIGNABLES SONT VALIDES
