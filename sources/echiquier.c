@@ -60,7 +60,7 @@ void afficheEchiquier(Case* Echiquier[8][8]) {
     const int CELL_HEIGHT = 3; // Impair pour avoir un milieu
     const int CELL_WIDTH = CELL_HEIGHT * 2 + 1; // Le ratio largeur:hauteur ASCII est 1:2 mais j'ai besoin d'un centre
     
-    printf("\033[H\033[J"); // Vide le terminal
+   //printf("\033[H\033[J"); // Vide le terminal
     printf("Echiquier :\n");
 
     for (int l = 0; l < 8 * CELL_WIDTH + 4; l++) {printf("\033[46m ");} // Bordure supérieure
@@ -143,26 +143,48 @@ void partieEchec() {
             // Configurer le terminal en mode "raw"
             set_terminal_raw_mode();
 
-            printf("Sélectionnez une pièce à jouer à l'aide des touches directionnelles (appuyez sur 'q' pour quitter)\n");
+            printf("Sélectionnez une pièce à jouer à l'aide des touches directionnelles (appuyez sur 'q' pour quitter) :");
 
             char actionJoueur;
             if (read(STDIN_FILENO, &actionJoueur, 1) != 1) { exit(EXIT_FAILURE); } // Écrit l'entrée utilisateur lue dans &actionJoueur et vérifie que cela à fonctionné
-            
+
             if (menu == PIECES) {
-                if (actionJoueur == 'b') { // La pièce est sélectionnée
-                    indiceCaseCourante = 0;
-                    caseCourante = pieceCourante->casesAtteignables[indiceCaseCourante];  //! - Ne verifie pas si ce premier élément est nul
-                    caseCourante->estSelectionnee = true;
-                    pieceCourante->estSelectionnee = true;
-                    menu = COUPS;
-                } else if (actionJoueur == 'd') { // <-
-                    pieceCourante = joueurCourant[indicePieceCourante--]; //! - If tout au bout ou piece capturée (~= NULL)
-                } else if (actionJoueur == 'c') { // ->
-                    pieceCourante = joueurCourant[indicePieceCourante++]; //! - If tout au bout ou piece capturée (~= NULL)
+                if (actionJoueur == '\033') {
+                    char seq[2];
+                    if (read(STDIN_FILENO, &seq[0], 1) != 1 || read(STDIN_FILENO, &seq[1], 1) != 1) { exit(EXIT_FAILURE); }
+
+                    if (seq[0] == '[') {
+                        switch (seq[1]) {
+                            case 'A':
+                                printf("Flèche Haut\n");
+                                break;
+                            case 'B': // Flèche bas
+                                printf("Flèche bas\n");
+                                indiceCaseCourante = 0;
+                                caseCourante = pieceCourante->casesAtteignables[indiceCaseCourante];  //! - Ne verifie pas si ce premier élément est nul
+                                caseCourante->estSelectionnee = true;
+                                pieceCourante->estSelectionnee = true;
+                                menu = COUPS;
+                                break;
+                            case 'C': // Flèche droite
+                                printf("Flèche droite\n");
+                                pieceCourante = joueurCourant[indicePieceCourante++]; //! - If tout au bout ou piece capturée (~= NULL)
+                                break;
+                            case 'D': // Flèche gauche
+                                printf("Flèche gauche\n");
+                                pieceCourante = joueurCourant[indicePieceCourante--]; //! - If tout au bout ou piece capturée (~= NULL)
+                                break;
+                            default:
+                                printf("Caractère incorrect\n");
+                                break;
+                        }
+                    } else {
+                        printf("Autre caractère spécial\n");
+                    }
                 }
                 afficheEchiquier(Echiquier);
-                
             } else { //menu == COUPS
+                /*
                 if (menu != PIECES && actionJoueur == 'a') { // On retourne au choix des pièces (pas besoin de réinitialiser l'indice)
                     caseCourante->estSelectionnee = false;
                     menu = PIECES;
@@ -181,6 +203,7 @@ void partieEchec() {
                     aJoue = true;
                     afficheEchiquier(Echiquier);
                 }
+                */
             }
 
             // Rétablir les paramètres originaux
