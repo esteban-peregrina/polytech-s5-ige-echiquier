@@ -23,7 +23,7 @@ typedef struct Piece {
     int x;
     int y;      
 
-    void (*calculAtteignable)(Case* Echiquier[8][8], struct Piece* Roi, struct Piece* self);
+    void (*calculAtteignable)(Case* Echiquier[8][8], struct Piece* joueurAdverse[16], struct Piece* roiAllie, struct Piece* self);
 
     struct Case* casesAtteignables[64];
     
@@ -36,19 +36,15 @@ typedef struct Piece {
 Piece* creationPiece(Role role, int couleur);
 
 // Opérations sur les pièces
-void calculAtteignablePion(Case* Echiquier[8][8], Piece* Roi, Piece* self);
-void calculAtteignableTour(Case* Echiquier[8][8], Piece* Roi, Piece* self);
-void calculAtteignableCavalier(Case* Echiquier[8][8], Piece* Roi, Piece* self);
-void calculAtteignableFou(Case* Echiquier[8][8], Piece* Roi, Piece* self);
-void calculAtteignableReine(Case* Echiquier[8][8], Piece* Roi, Piece* self);
-void calculAtteignableRoi(Case* Echiquier[8][8], Piece* Roi, Piece* self);
+void calculAtteignablePion(Case* Echiquier[8][8], Piece* joueurAdverse[16], Piece* roiAllie, Piece* self);
+void calculAtteignableCavalier(Case* Echiquier[8][8], Piece* joueurAdverse[16], Piece* roiAllie, Piece* self);
+void calculAtteignableTour(Case* Echiquier[8][8], Piece* joueurAdverse[16], Piece* roiAllie, Piece* self);
+void calculAtteignableFou(Case* Echiquier[8][8], Piece* joueurAdverse[16], Piece* roiAllie, Piece* self);
+void calculAtteignableReine(Case* Echiquier[8][8], Piece* joueurAdverse[16], Piece* roiAllie, Piece* self);
+void calculAtteignableRoi(Case* Echiquier[8][8], Piece* joueurAdverse[16], Piece* roiAllie, Piece* self);
 
 void insertionCasesAtteignables(Piece* pieceCourante, Case* caseAtteignable);
-void actualiseCasesAtteignables(Case* Echiquier[8][8], Piece* Roi, Piece* pieceActualisable);
-
-// Opérations sur le Roi
-bool suisjeAtteignable(int xCible, int yCible, Case* Echiquier[8][8]);
-bool leaveRoi(Piece* self, int xCible, int yCible, Piece* Joueurs[2], Case* Echiquier[8][8]);
+void actualiseCasesAtteignables(Case* Echiquier[8][8], Piece* joueurAdverse[16], Piece* Roi, Piece* pieceActualisable);
 
 // Opération sur les joueurs
 void initialiseJoueur(Case* Echiquier[8][8], Piece* Joueur[16], int couleur);
