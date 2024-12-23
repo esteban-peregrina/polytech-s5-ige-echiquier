@@ -399,30 +399,30 @@ void initialiseJoueur(Case* Echiquier[8][8], Piece* Joueur[16], int couleur) {
     Echiquier[rangeePromotion][1]->piece = creationPiece(CAVALIER, couleur);
     Echiquier[rangeePromotion][1]->piece->x = rangeePromotion;
     Echiquier[rangeePromotion][1]->piece->y = 1;
-    Joueur[5] = Echiquier[rangeePromotion][1]->piece;
+    Joueur[1] = Echiquier[rangeePromotion][1]->piece;
 
     Echiquier[rangeePromotion][6]->piece = creationPiece(CAVALIER, couleur);
     Echiquier[rangeePromotion][6]->piece->x = rangeePromotion;
     Echiquier[rangeePromotion][6]->piece->y = 6;
-    Joueur[5] = Echiquier[rangeePromotion][6]->piece;
+    Joueur[6] = Echiquier[rangeePromotion][6]->piece;
 
     // Tours
     Echiquier[rangeePromotion][0]->piece = creationPiece(TOUR, couleur);
     Echiquier[rangeePromotion][0]->piece->x = rangeePromotion;
     Echiquier[rangeePromotion][0]->piece->y = 0;
-    Joueur[5] = Echiquier[rangeePromotion][0]->piece;
+    Joueur[0] = Echiquier[rangeePromotion][0]->piece;
 
     Echiquier[rangeePromotion][7]->piece = creationPiece(TOUR, couleur);
     Echiquier[rangeePromotion][7]->piece->x = rangeePromotion;
     Echiquier[rangeePromotion][7]->piece->y = 7;
-    Joueur[5] = Echiquier[rangeePromotion][7]->piece;
+    Joueur[7] = Echiquier[rangeePromotion][7]->piece;
 
     // Pions
     for (int colonne = 0; colonne < 8; colonne++) {
         Echiquier[rangeePions][colonne]->piece = creationPiece(PION, couleur);
         Echiquier[rangeePions][colonne]->piece->x = rangeePions;
         Echiquier[rangeePions][colonne]->piece->y = colonne;
-        Joueur[7 + colonne] = Echiquier[rangeePromotion][5]->piece;
+        Joueur[8 + colonne] = Echiquier[rangeePions][colonne]->piece;
     }
 }
 
