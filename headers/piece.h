@@ -48,5 +48,6 @@ void actualiseCasesAtteignables(Case* Echiquier[8][8], Piece* joueurAdverse[16],
 
 // Opération sur les joueurs
 void initialiseJoueur(Case* Echiquier[8][8], Piece* Joueur[16], int couleur);
+void videJoueur(Piece* Joueur[16]); // Libère les pièces d'un joueur
 
 #endif // PIECE_H
