@@ -18,7 +18,6 @@ typedef struct Case {
 Case* creationCase(int couleur);
 
 // Opérations sur l'echiquier
-bool CaseExiste(int x, int y);
 void initialiseEchiquier(Case* Echiquier[8][8]);
 void videEchiquier(Case* Echiquier[8][8]);
 void afficheEchiquier(Case* Echiquier[8][8]);
