@@ -41,13 +41,13 @@ void initialiseEchiquier(Case* Echiquier[8][8]) {
 
 void videEchiquier(Case* Echiquier[8][8]) {
     /*
-    Vide l'echiquier.
+    Libère la mémoire allouée pour les cases.
     */
 
     for (int i = 0; i < 8; i++) {
         for (int j = 0; j < 8; j++) {
-            destructionCase(Echiquier[i][j]);
-            Echiquier[i][j] = NULL;
+            free(Echiquier[i][j]);
+            Echiquier[i][j] = NULL; // Libère la mémoire allouée pour les cases
         }
     }
 }
@@ -85,9 +85,9 @@ void afficheEchiquier(Case* Echiquier[8][8]) {
                         printf("\033[0;44m"); // On active le fond bleu
                     } else {
                         if (i%2 == 0) {
-                            Echiquier[i][j] = (j%2 == 0) ?  printf("\033[47m") : printf("\033[40m");;
+                            (j%2 == 0) ?  printf("\033[47m") : printf("\033[40m");;
                         } else {
-                            Echiquier[i][j] = (j%2 == 0) ?  printf("\033[40m") : printf("\033[47m");;
+                            (j%2 == 0) ?  printf("\033[40m") : printf("\033[47m");;
                         }
                     }
 
@@ -117,14 +117,15 @@ void partieEchec() {
 
     Case* Echiquier[8][8]; // Déclaration du Echiquier
     initialiseEchiquier(Echiquier); // Initialisation de l'echiquier (chaque case est vide, non selectionnée ni atteignable, et de la bonne couleur)
-    Piece* Blancs[16], Noirs[16];
+    Piece *Blancs[16], *Noirs[16];
     initialiseJoueur(Echiquier, Blancs, BLANC); 
     initialiseJoueur(Echiquier, Noirs, NOIR);
     bool enEchec = false;
     Piece** joueurCourant = Blancs; // Les blancs commences
+    Piece** joueurAdverse = Noirs;
 
     while (!enEchec) {
-        for (int i = 0; i < 16; i++) { actualiseCasesAtteignables(Echiquier, joueurCourant[4], joueurCourant[i]); } // On actualise chaque pièce du joueur
+        for (int i = 0; i < 16; i++) { actualiseCasesAtteignables(Echiquier, joueurAdverse, joueurCourant[4], joueurCourant[i]); } // On actualise chaque pièce du joueur
 
         bool aJoue = false;
         Menu menu = PIECES; // On commence par sélectionner une pièce
@@ -185,5 +186,7 @@ void partieEchec() {
             // Rétablir les paramètres originaux
             reset_terminal_mode(&orig_termios);
         }
+
+        videEchiquier(Echiquier); // Libère les cases et les pièces
     }
 }
