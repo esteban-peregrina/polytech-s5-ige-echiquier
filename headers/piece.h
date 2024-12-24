@@ -29,12 +29,16 @@ typedef struct Piece {
     
     bool estSelectionnee;
     bool estCapturee;
+    bool estBloquee;
+
+    int longueurCasesAtteignables;
 
 } Piece;
 
 // Déclaration et suppresion de pièces
 Piece* creationPiece(Role role, int couleur);
 
+//TODO - Enlever joueurAdverse et roiAllie ?
 // Opérations sur les pièces
 void calculAtteignablePion(Case* Echiquier[8][8], Piece* joueurAdverse[16], Piece* roiAllie, Piece* self);
 void calculAtteignableCavalier(Case* Echiquier[8][8], Piece* joueurAdverse[16], Piece* roiAllie, Piece* self);
