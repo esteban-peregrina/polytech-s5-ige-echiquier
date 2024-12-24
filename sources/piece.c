@@ -45,6 +45,9 @@ Piece* creationPiece(Role role, int couleur) {
 
     pieceCree->estSelectionnee = false; 
     pieceCree->estCapturee = false; 
+    pieceCree->estBloquee = false;
+
+    pieceCree->longueurCasesAtteignables = 0;
 
     return pieceCree;
 }
@@ -337,6 +340,7 @@ void insertionCasesAtteignables(Piece* pieceCourante, Case* caseAtteignable) {
     int i = 0;
     while ( (i < 64) && (pieceCourante->casesAtteignables[i] != NULL) ) { i++; }
     if (i >= 64) { exit(EXIT_FAILURE); } // Il y a plus de cases atteignables que de cases dans le plateau.
+    pieceCourante->longueurCasesAtteignables = i;
     pieceCourante->casesAtteignables[i] = caseAtteignable;
     caseAtteignable->estAtteignable = true;
 }
@@ -352,6 +356,7 @@ void actualiseCasesAtteignables(Case* Echiquier[8][8], Piece* joueurAdverse[16],
             pieceActualisable->casesAtteignables[i] = NULL;
         }
         pieceActualisable->calculAtteignable(Echiquier, joueurAdverse, Roi, pieceActualisable); // TODO - màj les signatures
+        if (pieceActualisable->casesAtteignables[0] == NULL) { pieceActualisable->estBloquee = true; } // Le tableau est entièrement vide
     }
 }
 
