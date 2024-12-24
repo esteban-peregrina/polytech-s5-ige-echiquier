@@ -48,10 +48,11 @@ void calculAtteignableReine(Case* Echiquier[8][8], Piece* joueurAdverse[16], Pie
 void calculAtteignableRoi(Case* Echiquier[8][8], Piece* joueurAdverse[16], Piece* roiAllie, Piece* self);
 
 void insertionCasesAtteignables(Piece* pieceCourante, Case* caseAtteignable);
-void actualiseCasesAtteignables(Case* Echiquier[8][8], Piece* joueurAdverse[16], Piece* Roi, Piece* pieceActualisable);
+void actualiseCasesAtteignablesParPiece(Piece* pieceCourante, Piece* piecePrecedente);
+void actualiseCasesAtteignablesParJoueur(Case* Echiquier[8][8], Piece* joueurAdverse[16], Piece* Roi, Piece* pieceActualisable);
 
 // Opération sur les joueurs
 void initialiseJoueur(Case* Echiquier[8][8], Piece* Joueur[16], int couleur);
-void videJoueur(Piece* Joueur[16]); // Libère les pièces d'un joueur
+void videJoueur(Piece* Joueur[16]); //TODO - Libère les pièces d'un joueur
 
 #endif // PIECE_H

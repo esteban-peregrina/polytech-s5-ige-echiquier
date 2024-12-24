@@ -8,7 +8,7 @@
 #include ".././headers/piece.h"
 #include ".././headers/echiquier.h"
 
-Case* creationCase(int couleur) {
+Case* creationCase(int x, int y) {
     /*
     Renvoie l'adresse d'une case vide dont la couleur est specifiée.
     */
@@ -17,8 +17,13 @@ Case* creationCase(int couleur) {
     caseCree = malloc(sizeof(Case));
     if (caseCree == NULL) { exit(EXIT_FAILURE); }
     
-    caseCree->estAtteignable = false;
+    caseCree->estAtteignableParPiece = false;
+    caseCree->estAtteignableParJoueur[NOIR] = false;
+    caseCree->estAtteignableParJoueur[BLANC] = false;
     caseCree->estSelectionnee = false;
+
+    caseCree->x = x;
+    caseCree->y = y;
 
     return caseCree;
 }
@@ -30,11 +35,7 @@ void initialiseEchiquier(Case* Echiquier[8][8]) {
 
     for (int i = 0; i < 8; i++) {
         for (int j = 0; j < 8; j++) {
-            if (i%2 == 0) {
-                Echiquier[i][j] = (j%2 == 0) ? creationCase(BLANC) : creationCase(NOIR);
-            } else {
-                Echiquier[i][j] = (j%2 == 0) ? creationCase(NOIR) : creationCase(BLANC);
-            }
+            Echiquier[i][j] = creationCase(i, j);
         }
     }
 }
@@ -59,8 +60,8 @@ void afficheEchiquier(Case* Echiquier[8][8]) {
 
     const int CELL_HEIGHT = 3; // Impair pour avoir un milieu
     const int CELL_WIDTH = CELL_HEIGHT * 2 + 1; // Le ratio largeur:hauteur ASCII est 1:2 mais j'ai besoin d'un centre
-    
-    //! printf("\033[H\033[J"); // Vide le terminal
+
+    //printf("\033[H\033[J"); // Vide le terminal
     printf("Echiquier :\n");
 
     for (int l = 0; l < 8 * CELL_WIDTH + 4; l++) {printf("\033[46m ");} // Bordure supérieure
@@ -77,7 +78,7 @@ void afficheEchiquier(Case* Echiquier[8][8]) {
                 for (int column = 0; column < CELL_WIDTH; column++) {
                     if (caseCourante->estSelectionnee == true) {
                          printf("\033[0;45m"); // On active le fond magenta
-                    } else if (caseCourante->estAtteignable == true) { // Else if car si la case est selectionnée alors elle était atteignable
+                    } else if (caseCourante->estAtteignableParPiece == true) { // Else if car si la case est selectionnée alors elle était atteignable
                         if (contenuCase != NULL) { // Une piece adverse est atteignable
                             printf("\033[0;41m"); // On active le fond rouge
                         } else {
@@ -129,7 +130,7 @@ void partieEchec() {
     Piece** joueurAdverse = Noirs;
 
     while (!enEchec) {
-        for (int i = 0; i < 16; i++) { actualiseCasesAtteignables(Echiquier, joueurAdverse, joueurCourant[4], joueurCourant[i]); } // On actualise chaque pièce du joueur
+        for (int i = 0; i < 16; i++) { actualiseCasesAtteignablesParJoueur(Echiquier, joueurAdverse, joueurCourant[4], joueurCourant[i]); } // On actualise chaque pièce du joueur
 
         bool aJoue = false;
         Menu menu = PIECES; // On commence la partie par sélectionner une pièce
@@ -143,7 +144,9 @@ void partieEchec() {
                 exit(67); // Toutes les pièces sont bloquées, c'est impossible (mais ça évite de faire une segmentaation fault)
             }
         }
-        Piece* pieceCourante = joueurCourant[indicePieceCourante]; 
+        Piece* pieceCourante = joueurCourant[indicePieceCourante];
+        Piece* piecePrecedente = NULL;
+        actualiseCasesAtteignablesParPiece(pieceCourante, piecePrecedente);
 
         int indiceCaseCourante = 0;
         Case* caseCourante = pieceCourante->casesAtteignables[indiceCaseCourante]; // Non-null grâce au while
@@ -190,17 +193,21 @@ void partieEchec() {
                                 } while (joueurCourant[indicePieceCourante]->estBloquee || joueurCourant[indicePieceCourante]->estCapturee);
 
                                 pieceCourante->estSelectionnee = false;
+                                piecePrecedente = pieceCourante;
                                 pieceCourante = joueurCourant[indicePieceCourante]; 
                                 pieceCourante->estSelectionnee = true;
+                                actualiseCasesAtteignablesParPiece(pieceCourante, piecePrecedente);
                                 break;
                             case 'D': // Flèche gauche
                                 do {
                                     indicePieceCourante = (indicePieceCourante == 0) ? 15 : indicePieceCourante - 1;
                                 } while (joueurCourant[indicePieceCourante]->estBloquee || joueurCourant[indicePieceCourante]->estCapturee);
-
+                                
                                 pieceCourante->estSelectionnee = false;
+                                piecePrecedente = pieceCourante;
                                 pieceCourante = joueurCourant[indicePieceCourante]; 
                                 pieceCourante->estSelectionnee = true;
+                                actualiseCasesAtteignablesParPiece(pieceCourante, piecePrecedente);
                                 break;
                             default:
                                 printf("Caractère incorrect\n");
@@ -242,18 +249,28 @@ void partieEchec() {
                         printf("Autre caractère spécial\n");
                     }
                 } else if (actionJoueur == '\n') { // Entrée - Le coup est validé
-                    // TODO - Mettre à jour les coordonnées de la pièce (ajouter x,y dans struct Case ?)
+                    Echiquier[pieceCourante->x][pieceCourante->y]->piece = NULL; // On enlève la pièce de sa positon précédente
+                    caseCourante->piece = pieceCourante;
+                    pieceCourante->x = caseCourante->x;
+                    pieceCourante->y = caseCourante->y;
                     // TODO - Capturer la pièce ennemie si il y en a une (ON SUPPOSE QUE LES CASES ATTEIGNABLES SONT VALIDES) hihiexpose
                     caseCourante->estSelectionnee = false;
+                    pieceCourante->estSelectionnee = false;
                     menu = PIECES;
                     aJoue = true;
-                    afficheEchiquier(Echiquier);
+                    
+                    // On commute les joueurs
+                    joueurCourant = (joueurCourant == Blancs) ? Noirs : Blancs;
+                    joueurAdverse = (joueurAdverse == Noirs) ? Blancs : Noirs;
+                    actualiseCasesAtteignablesParPiece(NULL, pieceCourante); // On ne connait pas encore la piece précedente
                 }
             }
             // Rétablir les paramètres originaux
             reset_terminal_mode(&orig_termios);
         }
-
-        videEchiquier(Echiquier); // Libère les cases et les pièces
     }
+    videEchiquier(Echiquier); // Libère les cases
+    //TODO - videJoueur(Blancs); // Libère les pièces blanches
+    //TODO - videJoueur(Noirs);  // Libère les pièces noires
+    printf("FIN");
 }

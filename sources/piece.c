@@ -77,7 +77,7 @@ void calculAtteignablePion(Case* Echiquier[8][8], Piece* joueurAdverse[16], Piec
 
     // Double pas
     if (self->x == origine) { // Le pion est sur sa rangée initiale (comme il ne peut jamais revenir en arrière il n'y a pas besoin d'un booléen pour vérifier qu'on joue son tout premier mouvement)
-        if (Echiquier[self->x + 2 * avant][self->y]->piece == NULL) { // Il n'y a pas de piece devant
+        if ( (Echiquier[self->x + 1 * avant][self->y]->piece == NULL) && (Echiquier[self->x + 2 * avant][self->y]->piece == NULL) ) { // Il n'y a pas de piece devant
             //if (!exposeRoi(Echiquier, joueurAdverse, roiAllie, self, self->x + 1, self->y)) { // Si le mouvement n'expose pas le roi allié à la capture par le joueur adverse
                 insertionCasesAtteignables(self, Echiquier[self->x + 2 * avant][self->y]);
             //}
@@ -186,7 +186,7 @@ void calculAtteignableTour(Case* Echiquier[8][8], Piece* joueurAdverse[16], Piec
             }
             break; // On arrête la boucle à la rencontre d'une pièce
         } else { // La case est vide
-            insertionCasesAtteignables(self, Echiquier[self->x][self->y]);
+            insertionCasesAtteignables(self, Echiquier[self->x][yCourant]);
             yCourant += droite;
         }
     }
@@ -322,13 +322,15 @@ bool exposeRoi(Case* Echiquier[8][8], Piece* joueurAdverse[16], Piece* roiAllie,
     pieceCourante->x = xSouhaite;
     pieceCourante->y = ySouhaite;
 
-    for (int i = 0; i < 16; i++) { actualiseCasesAtteignables(Echiquier, joueurAdverse, joueurAdverse[4], joueurAdverse[i]); } // On recalcul l'ensemble des tableaux de casesAtteignables de l'adversaire.
-    bool res = Echiquier[roiAllie->x][roiAllie->y]->estAtteignable;
+    int couleurAdverse = (roiAllie->couleur == BLANC) ? NOIR : BLANC;
+
+    for (int i = 0; i < 16; i++) { actualiseCasesAtteignablesParJoueur(Echiquier, joueurAdverse, joueurAdverse[4], joueurAdverse[i]); } // On recalcul l'ensemble des tableaux de casesAtteignables de l'adversaire.
+    bool res = Echiquier[roiAllie->x][roiAllie->y]->estAtteignableParJoueur[couleurAdverse];
 
     pieceCourante->x = xCourant;
     pieceCourante->y = yCourant;
 
-    for (int i = 0; i < 16; i++) { actualiseCasesAtteignables(Echiquier, joueurAdverse, joueurAdverse[4], joueurAdverse[i]); }
+    for (int i = 0; i < 16; i++) { actualiseCasesAtteignablesParJoueur(Echiquier, joueurAdverse, joueurAdverse[4], joueurAdverse[i]); }
     return res;
 }
 
@@ -342,21 +344,42 @@ void insertionCasesAtteignables(Piece* pieceCourante, Case* caseAtteignable) {
     if (i >= 64) { exit(EXIT_FAILURE); } // Il y a plus de cases atteignables que de cases dans le plateau.
     pieceCourante->longueurCasesAtteignables = i;
     pieceCourante->casesAtteignables[i] = caseAtteignable;
-    caseAtteignable->estAtteignable = true;
+    caseAtteignable->estAtteignableParJoueur[pieceCourante->couleur] = true;
 }
 
-void actualiseCasesAtteignables(Case* Echiquier[8][8], Piece* joueurAdverse[16],Piece* Roi, Piece* pieceActualisable) {
+void actualiseCasesAtteignablesParPiece(Piece* pieceCourante, Piece* piecePrecedente) {
+    /*
+    Vide puis remplis le tableau des cases atteignables de pieceActualisable.
+
+    PRÉCONDITION : pieceActualisable n'est pas bloquée ni capturée
+    */
+    if (piecePrecedente != NULL) {
+        for (int i = 0; i < 64; i++) {
+            if (piecePrecedente->casesAtteignables[i] == NULL) { break; } // On arrête le parcourt après le dernier élément non-nul du tableau
+            piecePrecedente->casesAtteignables[i]->estAtteignableParPiece = false;
+        }
+    } 
+    if (pieceCourante != NULL) {
+        for (int i = 0; i < 64; i++) {
+            if (pieceCourante->casesAtteignables[i] == NULL) { break; } // On arrête le parcourt après le dernier élément non-nul du tableau
+            pieceCourante->casesAtteignables[i]->estAtteignableParPiece = true;
+        }
+    }
+}
+
+void actualiseCasesAtteignablesParJoueur(Case* Echiquier[8][8], Piece* joueurAdverse[16],Piece* Roi, Piece* pieceActualisable) {
     /*
     Vide puis remplis le tableau des cases atteignables de pieceActualisable.
     */
     if (!(pieceActualisable->estCapturee)) { // N'actualise que les pièces encore en jeu.
         for (int i = 0; i < 64; i++) {
             if (pieceActualisable->casesAtteignables[i] == NULL) { break; } // On arrête le parcourt après le dernier élément non-nul du tableau
-            pieceActualisable->casesAtteignables[i]->estAtteignable = false; 
+            pieceActualisable->casesAtteignables[i]->estAtteignableParJoueur[pieceActualisable->couleur] = false; // N'actualise que le status allié !
             pieceActualisable->casesAtteignables[i] = NULL;
         }
         pieceActualisable->calculAtteignable(Echiquier, joueurAdverse, Roi, pieceActualisable); // TODO - màj les signatures
         if (pieceActualisable->casesAtteignables[0] == NULL) { pieceActualisable->estBloquee = true; } // Le tableau est entièrement vide
+        else { pieceActualisable->estBloquee = false; }
     }
 }
 
