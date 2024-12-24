@@ -60,7 +60,7 @@ void afficheEchiquier(Case* Echiquier[8][8]) {
     const int CELL_HEIGHT = 3; // Impair pour avoir un milieu
     const int CELL_WIDTH = CELL_HEIGHT * 2 + 1; // Le ratio largeur:hauteur ASCII est 1:2 mais j'ai besoin d'un centre
     
-   //printf("\033[H\033[J"); // Vide le terminal
+    //! printf("\033[H\033[J"); // Vide le terminal
     printf("Echiquier :\n");
 
     for (int l = 0; l < 8 * CELL_WIDTH + 4; l++) {printf("\033[46m ");} // Bordure supérieure
@@ -82,7 +82,7 @@ void afficheEchiquier(Case* Echiquier[8][8]) {
                         }
                         
                     } else if ( (caseCourante->piece != NULL) && (caseCourante->piece->estSelectionnee == true) ) {
-                        printf("\033[0;44m"); // On active le fond bleu
+                        printf("\033[33m"); // On met la piece en jaune
                     } else {
                         if (i%2 == 0) {
                             (j%2 == 0) ?  printf("\033[47m") : printf("\033[40m");;
@@ -128,14 +128,20 @@ void partieEchec() {
         for (int i = 0; i < 16; i++) { actualiseCasesAtteignables(Echiquier, joueurAdverse, joueurCourant[4], joueurCourant[i]); } // On actualise chaque pièce du joueur
 
         bool aJoue = false;
-        Menu menu = PIECES; // On commence par sélectionner une pièce
+        Menu menu = PIECES; // On commence la partie par sélectionner une pièce
+
+
         int indicePieceCourante = 0;
-        Piece* pieceCourante; // Une fois initialisé, les éléments du tableau ne sont jamais nul.
+        Piece* pieceCourante = joueurCourant[indicePieceCourante]; // Une fois initialisé, les éléments du tableau ne sont jamais nul.
+
         int indiceCaseCourante = 0;
-        Case* caseCourante;
+        Case* caseCourante = pieceCourante->casesAtteignables[indiceCaseCourante];
         // ! - Penser à free les cases et les pieces
 
         while (!aJoue) {
+            afficheEchiquier(Echiquier);
+            printf("Sélectionnez une pièce à jouer à l'aide des touches directionnelles (appuyez sur 'q' pour quitter) : ");
+            
             // Sauvegarder les paramètres originaux du terminal
             struct termios orig_termios;
             tcgetattr(STDIN_FILENO, &orig_termios);
@@ -143,10 +149,14 @@ void partieEchec() {
             // Configurer le terminal en mode "raw"
             set_terminal_raw_mode();
 
-            printf("Sélectionnez une pièce à jouer à l'aide des touches directionnelles (appuyez sur 'q' pour quitter) :");
-
             char actionJoueur;
             if (read(STDIN_FILENO, &actionJoueur, 1) != 1) { exit(EXIT_FAILURE); } // Écrit l'entrée utilisateur lue dans &actionJoueur et vérifie que cela à fonctionné
+
+            if (actionJoueur == 'q') {
+                reset_terminal_mode(&orig_termios);
+                printf("\n");
+                exit(EXIT_SUCCESS);
+            }
 
             if (menu == PIECES) {
                 if (actionJoueur == '\033') {
@@ -155,7 +165,7 @@ void partieEchec() {
 
                     if (seq[0] == '[') {
                         switch (seq[1]) {
-                            case 'A':
+                            case 'A': // Flèche haut
                                 printf("Flèche Haut\n");
                                 break;
                             case 'B': // Flèche bas
@@ -168,11 +178,17 @@ void partieEchec() {
                                 break;
                             case 'C': // Flèche droite
                                 printf("Flèche droite\n");
-                                pieceCourante = joueurCourant[indicePieceCourante++]; //! - If tout au bout ou piece capturée (~= NULL)
+                                indicePieceCourante = (indiceCaseCourante == 17) ? 0 : indiceCaseCourante + 1;
+                                pieceCourante->estSelectionnee = false;
+                                pieceCourante = joueurCourant[indicePieceCourante]; //! - If tout au bout ou piece capturée (~= NULL)
+                                pieceCourante->estSelectionnee = true;
                                 break;
                             case 'D': // Flèche gauche
                                 printf("Flèche gauche\n");
-                                pieceCourante = joueurCourant[indicePieceCourante--]; //! - If tout au bout ou piece capturée (~= NULL)
+                                indicePieceCourante = (indiceCaseCourante == 0) ? 17 : indiceCaseCourante - 1;
+                                pieceCourante->estSelectionnee = false;
+                                pieceCourante = joueurCourant[indicePieceCourante]; //! - If tout au bout ou piece capturée (~= NULL)
+                                pieceCourante->estSelectionnee = true;
                                 break;
                             default:
                                 printf("Caractère incorrect\n");
@@ -182,30 +198,57 @@ void partieEchec() {
                         printf("Autre caractère spécial\n");
                     }
                 }
-                afficheEchiquier(Echiquier);
             } else { //menu == COUPS
-                /*
-                if (menu != PIECES && actionJoueur == 'a') { // On retourne au choix des pièces (pas besoin de réinitialiser l'indice)
-                    caseCourante->estSelectionnee = false;
-                    menu = PIECES;
-                } else if (actionJoueur == 'd') { // <-
-                    caseCourante->estSelectionnee = false;
-                    caseCourante = pieceCourante->casesAtteignables[indiceCaseCourante--]; //! - If tout au bout ou case NULL
-                    caseCourante->estSelectionnee = true;
-                } else if (actionJoueur == 'c') { // ->
-                    caseCourante->estSelectionnee = false;
-                    caseCourante = pieceCourante->casesAtteignables[indiceCaseCourante++]; //! - If tout au bout ou case NULL
-                    caseCourante->estSelectionnee = true;
-                } else if (actionJoueur == '\n') { // Le coup est validé
+                if (actionJoueur == '\033') {
+                    char seq[2];
+                    if (read(STDIN_FILENO, &seq[0], 1) != 1 || read(STDIN_FILENO, &seq[1], 1) != 1) { exit(EXIT_FAILURE); }
+
+                    if (seq[0] == '[') {
+                        switch (seq[1]) {
+                            case 'A': // Flèche haut
+                                printf("Flèche Haut\n");
+                                caseCourante->estSelectionnee = false;
+                                pieceCourante->estSelectionnee = true;
+                                menu = PIECES;
+                                break;
+                            case 'B': // Flèche bas
+                                printf("Flèche bas\n");
+                                indiceCaseCourante = 0;
+                                caseCourante = pieceCourante->casesAtteignables[indiceCaseCourante]; 
+                                caseCourante->estSelectionnee = true;
+                                pieceCourante->estSelectionnee = true;
+                                menu = COUPS;
+                                break;
+                            case 'C': // Flèche droite
+                                printf("Flèche droite\n");
+                                indicePieceCourante = (indiceCaseCourante == 17) ? 0 : indiceCaseCourante + 1; // TODO - Changer (case[0] = NULL ?)
+                                caseCourante->estSelectionnee = false;
+                                caseCourante = pieceCourante->casesAtteignables[indiceCaseCourante];
+                                caseCourante->estSelectionnee = true;
+                                break;
+                            case 'D': // Flèche gauche
+                                printf("Flèche gauche\n");
+                                indicePieceCourante = (indiceCaseCourante == 0) ? 17 : indiceCaseCourante - 1; // TODO - Changer (case[0] = NULL ?)
+                                caseCourante->estSelectionnee = false;
+                                caseCourante = pieceCourante->casesAtteignables[indiceCaseCourante];
+                                caseCourante->estSelectionnee = true;
+                                break;
+                            default:
+                                printf("Caractère incorrect\n");
+                                break;
+                        }
+                    } else {
+                        printf("Autre caractère spécial\n");
+                    }
+                } else if (actionJoueur == '\n') { // Entrée - Le coup est validé
                     // TODO - Mettre à jour les coordonnées de la pièce
                     // TODO - Détruire la pièce ennemie si il y en a une (suppression de la liste des pièces de l'adversaire) ON SUPPOSE QUE LES CASES ATTEIGNABLES SONT VALIDES
-
+                    caseCourante->estSelectionnee = false;
+                    menu = PIECES;
                     aJoue = true;
                     afficheEchiquier(Echiquier);
                 }
-                */
             }
-
             // Rétablir les paramètres originaux
             reset_terminal_mode(&orig_termios);
         }
