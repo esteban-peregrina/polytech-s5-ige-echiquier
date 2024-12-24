@@ -250,10 +250,15 @@ void partieEchec() {
                     }
                 } else if (actionJoueur == '\n') { // Entrée - Le coup est validé
                     Echiquier[pieceCourante->x][pieceCourante->y]->piece = NULL; // On enlève la pièce de sa positon précédente
-                    caseCourante->piece = pieceCourante;
+                    if (caseCourante->piece != NULL) { 
+                        if (caseCourante->piece->role == ROI) {
+                            enEchec = true;
+                        }
+                        caseCourante->piece->estCapturee = true; // On capture la pièce adverse (les pièces alliées ne sont pas atteignables)
+                    } 
+                    caseCourante->piece = pieceCourante; // Écrase l'adrese de la pièce capturée avec celle de la pièce alliée
                     pieceCourante->x = caseCourante->x;
                     pieceCourante->y = caseCourante->y;
-                    // TODO - Capturer la pièce ennemie si il y en a une (ON SUPPOSE QUE LES CASES ATTEIGNABLES SONT VALIDES) hihiexpose
                     caseCourante->estSelectionnee = false;
                     pieceCourante->estSelectionnee = false;
                     menu = PIECES;
@@ -272,5 +277,5 @@ void partieEchec() {
     videEchiquier(Echiquier); // Libère les cases
     //TODO - videJoueur(Blancs); // Libère les pièces blanches
     //TODO - videJoueur(Noirs);  // Libère les pièces noires
-    printf("FIN");
+    (Blancs[4]->estCapturee == true) ? printf("Victoire des Noirs (Rouges) !\n") : printf("Victoire des Blancs (Bleues) !\n");
 }
