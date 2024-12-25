@@ -93,15 +93,15 @@ void calculAtteignablePion(Case* Echiquier[8][8], Piece* joueurAdverse[16], Piec
         }
         // Prendre en diagonale droite
         if (self->y != bordDroite) {
-            if ( (Echiquier[self->x + avant][self->y + droite]->piece != NULL) && (Echiquier[self->x + avant][self->y + droite]->piece->couleur != self->couleur) ) { // Il y a une piece ennemie en diagonale droite
+            if ( (Echiquier[self->x + avant][self->y + droite]->piece != NULL) && (Echiquier[self->x + avant][self->y + droite]->piece->couleur != self->couleur) && (Echiquier[self->x + avant][self->y + droite]->piece->estCapturee != true) ) { // Il y a une piece ennemie en diagonale droite
                 //if (!exposeRoi(Echiquier, joueurAdverse, roiAllie, self, self->x + 1, self->y)) { // Si le mouvement n'expose pas le roi allié à la capture par le joueur adverse
-                    insertionCasesAtteignables(self, Echiquier[self->x + 1][self->y + 1]);
+                    insertionCasesAtteignables(self, Echiquier[self->x + avant][self->y + droite]);
                 //}
             }
         }
         // Prendre en diagonale gauche
         if (self->y != bordGauche) {
-            if ( (Echiquier[self->x + avant][self->y - droite]->piece != NULL) && (Echiquier[self->x + avant][self->y - droite]->piece->couleur != self->couleur) ) { // Il y a une piece ennemie en diagonale gauche
+            if ( (Echiquier[self->x + avant][self->y - droite]->piece != NULL) && (Echiquier[self->x + avant][self->y - droite]->piece->couleur != self->couleur) && (Echiquier[self->x + avant][self->y + droite]->piece->estCapturee != true)) { // Il y a une piece ennemie en diagonale gauche
                 //if (!exposeRoi(Echiquier, joueurAdverse, roiAllie, self, self->x + 1, self->y)) { // Si le mouvement n'expose pas le roi allié à la capture par le joueur adverse
                     insertionCasesAtteignables(self, Echiquier[self->x + avant][self->y - droite]);
                 //}
@@ -310,33 +310,9 @@ void calculAtteignableRoi(Case* Echiquier[8][8], Piece* joueurAdverse[16], Piece
     
 }
 
-bool exposeRoi(Case* Echiquier[8][8], Piece* joueurAdverse[16], Piece* roiAllie, Piece* pieceCourante, int xSouhaite, int ySouhaite) {
-    /*
-    Vérifie si le mouvement de pieceCourante en (xSouhaite, ySouhaite) expose le Roi à l'echec.
-    */
-    //! - Invalide
-
-    int xCourant = pieceCourante->x;
-    int yCourant = pieceCourante->y;
-
-    pieceCourante->x = xSouhaite;
-    pieceCourante->y = ySouhaite;
-
-    int couleurAdverse = (roiAllie->couleur == BLANC) ? NOIR : BLANC;
-
-    for (int i = 0; i < 16; i++) { actualiseCasesAtteignablesParJoueur(Echiquier, joueurAdverse, joueurAdverse[4], joueurAdverse[i]); } // On recalcul l'ensemble des tableaux de casesAtteignables de l'adversaire.
-    bool res = Echiquier[roiAllie->x][roiAllie->y]->estAtteignableParJoueur[couleurAdverse];
-
-    pieceCourante->x = xCourant;
-    pieceCourante->y = yCourant;
-
-    for (int i = 0; i < 16; i++) { actualiseCasesAtteignablesParJoueur(Echiquier, joueurAdverse, joueurAdverse[4], joueurAdverse[i]); }
-    return res;
-}
-
 void insertionCasesAtteignables(Piece* pieceCourante, Case* caseAtteignable) {
     /* 
-    Insère caseAtteignbale dans le tableau de casesAtteignables de pieceCourante, après le dernier élément non-nul.
+    Insère caseAtteignable dans le tableau de casesAtteignables de pieceCourante, après le dernier élément non-nul.
     */
 
     int i = 0;
