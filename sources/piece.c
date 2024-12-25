@@ -347,14 +347,14 @@ void actualiseCasesAtteignablesParJoueur(Case* Echiquier[8][8], Piece* joueurAdv
     /*
     Vide puis remplis le tableau des cases atteignables de pieceActualisable.
     */
+    for (int i = 0; i < 64; i++) { // Réinitilisation
+        if (pieceActualisable->casesAtteignables[i] == NULL) { break; } // On arrête le parcourt après le dernier élément non-nul du tableau
+        pieceActualisable->casesAtteignables[i]->estAtteignableParJoueur[pieceActualisable->couleur] = false; // Remet à zéro le status allié
+        pieceActualisable->casesAtteignables[i] = NULL; // Vide le tableau
+    }
     if (!(pieceActualisable->estCapturee)) { // N'actualise que les pièces encore en jeu.
-        for (int i = 0; i < 64; i++) {
-            if (pieceActualisable->casesAtteignables[i] == NULL) { break; } // On arrête le parcourt après le dernier élément non-nul du tableau
-            pieceActualisable->casesAtteignables[i]->estAtteignableParJoueur[pieceActualisable->couleur] = false; // N'actualise que le status allié !
-            pieceActualisable->casesAtteignables[i] = NULL;
-        }
-        pieceActualisable->calculAtteignable(Echiquier, joueurAdverse, Roi, pieceActualisable); // TODO - màj les signatures
-        if (pieceActualisable->casesAtteignables[0] == NULL) { pieceActualisable->estBloquee = true; } // Le tableau est entièrement vide
+        pieceActualisable->calculAtteignable(Echiquier, joueurAdverse, Roi, pieceActualisable); // Recalcule le statut allié et rempli le tableau // TODO - màj les signatures
+        if (pieceActualisable->casesAtteignables[0] == NULL) { pieceActualisable->estBloquee = true; } // Le tableau est entièrement vide (aucun ajout après calcul)
         else { pieceActualisable->estBloquee = false; }
     }
 }
