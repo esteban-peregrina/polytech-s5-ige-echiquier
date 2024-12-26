@@ -41,7 +41,7 @@ Piece* creationPiece(Role role, int couleur) {
     pieceCree->x = 0;
     pieceCree->y = 0;
 
-    for (int i = 0; i < 64; i++) { pieceCree->casesAtteignables[i] = NULL; }
+    for (int i = 0; i < COUVERTUREMAX; i++) { pieceCree->casesAtteignables[i] = NULL; }
 
     pieceCree->estSelectionnee = false; 
     pieceCree->estCapturee = false; 
@@ -322,13 +322,13 @@ void actualiseCasesAtteignablesParPiece(Piece* pieceCourante, Piece* piecePreced
     PRÉCONDITION : pieceActualisable n'est pas bloquée ni capturée
     */
     if (piecePrecedente != NULL) {
-        for (int i = 0; i < 64; i++) {
+        for (int i = 0; i < COUVERTUREMAX; i++) {
             if (piecePrecedente->casesAtteignables[i] == NULL) { break; } // On arrête le parcourt après le dernier élément non-nul du tableau
             piecePrecedente->casesAtteignables[i]->estAtteignableParPiece = false;
         }
     } 
     if (pieceCourante != NULL) {
-        for (int i = 0; i < 64; i++) {
+        for (int i = 0; i < COUVERTUREMAX; i++) {
             if (pieceCourante->casesAtteignables[i] == NULL) { break; } // On arrête le parcourt après le dernier élément non-nul du tableau
             pieceCourante->casesAtteignables[i]->estAtteignableParPiece = true;
         }
@@ -339,7 +339,7 @@ void actualiseCasesAtteignablesParJoueur(Case* Echiquier[8][8], Piece* pieceActu
     /*
     Vide puis remplis le tableau des cases atteignables de pieceActualisable.
     */
-    for (int i = 0; i < 64; i++) { // Réinitilisation
+    for (int i = 0; i < COUVERTUREMAX; i++) { // Réinitilisation
         if (pieceActualisable->casesAtteignables[i] == NULL) { break; } // On arrête le parcourt après le dernier élément non-nul du tableau
         pieceActualisable->casesAtteignables[i]->estAtteignableParJoueur[pieceActualisable->couleur] = false; // Remet à zéro le status allié
         pieceActualisable->casesAtteignables[i] = NULL; // Vide le tableau

@@ -4,6 +4,8 @@
 #define NOIR 0
 #define BLANC 1
 
+#define COUVERTUREMAX 27
+
 typedef enum {          
     ROI,
     REINE,
@@ -25,7 +27,7 @@ typedef struct Piece {
 
     void (*calculAtteignable)(Case* Echiquier[8][8], struct Piece* self);
 
-    struct Case* casesAtteignables[64];
+    struct Case* casesAtteignables[COUVERTUREMAX];
     
     bool estSelectionnee;
     bool estCapturee;
