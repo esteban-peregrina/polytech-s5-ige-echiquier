@@ -300,7 +300,7 @@ void partieEchec() {
         }
     }
     videEchiquier(Echiquier); // Libère les cases
-    //TODO - videJoueur(Blancs); // Libère les pièces blanches
-    //TODO - videJoueur(Noirs);  // Libère les pièces noires
+    videJoueur(Blancs); // Libère les pièces blanches
+    videJoueur(Noirs);  // Libère les pièces noires
     (Blancs[4]->estCapturee == true) ? printf("Victoire des Noirs (Rouges) !\n") : printf("Victoire des Blancs (Bleues) !\n");
 }

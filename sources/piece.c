@@ -428,3 +428,13 @@ void initialiseJoueur(Case* Echiquier[8][8], Piece* Joueur[16], int couleur) {
     }
 }
 
+void videJoueur(Piece* Joueur[16]) {
+    /*
+    Lièbre la mémoire allouée par chacune des pièces du joueur.
+    */
+
+    for (int piece = 0; piece < 16; piece++) { 
+        free(Joueur[piece]);
+        Joueur[piece] = NULL;
+    }
+}
