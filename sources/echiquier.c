@@ -132,7 +132,7 @@ void partieEchec() {
     Piece** joueurAdverse = Noirs;
 
     while (!echecEtMat) {
-        for (int i = 0; i < 16; i++) { actualiseCasesAtteignablesParJoueur(Echiquier, joueurCourant[i]); } // On actualise chaque pièce du joueur
+       actualiseCasesAtteignablesParJoueur(Echiquier, joueurCourant); // On actualise chaque pièce du joueur
 
         bool aJoue = false;
         Menu menu = PIECES; // On commence la partie par sélectionner une pièce
@@ -268,7 +268,7 @@ void partieEchec() {
                     pieceCourante->y = yCible;
 
                     // On actualise les cases atteignables par l'adversaire après le mouvement
-                    for (int i = 0; i < 16; i++) { actualiseCasesAtteignablesParJoueur(Echiquier, joueurAdverse[i]); } 
+                    actualiseCasesAtteignablesParJoueur(Echiquier, joueurAdverse); 
 
                     // Interdiction de mettre en échec
                     Case* caseRoyale = Echiquier[joueurCourant[4]->x][joueurCourant[4]->y];

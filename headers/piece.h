@@ -51,7 +51,7 @@ void calculAtteignableRoi(Case* Echiquier[8][8], Piece* self);
 
 void insertionCasesAtteignables(Piece* pieceCourante, Case* caseAtteignable);
 void actualiseCasesAtteignablesParPiece(Piece* pieceCourante, Piece* piecePrecedente);
-void actualiseCasesAtteignablesParJoueur(Case* Echiquier[8][8], Piece* pieceActualisable);
+void actualiseCasesAtteignablesParJoueur(Case* Echiquier[8][8], Piece* Joueur[16]);
 
 // Opération sur les joueurs
 void initialiseJoueur(Case* Echiquier[8][8], Piece* Joueur[16], int couleur);
