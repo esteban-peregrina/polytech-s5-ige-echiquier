@@ -11,7 +11,7 @@ typedef struct Piece Piece; // Pour que le compilateur les reconnaissent
 typedef struct Case {
     Piece* piece;
     bool estAtteignableParPiece;
-    bool estAtteignableParJoueur[2];
+    int estAtteignableParJoueur[2];
     bool estSelectionnee;
 
     int x;

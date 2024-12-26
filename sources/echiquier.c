@@ -18,8 +18,8 @@ Case* creationCase(int x, int y) {
     if (caseCree == NULL) { exit(EXIT_FAILURE); }
     
     caseCree->estAtteignableParPiece = false;
-    caseCree->estAtteignableParJoueur[NOIR] = false;
-    caseCree->estAtteignableParJoueur[BLANC] = false;
+    caseCree->estAtteignableParJoueur[NOIR] = 0;
+    caseCree->estAtteignableParJoueur[BLANC] = 0;
     caseCree->estSelectionnee = false;
 
     caseCree->x = x;
@@ -122,42 +122,57 @@ void partieEchec() {
     // TODO - Proposer de charger une sauvegarde
     // TODO - Proposer de jouer contre un joueur ou contre une IA
 
-    Case* Echiquier[8][8]; // Déclaration du Echiquier
+    Case* Echiquier[8][8]; // Déclaration de l'echiquier
     initialiseEchiquier(Echiquier); // Initialisation de l'echiquier (chaque case est vide, non selectionnée ni atteignable, et de la bonne couleur)
-    Piece *Blancs[16], *Noirs[16];
+    
+    Piece *Blancs[16], *Noirs[16];  // Déclaration des joueurs
+    // Initialisation des joueurs
     initialiseJoueur(Echiquier, Blancs, BLANC); 
     initialiseJoueur(Echiquier, Noirs, NOIR);
+
     bool echecEtMat = false;
+
     Piece** joueurCourant = Blancs; // Les blancs commences
     Piece** joueurAdverse = Noirs;
 
     while (!echecEtMat) {
-       actualiseCasesAtteignablesParJoueur(Echiquier, joueurCourant); // On actualise chaque pièce du joueur
+        actualiseCasesAtteignablesParJoueur(Echiquier, joueurCourant); // On actualise chaque tableau des cases atteignables par les pièces du joueur
+        actualiseExposeRoi(Echiquier, joueurCourant, joueurAdverse); // On retire les cases exposant le roi allié à l'échec
 
         bool aJoue = false;
         Menu menu = PIECES; // On commence la partie par sélectionner une pièce
 
-
+        // On sélectionne la première pièce non bloquée
         int indicePieceCourante = 0;
         while (joueurCourant[indicePieceCourante]->estBloquee || joueurCourant[indicePieceCourante]->estCapturee) {
             if (indicePieceCourante < 16) {
                 indicePieceCourante++; 
             } else {
-                exit(67); // Toutes les pièces sont bloquées, c'est impossible (mais ça évite de faire une segmentaation fault)
+                echecEtMat = true; // Toutes les pièces sont bloquées, c'est l'échec et mat // TODO - Il suffit de break
+                break;
             }
         }
+        
         Piece* pieceCourante = joueurCourant[indicePieceCourante];
         Piece* piecePrecedente = NULL;
+        // On actualise l'échiquier pour afficher les cases atteignables par la pièce courante
         actualiseCasesAtteignablesParPiece(pieceCourante, piecePrecedente);
 
         int indiceCaseCourante = 0;
-        Case* caseCourante = pieceCourante->casesAtteignables[indiceCaseCourante]; // Non-null grâce au while
+        while (pieceCourante->casesAtteignables[indiceCaseCourante] == NULL) {
+            if (indicePieceCourante < pieceCourante->longueurCasesAtteignables) {
+                indicePieceCourante++; 
+            } else {
+                exit(67); // Toutes les cases sont inatteignables, c'est impossible car dans ce cas la pièce est supposée être marquée comme bloquée
+            }
+        }
+        Case* caseCourante = pieceCourante->casesAtteignables[indiceCaseCourante]; // Non-null grâce au while précédent
         pieceCourante->estSelectionnee = true;
         
         while (!aJoue) {
             afficheEchiquier(Echiquier);
             printf("Sélectionnez une pièce à jouer à l'aide des touches directionnelles (appuyez sur 'q' pour quitter) : ");
-            
+
             // Sauvegarder les paramètres originaux du terminal
             struct termios orig_termios;
             tcgetattr(STDIN_FILENO, &orig_termios);
@@ -232,13 +247,19 @@ void partieEchec() {
                                 menu = PIECES;
                                 break;
                             case 'C': // Flèche droite
-                                indiceCaseCourante = (indiceCaseCourante == pieceCourante->longueurCasesAtteignables) ? 0 : indiceCaseCourante + 1;
+                                do {
+                                    indiceCaseCourante = (indiceCaseCourante == pieceCourante->longueurCasesAtteignables) ? 0 : indiceCaseCourante + 1;
+                                } while (pieceCourante->casesAtteignables[indiceCaseCourante] == NULL);
+                                
                                 caseCourante->estSelectionnee = false;
                                 caseCourante = pieceCourante->casesAtteignables[indiceCaseCourante];
                                 caseCourante->estSelectionnee = true;
                                 break;
                             case 'D': // Flèche gauche
-                                indiceCaseCourante = (indiceCaseCourante == 0) ? pieceCourante->longueurCasesAtteignables : indiceCaseCourante - 1;
+                                do {
+                                    indiceCaseCourante = (indiceCaseCourante == 0) ? pieceCourante->longueurCasesAtteignables : indiceCaseCourante - 1;
+                                } while (pieceCourante->casesAtteignables[indiceCaseCourante] == NULL);
+
                                 caseCourante->estSelectionnee = false;
                                 caseCourante = pieceCourante->casesAtteignables[indiceCaseCourante];
                                 caseCourante->estSelectionnee = true;
@@ -258,8 +279,6 @@ void partieEchec() {
                     int yCible = caseCourante->y;
                     Piece* contenuCaseCible = caseCourante->piece; // On garde en mémoire la pièce présente sur la case cible
 
-                    // TODO - Gestion de l'echec et mat
-
                     // Gestion du coup
                     Echiquier[xPrecedent][yPrecedent]->piece = NULL; // On enlève la pièce courante de sa positon précédente
                     if (contenuCaseCible != NULL) { contenuCaseCible->estCapturee = true; } // On capture la pièce si elle existe (on a seulement accès à des cases adverses)
@@ -267,40 +286,27 @@ void partieEchec() {
                     pieceCourante->x = xCible; // On met à jours les coordonnées de la pièce déplacée
                     pieceCourante->y = yCible;
 
-                    // On actualise les cases atteignables par l'adversaire après le mouvement
-                    actualiseCasesAtteignablesParJoueur(Echiquier, joueurAdverse); 
-
-                    // Interdiction de mettre en échec
-                    Case* caseRoyale = Echiquier[joueurCourant[4]->x][joueurCourant[4]->y];
-                    if (caseRoyale->estAtteignableParJoueur[joueurAdverse[4]->couleur] == true) { // Le roi allié est désormais atteignable par l'adversaire
-                        pieceCourante->x = xPrecedent;
-                        pieceCourante->y = yPrecedent;
-                        caseCourante->piece = contenuCaseCible;
-                        if (contenuCaseCible != NULL) { contenuCaseCible->estCapturee = false; } // On annule la capture si elle a eu lieu
-                        Echiquier[xPrecedent][yPrecedent]->piece = pieceCourante; // On annule le mouvement
-                        
-                        printf("Le coup expose le Roi à l'échec ! Veuillez-en sélectionner un autre...\n");
-                    } else {
-                        caseCourante->estSelectionnee = false;
-                        pieceCourante->estSelectionnee = false;
-                        menu = PIECES;
-                        aJoue = true;
-                        
-                        // On commute les joueurs
-                        joueurCourant = (joueurCourant == Blancs) ? Noirs : Blancs;
-                        joueurAdverse = (joueurAdverse == Noirs) ? Blancs : Noirs;
-                        
-                        // On vide les cases atteignables par la pièce courante pour ne plus les afficher
-                        actualiseCasesAtteignablesParPiece(NULL, pieceCourante); // On ne connait pas encore la piece courante de l'adversaire
-                    }
+                    caseCourante->estSelectionnee = false;
+                    pieceCourante->estSelectionnee = false;
+                    menu = PIECES;
+                    aJoue = true;
+                    
+                    // On commute les joueurs
+                    joueurCourant = (joueurCourant == Blancs) ? Noirs : Blancs;
+                    joueurAdverse = (joueurAdverse == Noirs) ? Blancs : Noirs;
+                    
+                    printf("FLAG 1\n");
+                    // On vide les cases atteignables par la pièce courante pour ne plus les afficher
+                    actualiseCasesAtteignablesParPiece(NULL, pieceCourante); // On ne connait pas encore la piece courante de l'adversaire
+                    printf("FLAG 2\n");
                 }
             }
             // Rétablir les paramètres originaux
             reset_terminal_mode(&orig_termios);
         }
     }
+    (joueurCourant == Blancs) ? printf("Victoire des Noirs (Rouges) !\n") : printf("Victoire des Blancs (Bleues) !\n");
     videEchiquier(Echiquier); // Libère les cases
     videJoueur(Blancs); // Libère les pièces blanches
-    videJoueur(Noirs);  // Libère les pièces noires
-    (Blancs[4]->estCapturee == true) ? printf("Victoire des Noirs (Rouges) !\n") : printf("Victoire des Blancs (Bleues) !\n");
+    videJoueur(Noirs);  // Libère les pièces noires  
 }
