@@ -89,13 +89,13 @@ void calculAtteignablePion(Case* Echiquier[8][8], Piece* self) {
         }
         // Prendre en diagonale droite
         if (self->y != bordDroite) {
-            if ( (Echiquier[self->x + avant][self->y + droite]->piece != NULL) && (Echiquier[self->x + avant][self->y + droite]->piece->couleur != self->couleur) && (Echiquier[self->x + avant][self->y + droite]->piece->estCapturee != true) ) { // Il y a une piece ennemie en diagonale droite
+            if ( (Echiquier[self->x + avant][self->y + droite]->piece != NULL) && (Echiquier[self->x + avant][self->y + droite]->piece->couleur != self->couleur) && !(Echiquier[self->x + avant][self->y + droite]->piece->estCapturee) ) { // Il y a une piece ennemie en diagonale droite
                 insertionCasesAtteignables(self, Echiquier[self->x + avant][self->y + droite]);
             }
         }
         // Prendre en diagonale gauche
         if (self->y != bordGauche) {
-            if ( (Echiquier[self->x + avant][self->y - droite]->piece != NULL) && (Echiquier[self->x + avant][self->y - droite]->piece->couleur != self->couleur) && (Echiquier[self->x + avant][self->y + droite]->piece->estCapturee != true)) { // Il y a une piece ennemie en diagonale gauche
+            if ( (Echiquier[self->x + avant][self->y - droite]->piece != NULL) && (Echiquier[self->x + avant][self->y - droite]->piece->couleur != self->couleur) && !(Echiquier[self->x + avant][self->y - droite]->piece->estCapturee) ) { // Il y a une piece ennemie en diagonale gauche
                 insertionCasesAtteignables(self, Echiquier[self->x + avant][self->y - droite]);
             }
 
@@ -307,14 +307,17 @@ void insertionCasesAtteignables(Piece* pieceCourante, Case* caseAtteignable) {
     Insère caseAtteignable dans le tableau de casesAtteignables de pieceCourante, après le dernier élément non-nul.
     */
 
+    // On ajoute la case atteignable à la fin du tableau
     int i = 0;
-    while ( (i < COUVERTUREMAX) && (pieceCourante->casesAtteignables[i] != NULL) ) { i++; }
-    if (i >= COUVERTUREMAX) { exit(EXIT_FAILURE); } // Il y a plus de cases atteignables que de cases dans le plateau.
-    if (i > 0) { pieceCourante->estBloquee = false; }
-    else { pieceCourante->estBloquee = true; }
-    pieceCourante->longueurCasesAtteignables = i;
+    while ( (i < COUVERTUREMAX) && (pieceCourante->casesAtteignables[i] != NULL) ) { i++; } // On cherche la fin du tableau
+    if (i >= COUVERTUREMAX) { exit(69); } // Il y davantage de cases atteignables qu'il y a de cases dans le plateau.
     pieceCourante->casesAtteignables[i] = caseAtteignable;
-    caseAtteignable->estAtteignableParJoueur[pieceCourante->couleur]++;
+    
+    // On met à jour les statuts de la pièce
+    pieceCourante->longueurCasesAtteignables++;
+    pieceCourante->estBloquee = false; // À partir du moment où la fonction est appelée, la pièce n'est plus bloquée (inutile car déjà effectué dans la fonction d'actualisation)
+
+    caseAtteignable->estAtteignableParJoueur[pieceCourante->couleur]++; // La case est donc atteignable par une pièce alliée de plus
 }
 
  void suppressionCasesAtteignables(Piece* pieceCourante, Case* caseSupprimable) {
@@ -322,13 +325,22 @@ void insertionCasesAtteignables(Piece* pieceCourante, Case* caseAtteignable) {
     Supprime caseSupprimable dans le tableau de casesAtteignables de pieceCourante
     */
 
+    // On supprime la case
     int i = 0;
-    while ( (i < COUVERTUREMAX) && (pieceCourante->casesAtteignables[i] != caseSupprimable) ) { i++; }
-    if (i >= COUVERTUREMAX) { exit(EXIT_FAILURE); } // La pièce n'est pas dans le tableau
+    while ( (i < COUVERTUREMAX) && (pieceCourante->casesAtteignables[i] != caseSupprimable) ) { i++; } // On cherche la caseSupprimable dans le tableau
+    if (i >= COUVERTUREMAX) { exit(68); } // La pièce n'est pas dans le tableau
+    pieceCourante->casesAtteignables[i] = NULL;
+
+    // On décale les cases suivantes pour combler le trou
+    for (int j = i; j < pieceCourante->longueurCasesAtteignables - 1; j++) { 
+        pieceCourante->casesAtteignables[j] = pieceCourante->casesAtteignables[j + 1];
+    }
+    pieceCourante->casesAtteignables[pieceCourante->longueurCasesAtteignables - 1] = NULL;
+
+    // On met à jour les statuts de la pièce
     pieceCourante->longueurCasesAtteignables--;
     if (pieceCourante->longueurCasesAtteignables == 0) { pieceCourante->estBloquee = true; } // La pièce n'a plus de cases atteignables
-    else { pieceCourante->estBloquee = false; }
-    pieceCourante->casesAtteignables[i] = NULL;
+
     caseSupprimable->estAtteignableParJoueur[pieceCourante->couleur]--;
  }
 
@@ -356,19 +368,23 @@ void actualiseCasesAtteignablesParJoueur(Case* Echiquier[8][8], Piece* Joueur[16
     /*
     Vide puis remplis le tableau des cases atteignables de pieceActualisable.
     */
-    // Vide les cases atteignables
+    // Vide les cases atteignables (que la pièce soit capturée ou non)
     for (int piece = 0; piece < 16; piece++) { 
-        for (int i = 0; i < Joueur[piece]->longueurCasesAtteignables; i++) { 
-            if (Joueur[piece]->casesAtteignables[i] == NULL) { continue; } // On passe à l'itération suivante
-            Joueur[piece]->casesAtteignables[i]->estAtteignableParJoueur[Joueur[piece]->couleur] = 0; // Remet à zéro le status allié
-            Joueur[piece]->casesAtteignables[i] = NULL; // Vide le tableau
+        Piece* pieceCourante = Joueur[piece];
+        for (int i = 0; i < pieceCourante->longueurCasesAtteignables; i++) {
+            pieceCourante->casesAtteignables[i]->estAtteignableParJoueur[pieceCourante->couleur] = 0; // Remet à zéro le status allié
+            pieceCourante->casesAtteignables[i] = NULL; // Vide le tableau
         }
+        pieceCourante->longueurCasesAtteignables = 0; // Remet à zéro la longueur du tableau
+        pieceCourante->estBloquee = false; // Remet à zéro le statut bloquée
     }
     // Rempli les cases atteignables
-    for (int piece = 0; piece < 16; piece++) { 
-        if (!(Joueur[piece]->estCapturee) && !(Joueur[piece]->estBloquee)) { // N'actualise que les pièces encore en jeu et non bloquées
-            Joueur[piece]->calculAtteignable(Echiquier, Joueur[piece]); // Recalcule le statut allié et rempli le tableau
+    for (int piece = 0; piece < 16; piece++) {
+        Piece* pieceCourante = Joueur[piece];
+        if (!(pieceCourante->estCapturee)) { // N'actualise que les pièces encore en jeu
+            pieceCourante->calculAtteignable(Echiquier, pieceCourante); // Recalcule le statut allié et rempli le tableau
         }
+        if (pieceCourante->casesAtteignables[0] == NULL) { pieceCourante->estBloquee = true; }
     }
 }
 
@@ -456,18 +472,16 @@ void videJoueur(Piece* Joueur[16]) {
 
 void actualiseExposeRoi(Case* Echiquier[8][8], Piece* joueurCourant[16], Piece* joueurAdverse[16]) {
     /*
-    Supprime des cases atteignables les cases qui mettent en échec le roi.
+    Supprime les cases qui mettent en échec le roi des tableaux de cases atteignables des pièces.
     */
-
     for (int piece = 0; piece < 16; piece++) { // Pour chacune des pièces du joueur
         Piece* pieceCourante = joueurCourant[piece];
-        if (!(pieceCourante->estCapturee) && !(pieceCourante->estBloquee)) { // N'actualise que les pièces encore en jeu et non bloquées
+        if (!(pieceCourante->estCapturee) && !(pieceCourante->estBloquee)) { // N'actualise que les pièces encore en jeu et non bloquées 
             for (int coup = 0; coup < pieceCourante->longueurCasesAtteignables; coup++) { // Pour chacun des coups possible par la pièce
-                Case* caseCourante = pieceCourante->casesAtteignables[coup];
-
+                Case* caseCourante = pieceCourante->casesAtteignables[coup]; // Forcément non-nulle car la fonction est appelée juste après actualisation des tableaux de cases atteignables
                 int xPrecedent = pieceCourante->x;
                 int yPrecedent = pieceCourante->y;
-                
+
                 int xCible = caseCourante->x;
                 int yCible = caseCourante->y;
                 Piece* contenuCaseCible = caseCourante->piece; // On garde en mémoire la pièce présente sur la case cible
@@ -481,10 +495,15 @@ void actualiseExposeRoi(Case* Echiquier[8][8], Piece* joueurCourant[16], Piece* 
 
                 // On actualise les cases atteignables par l'adversaire après le mouvement potentiel
                 actualiseCasesAtteignablesParJoueur(Echiquier, joueurAdverse); 
-
+                
                 // Interdiction de mettre en échec
                 Case* caseRoyale = Echiquier[joueurCourant[4]->x][joueurCourant[4]->y];
-                if (caseRoyale->estAtteignableParJoueur[joueurAdverse[4]->couleur] == true) { suppressionCasesAtteignables(pieceCourante, caseCourante); } 
+                if (caseRoyale->estAtteignableParJoueur[joueurAdverse[4]->couleur] > 0) {
+                    printf("SUPPRESSION\n");
+                    suppressionCasesAtteignables(pieceCourante, caseCourante);
+                    coup--; // On reprend le même indice car la suppression décale le tableau des cases atteignables 
+                    //! S'assurer que pieceCourante->longueurCasesAtteignables suive et ne soit pas fixe sinon faudra passer par un while
+                } 
 
                 // Retour à la position initiale
                 pieceCourante->x = xPrecedent;
@@ -492,9 +511,6 @@ void actualiseExposeRoi(Case* Echiquier[8][8], Piece* joueurCourant[16], Piece* 
                 caseCourante->piece = contenuCaseCible;
                 if (contenuCaseCible != NULL) { contenuCaseCible->estCapturee = false; } // On annule la capture si elle a eu lieu
                 Echiquier[xPrecedent][yPrecedent]->piece = pieceCourante; // On annule le mouvement
-
-                // On rétablit les cases atteignables par l'adversaire après le mouvement potentiel
-                actualiseCasesAtteignablesParJoueur(Echiquier, joueurAdverse);
             }
         }
     }
