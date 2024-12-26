@@ -52,7 +52,7 @@ Piece* creationPiece(Role role, int couleur) {
     return pieceCree;
 }
 
-void calculAtteignablePion(Case* Echiquier[8][8], Piece* joueurAdverse[16], Piece* roiAllie, Piece* self) {
+void calculAtteignablePion(Case* Echiquier[8][8], Piece* self) {
     //TODO - Promotion possible affichée avec une case jaune ou des caractres +/reine
     //TODO - Prise en passant (ajout d'un booleen "double pas" ?)
     int origine, droite, avant, bordAvant, bordDroite, bordGauche;
@@ -78,40 +78,32 @@ void calculAtteignablePion(Case* Echiquier[8][8], Piece* joueurAdverse[16], Piec
     // Double pas
     if (self->x == origine) { // Le pion est sur sa rangée initiale (comme il ne peut jamais revenir en arrière il n'y a pas besoin d'un booléen pour vérifier qu'on joue son tout premier mouvement)
         if ( (Echiquier[self->x + 1 * avant][self->y]->piece == NULL) && (Echiquier[self->x + 2 * avant][self->y]->piece == NULL) ) { // Il n'y a pas de piece devant
-            //if (!exposeRoi(Echiquier, joueurAdverse, roiAllie, self, self->x + 1, self->y)) { // Si le mouvement n'expose pas le roi allié à la capture par le joueur adverse
-                insertionCasesAtteignables(self, Echiquier[self->x + 2 * avant][self->y]);
-            //}
+            insertionCasesAtteignables(self, Echiquier[self->x + 2 * avant][self->y]);
         }
     }
     // Pas simple
     if (self->x != bordAvant) { 
         // Avancer tout droit
         if (Echiquier[self->x + avant][self->y]->piece == NULL) { // Il n'y a pas de piece devant
-            //if (!exposeRoi(Echiquier, joueurAdverse, roiAllie, self, self->x + 1, self->y)) { // Si le mouvement n'expose pas le roi allié à la capture par le joueur adverse
-                insertionCasesAtteignables(self, Echiquier[self->x + avant][self->y]);
-            //}
+            insertionCasesAtteignables(self, Echiquier[self->x + avant][self->y]);
         }
         // Prendre en diagonale droite
         if (self->y != bordDroite) {
             if ( (Echiquier[self->x + avant][self->y + droite]->piece != NULL) && (Echiquier[self->x + avant][self->y + droite]->piece->couleur != self->couleur) && (Echiquier[self->x + avant][self->y + droite]->piece->estCapturee != true) ) { // Il y a une piece ennemie en diagonale droite
-                //if (!exposeRoi(Echiquier, joueurAdverse, roiAllie, self, self->x + 1, self->y)) { // Si le mouvement n'expose pas le roi allié à la capture par le joueur adverse
-                    insertionCasesAtteignables(self, Echiquier[self->x + avant][self->y + droite]);
-                //}
+                insertionCasesAtteignables(self, Echiquier[self->x + avant][self->y + droite]);
             }
         }
         // Prendre en diagonale gauche
         if (self->y != bordGauche) {
             if ( (Echiquier[self->x + avant][self->y - droite]->piece != NULL) && (Echiquier[self->x + avant][self->y - droite]->piece->couleur != self->couleur) && (Echiquier[self->x + avant][self->y + droite]->piece->estCapturee != true)) { // Il y a une piece ennemie en diagonale gauche
-                //if (!exposeRoi(Echiquier, joueurAdverse, roiAllie, self, self->x + 1, self->y)) { // Si le mouvement n'expose pas le roi allié à la capture par le joueur adverse
-                    insertionCasesAtteignables(self, Echiquier[self->x + avant][self->y - droite]);
-                //}
+                insertionCasesAtteignables(self, Echiquier[self->x + avant][self->y - droite]);
             }
 
         }
     }
 }
 
-void calculAtteignableCavalier(Case* Echiquier[8][8], Piece* joueurAdverse[16], Piece* roiAllie, Piece* self) {
+void calculAtteignableCavalier(Case* Echiquier[8][8], Piece* self) {
     /*
     Met à jour le tableau des cases atteignables par la pièce self.
     */
@@ -129,7 +121,7 @@ void calculAtteignableCavalier(Case* Echiquier[8][8], Piece* joueurAdverse[16], 
     }
 }
 
-void calculAtteignableTour(Case* Echiquier[8][8], Piece* joueurAdverse[16], Piece* roiAllie, Piece* self) {
+void calculAtteignableTour(Case* Echiquier[8][8], Piece* self) {
     // TODO - Le roque
     int avant, droite, limiteAvant, limiteArriere, limiteDroite, limiteGauche;
     switch (self->couleur) {
@@ -205,7 +197,7 @@ void calculAtteignableTour(Case* Echiquier[8][8], Piece* joueurAdverse[16], Piec
     }
 }
 
-void calculAtteignableFou(Case* Echiquier[8][8], Piece* joueurAdverse[16], Piece* roiAllie, Piece* self) {
+void calculAtteignableFou(Case* Echiquier[8][8], Piece* self) {
     int avant, droite, limiteAvant, limiteArriere, limiteDroite, limiteGauche;
     switch (self->couleur) {
         case BLANC :
@@ -288,12 +280,12 @@ void calculAtteignableFou(Case* Echiquier[8][8], Piece* joueurAdverse[16], Piece
     }
 }
 
-void calculAtteignableReine(Case* Echiquier[8][8], Piece* joueurAdverse[16], Piece* roiAllie, Piece* self) {
-    calculAtteignableFou(Echiquier, joueurAdverse, roiAllie, self);
-    calculAtteignableTour(Echiquier, joueurAdverse, roiAllie, self);
+void calculAtteignableReine(Case* Echiquier[8][8], Piece* self) {
+    calculAtteignableFou(Echiquier, self);
+    calculAtteignableTour(Echiquier, self);
 }
 
-void calculAtteignableRoi(Case* Echiquier[8][8], Piece* joueurAdverse[16], Piece* roiAllie, Piece* self) {
+void calculAtteignableRoi(Case* Echiquier[8][8], Piece* self) {
     // TODO - Le roque
     // TODO - Est attaqué (= atteignable par l'ennnemi) ?
     int mouvements[8][2] = { {1, 0}, {-1, 0}, {0, 1}, {0, -1}, {1, 1}, {1, -1}, {-1, 1}, {-1, -1} };
@@ -343,7 +335,7 @@ void actualiseCasesAtteignablesParPiece(Piece* pieceCourante, Piece* piecePreced
     }
 }
 
-void actualiseCasesAtteignablesParJoueur(Case* Echiquier[8][8], Piece* joueurAdverse[16],Piece* Roi, Piece* pieceActualisable) {
+void actualiseCasesAtteignablesParJoueur(Case* Echiquier[8][8], Piece* pieceActualisable) {
     /*
     Vide puis remplis le tableau des cases atteignables de pieceActualisable.
     */
@@ -353,7 +345,7 @@ void actualiseCasesAtteignablesParJoueur(Case* Echiquier[8][8], Piece* joueurAdv
         pieceActualisable->casesAtteignables[i] = NULL; // Vide le tableau
     }
     if (!(pieceActualisable->estCapturee)) { // N'actualise que les pièces encore en jeu.
-        pieceActualisable->calculAtteignable(Echiquier, joueurAdverse, Roi, pieceActualisable); // Recalcule le statut allié et rempli le tableau // TODO - màj les signatures
+        pieceActualisable->calculAtteignable(Echiquier, pieceActualisable); // Recalcule le statut allié et rempli le tableau // TODO - màj les signatures
         if (pieceActualisable->casesAtteignables[0] == NULL) { pieceActualisable->estBloquee = true; } // Le tableau est entièrement vide (aucun ajout après calcul)
         else { pieceActualisable->estBloquee = false; }
     }

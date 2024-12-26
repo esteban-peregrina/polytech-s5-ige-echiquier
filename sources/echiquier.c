@@ -132,7 +132,7 @@ void partieEchec() {
     Piece** joueurAdverse = Noirs;
 
     while (!echecEtMat) {
-        for (int i = 0; i < 16; i++) { actualiseCasesAtteignablesParJoueur(Echiquier, joueurAdverse, joueurCourant[4], joueurCourant[i]); } // On actualise chaque pièce du joueur
+        for (int i = 0; i < 16; i++) { actualiseCasesAtteignablesParJoueur(Echiquier, joueurCourant[i]); } // On actualise chaque pièce du joueur
 
         bool aJoue = false;
         Menu menu = PIECES; // On commence la partie par sélectionner une pièce
@@ -268,8 +268,8 @@ void partieEchec() {
                     pieceCourante->y = yCible;
 
                     // On actualise les cases atteignables par l'adversaire après le mouvement
-                    for (int i = 0; i < 16; i++) { actualiseCasesAtteignablesParJoueur(Echiquier, joueurCourant, joueurAdverse[4], joueurAdverse[i]); } 
-                    
+                    for (int i = 0; i < 16; i++) { actualiseCasesAtteignablesParJoueur(Echiquier, joueurAdverse[i]); } 
+
                     // Interdiction de mettre en échec
                     Case* caseRoyale = Echiquier[joueurCourant[4]->x][joueurCourant[4]->y];
                     if (caseRoyale->estAtteignableParJoueur[joueurAdverse[4]->couleur] == true) { // Le roi allié est désormais atteignable par l'adversaire
@@ -280,7 +280,6 @@ void partieEchec() {
                         Echiquier[xPrecedent][yPrecedent]->piece = pieceCourante; // On annule le mouvement
                         
                         printf("Le coup expose le Roi à l'échec ! Veuillez-en sélectionner un autre...\n");
-                        //continue; // On redemande au joueur de jouer
                     } else {
                         caseCourante->estSelectionnee = false;
                         pieceCourante->estSelectionnee = false;
@@ -291,7 +290,7 @@ void partieEchec() {
                         joueurCourant = (joueurCourant == Blancs) ? Noirs : Blancs;
                         joueurAdverse = (joueurAdverse == Noirs) ? Blancs : Noirs;
                         
-                        // On vide les cases atteignables par la pièce courante
+                        // On vide les cases atteignables par la pièce courante pour ne plus les afficher
                         actualiseCasesAtteignablesParPiece(NULL, pieceCourante); // On ne connait pas encore la piece courante de l'adversaire
                     }
                 }

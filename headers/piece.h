@@ -23,7 +23,7 @@ typedef struct Piece {
     int x;
     int y;      
 
-    void (*calculAtteignable)(Case* Echiquier[8][8], struct Piece* joueurAdverse[16], struct Piece* roiAllie, struct Piece* self);
+    void (*calculAtteignable)(Case* Echiquier[8][8], struct Piece* self);
 
     struct Case* casesAtteignables[64];
     
@@ -40,16 +40,16 @@ Piece* creationPiece(Role role, int couleur);
 
 //TODO - Enlever joueurAdverse et roiAllie ?
 // Opérations sur les pièces
-void calculAtteignablePion(Case* Echiquier[8][8], Piece* joueurAdverse[16], Piece* roiAllie, Piece* self);
-void calculAtteignableCavalier(Case* Echiquier[8][8], Piece* joueurAdverse[16], Piece* roiAllie, Piece* self);
-void calculAtteignableTour(Case* Echiquier[8][8], Piece* joueurAdverse[16], Piece* roiAllie, Piece* self);
-void calculAtteignableFou(Case* Echiquier[8][8], Piece* joueurAdverse[16], Piece* roiAllie, Piece* self);
-void calculAtteignableReine(Case* Echiquier[8][8], Piece* joueurAdverse[16], Piece* roiAllie, Piece* self);
-void calculAtteignableRoi(Case* Echiquier[8][8], Piece* joueurAdverse[16], Piece* roiAllie, Piece* self);
+void calculAtteignablePion(Case* Echiquier[8][8], Piece* self);
+void calculAtteignableCavalier(Case* Echiquier[8][8], Piece* self);
+void calculAtteignableTour(Case* Echiquier[8][8], Piece* self);
+void calculAtteignableFou(Case* Echiquier[8][8], Piece* self);
+void calculAtteignableReine(Case* Echiquier[8][8], Piece* self);
+void calculAtteignableRoi(Case* Echiquier[8][8], Piece* self);
 
 void insertionCasesAtteignables(Piece* pieceCourante, Case* caseAtteignable);
 void actualiseCasesAtteignablesParPiece(Piece* pieceCourante, Piece* piecePrecedente);
-void actualiseCasesAtteignablesParJoueur(Case* Echiquier[8][8], Piece* joueurAdverse[16], Piece* Roi, Piece* pieceActualisable);
+void actualiseCasesAtteignablesParJoueur(Case* Echiquier[8][8], Piece* pieceActualisable);
 
 // Opération sur les joueurs
 void initialiseJoueur(Case* Echiquier[8][8], Piece* Joueur[16], int couleur);
