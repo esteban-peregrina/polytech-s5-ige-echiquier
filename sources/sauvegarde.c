@@ -9,6 +9,8 @@ int sauvegarderEchiquier(Case* Echiquier[8][8], Piece* joueurBlanc[16], Piece* j
         return EXIT_FAILURE;
     }
 
+    printf("%s", repertoireCourant);
+
     // Création du répertoire de sauvegarde si il n'existe pas déjà
     mkdir(dossierDeSauvegarde, 0777);
     
@@ -86,6 +88,10 @@ int chargerEchiquier(Case* Echiquier[8][8], Piece* joueurBlanc[16], Piece* joueu
     FILE* fichierEchiquier = fopen("echiquier", "r");
     if (!fichierEchiquier) {
         perror("Impossible d'ouvrir le fichier de sauvegarde");
+        if (chdir(repertoireCourant) != 0) {
+            perror("Impossible de retourner au répertoire d'origine");
+            return EXIT_FAILURE;
+        }
         return EXIT_FAILURE;
     }
 
@@ -111,6 +117,14 @@ int chargerEchiquier(Case* Echiquier[8][8], Piece* joueurBlanc[16], Piece* joueu
 
     // Charger les pièces du joueur blanc
     FILE* fichierJoueurBlanc = fopen("joueurBlanc", "r");
+    if (!fichierJoueurBlanc) {
+        perror("Impossible d'ouvrir le fichier de sauvegarde");
+        if (chdir(repertoireCourant) != 0) {
+            perror("Impossible de retourner au répertoire d'origine");
+            return EXIT_FAILURE;
+        }
+        return EXIT_FAILURE;
+    }
     for (int i = 0; i < 16; i++) {
         int role, couleur, x, y;
         fscanf(fichierJoueurBlanc, "%d %d %d %d\n", &role, &couleur, &x, &y);
@@ -121,6 +135,14 @@ int chargerEchiquier(Case* Echiquier[8][8], Piece* joueurBlanc[16], Piece* joueu
     fclose(fichierJoueurBlanc);
     // Charger les pièces du joueur noir
     FILE* fichierJoueurNoir = fopen("joueurNoir", "r");
+    if (!fichierJoueurNoir) {
+        perror("Impossible d'ouvrir le fichier de sauvegarde");
+        if (chdir(repertoireCourant) != 0) {
+            perror("Impossible de retourner au répertoire d'origine");
+            return EXIT_FAILURE;
+        }
+        return EXIT_FAILURE;
+    }
     for (int i = 0; i < 16; i++) {
         int role, couleur, x, y;
         fscanf(fichierJoueurNoir, "%d %d %d %d\n", &role, &couleur, &x, &y);

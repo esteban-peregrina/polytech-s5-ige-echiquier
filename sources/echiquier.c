@@ -131,7 +131,7 @@ void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], Piece *Noirs[16], int
         actualiseExposeRoi(Echiquier, joueurCourant, joueurAdverse); // On retire les cases exposant le roi allié à l'échec
 
         bool aJoue = false;
-        Menu menu = PIECES; // On commence la partie en sélectionnant une pièce
+        Menu menu = PIECES; // On commence le tour en sélectionnant une pièce
 
         // On sélectionne la première pièce non bloquée et non capturée
         int indicePieceCourante = 0;
@@ -163,6 +163,9 @@ void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], Piece *Noirs[16], int
             if (read(STDIN_FILENO, &actionJoueur, 1) != 1) { exit(EXIT_FAILURE); } // Écrit l'entrée utilisateur lue dans &actionJoueur et vérifie que cela à fonctionné
 
             if (actionJoueur == 'q') {
+                pieceCourante->estSelectionnee = false;
+                if (caseCourante != NULL) { caseCourante->estSelectionnee = false; }
+                
                 reset_terminal_mode(&orig_termios);
                 printf("\n");
 
@@ -206,6 +209,7 @@ void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], Piece *Noirs[16], int
                                 caseCourante->estSelectionnee = true;
                                 pieceCourante->estSelectionnee = true;
                                 menu = COUPS;
+                                printf("FLAG\n");
                                 break;
                             case 'C': // Flèche droite
                                 do {
