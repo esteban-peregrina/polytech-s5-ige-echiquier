@@ -2,7 +2,7 @@
 binaries/
 objects/
 .devcontainer/
-sauvegarde/
+sauvegardes/
 
 # For MacOS local repositories
 .DS_Store
