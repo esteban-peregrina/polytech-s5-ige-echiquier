@@ -9,5 +9,6 @@
 #include ".././headers/echiquier.h"
 
 void save_echiquier(Case* Echiquier[8][8], Piece* joueurBlanc[16], Piece* joueurNoir[16], char* directoryname);
+void load_echiquier(Case* Echiquier[8][8], Piece* joueurBlanc[16], Piece* joueurNoir[16], char* directoryname);
 
 #endif // SAUVEGARDE_H

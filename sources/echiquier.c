@@ -132,6 +132,24 @@ void partieEchec() {
     Piece** joueurCourant = Blancs; // Les blancs commences
     Piece** joueurAdverse = Noirs;
 
+    load_echiquier(Echiquier, Blancs, Noirs, "sauvegardes");
+    int joueurEnCours = -1;
+
+    FILE* saveFile = fopen("sauvegardes/joueur_courant.txt", "r");
+    if (saveFile != NULL) {
+        fscanf(saveFile, "%d", &joueurEnCours); // Lecture du joueur courant
+        fclose(saveFile);
+    }
+
+    // Si aucun joueur n'est chargé, on commence avec les Blancs
+    if (joueurEnCours == NOIR) { // 0 = Noirs
+        joueurCourant = Noirs;
+        joueurAdverse = Blancs;
+    } else { // 1 ou indéfini (-1) = Blancs
+        joueurCourant = Blancs;
+        joueurAdverse = Noirs;
+    } 
+
     while (!echecEtMat) {
         actualiseCasesAtteignablesParJoueur(Echiquier, joueurCourant); // On actualise chaque tableau des cases atteignables par les pièces du joueur
         actualiseExposeRoi(Echiquier, joueurCourant, joueurAdverse); // On retire les cases exposant le roi allié à l'échec
@@ -170,6 +188,12 @@ void partieEchec() {
 
             if (actionJoueur == 'q') {
                 save_echiquier(Echiquier, Blancs, Noirs, "sauvegardes");
+                FILE* saveFile = fopen("sauvegardes/joueur_courant.txt", "w");
+                if (saveFile != NULL) {
+                    fprintf(saveFile, "%d", (joueurCourant == Blancs) ? BLANC : NOIR); // Sauvegarde le joueur courant (0 pour Blancs, 1 pour Noirs)
+                    fclose(saveFile);
+                }
+
                 videEchiquier(Echiquier);
                 reset_terminal_mode(&orig_termios);
                 printf("\n");
