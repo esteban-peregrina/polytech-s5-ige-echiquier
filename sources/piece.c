@@ -499,7 +499,6 @@ void actualiseExposeRoi(Case* Echiquier[8][8], Piece* joueurCourant[16], Piece* 
                 // Interdiction de mettre en échec
                 Case* caseRoyale = Echiquier[joueurCourant[4]->x][joueurCourant[4]->y];
                 if (caseRoyale->estAtteignableParJoueur[joueurAdverse[4]->couleur] > 0) {
-                    printf("SUPPRESSION\n");
                     suppressionCasesAtteignables(pieceCourante, caseCourante);
                     coup--; // On reprend le même indice car la suppression décale le tableau des cases atteignables 
                     //! S'assurer que pieceCourante->longueurCasesAtteignables suive et ne soit pas fixe sinon faudra passer par un while
