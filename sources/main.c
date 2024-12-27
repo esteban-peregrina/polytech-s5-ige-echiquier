@@ -11,7 +11,7 @@
 // TODO - Exit codes specifique
 
 int main() {
-    partieEchec();
+    jeuEchec();
 
     return 0;
 }

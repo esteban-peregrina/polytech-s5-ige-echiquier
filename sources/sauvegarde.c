@@ -1,93 +1,100 @@
+#include <stdlib.h> // EXIT_FAILURE, EXIT_SUCCESS
+
 #include ".././headers/sauvegarde.h"
 
-void save_echiquier(Case* Echiquier[8][8], Piece* joueurBlanc[16], Piece* joueurNoir[16], char* directoryname) {
-    char currentDir[1024];
-    if (getcwd(currentDir, sizeof(currentDir)) == NULL) {
-        perror("Failed to get current working directory");
-        return;
+int sauvegarderEchiquier(Case* Echiquier[8][8], Piece* joueurBlanc[16], Piece* joueurNoir[16], int couleurJoueurCourant, char* dossierDeSauvegarde) {
+    char repertoireCourant[1024];
+    if (getcwd(repertoireCourant, sizeof(repertoireCourant)) == NULL) {
+        perror("Impossible de récupérer le répertoire courant");
+        return EXIT_FAILURE;
     }
 
-    // Create the directory if it doesn't exist
-    mkdir(directoryname, 0777);
+    // Création du répertoire de sauvegarde si il n'existe pas déjà
+    mkdir(dossierDeSauvegarde, 0777);
     
-    // Change to the specified directory
-    if (chdir(directoryname) != 0) {
-        perror("Failed to change directory");
-        return;
+    // Entrer dans le répertoire de sauvegarde
+    if (chdir(dossierDeSauvegarde) != 0) {
+        perror("Impossible de changer de répertoire");
+        return EXIT_FAILURE;
     }
 
-    FILE* descriptor = fopen("echiquier", "w");
-
-    // Save the state of the chessboard
-    for (int y = 0; y < 8; y++) {
+    // Enregistrement de l'état de l'échiquier
+    FILE* fichierEchiquier = fopen("echiquier", "w");
+    fprintf(fichierEchiquier, "%d\n", couleurJoueurCourant); // La première ligne stocke le joueur courant
+    for (int y = 0; y < 8; y++) { // Les lignes suivantes stockent l'état des cases de l'échiquier
         for (int x = 0; x < 8; x++) {
-            Case* currentCase = Echiquier[y][x];
-            if (currentCase->piece) {
-                Piece* piece = currentCase->piece;
-                fprintf(descriptor, "%d %d %d %d\n", 
+            Case* caseCourante = Echiquier[y][x];
+            if (caseCourante->piece != NULL) {
+                Piece* piece = caseCourante->piece;
+                fprintf(fichierEchiquier, "%d %d %d %d\n", 
                         piece->role, 
                         piece->couleur, 
                         piece->x, 
                         piece->y);
             } else {
-                fprintf(descriptor, "-1 -1 -1 -1\n"); // Empty case
+                fprintf(fichierEchiquier, "-1 -1 -1 -1\n"); // Case vide
             }
         }
     }
 
-    fclose(descriptor);
+    fclose(fichierEchiquier);
 
-    // Save the players (pieces)
-    FILE* joueurBlancFile = fopen("joueurBlanc", "w");
-    for (int i = 0; i < 16; i++) {
+    // Enregistrement des pièces du joueur blanc
+    FILE* fichierJoueurBlanc = fopen("joueurBlanc", "w");
+    for (int i = 0; i < 16; i++) { // Stockage des états des pièces du joueur blanc
         Piece* piece = joueurBlanc[i];
         if (piece) {
-            fprintf(joueurBlancFile, "%d %d %d %d\n", piece->role, piece->couleur, piece->x, piece->y);
+            fprintf(fichierJoueurBlanc, "%d %d %d %d\n", piece->role, piece->couleur, piece->x, piece->y);
         }
     }
-    fclose(joueurBlancFile);
+    fclose(fichierJoueurBlanc);
 
-    FILE* joueurNoirFile = fopen("joueurNoir", "w");
-    for (int i = 0; i < 16; i++) {
+    // Enregistrement des pièces du joueur noir
+    FILE* fichierJoueurNoir = fopen("joueurNoir", "w");
+    for (int i = 0; i < 16; i++) { // Stockage des états des pièces du joueur noir
         Piece* piece = joueurNoir[i];
         if (piece) {
-            fprintf(joueurNoirFile, "%d %d %d %d\n", piece->role, piece->couleur, piece->x, piece->y);
+            fprintf(fichierJoueurNoir, "%d %d %d %d\n", piece->role, piece->couleur, piece->x, piece->y);
         }
     }
-    fclose(joueurNoirFile);
+    fclose(fichierJoueurNoir);
 
-    printf("Successfully saved game to \"%s\"\n", directoryname);
+    printf("Enregistrements dans le répertoire \"%s\" réalisé avec succès\n", dossierDeSauvegarde);
 
-    // Return to the original directory
-    if (chdir(currentDir) != 0) {
-        perror("Failed to return to the original directory");
+    // Retourne au répertoire d'origine
+    if (chdir(repertoireCourant) != 0) {
+        perror("Impossible de retourner au répertoire d'origine");
+        return EXIT_FAILURE;
     }
+
+    return EXIT_SUCCESS;
 }
 
-void load_echiquier(Case* Echiquier[8][8], Piece* joueurBlanc[16], Piece* joueurNoir[16], char* directoryname) {
-    char currentDir[1024];
-    if (getcwd(currentDir, sizeof(currentDir)) == NULL) {
-        perror("Failed to get current working directory");
-        return;
+int chargerEchiquier(Case* Echiquier[8][8], Piece* joueurBlanc[16], Piece* joueurNoir[16],  int couleurJoueurCourant, char* dossierDeSauvegarde) {
+    char repertoireCourant[1024];
+    if (getcwd(repertoireCourant, sizeof(repertoireCourant)) == NULL) {
+        perror("Impossible de récupérer le répertoire courant");
+        return EXIT_FAILURE;
     }
 
-    // Change to the directory containing the saved game
-    if (chdir(directoryname) != 0) {
-        perror("Failed to change directory");
-        return;
+    // Entrer dans le répertoire de sauvegarde
+    if (chdir(dossierDeSauvegarde) != 0) {
+        perror("Impossible de changer de répertoire");
+        return EXIT_FAILURE;
     }
 
-    FILE* descriptor = fopen("echiquier", "r");
-    if (!descriptor) {
-        perror("Failed to open echiquier file");
-        return;
+    FILE* fichierEchiquier = fopen("echiquier", "r");
+    if (!fichierEchiquier) {
+        perror("Impossible d'ouvrir le fichier de sauvegarde");
+        return EXIT_FAILURE;
     }
 
-    // Load the state of the chessboard
+    // Charger l'état de l'échiquier
+    fscanf(fichierEchiquier, "%d\n", &couleurJoueurCourant);
     for (int y = 0; y < 8; y++) {
         for (int x = 0; x < 8; x++) {
             int role, couleur, posX, posY;
-            fscanf(descriptor, "%d %d %d %d\n", &role, &couleur, &posX, &posY);
+            fscanf(fichierEchiquier, "%d %d %d %d\n", &role, &couleur, &posX, &posY);
 
             Case* currentCase = creationCase(x, y);
             if (role != -1) {
@@ -100,33 +107,36 @@ void load_echiquier(Case* Echiquier[8][8], Piece* joueurBlanc[16], Piece* joueur
         }
     }
 
-    fclose(descriptor);
+    fclose(fichierEchiquier);
 
-    // Load the players
-    FILE* joueurBlancFile = fopen("joueurBlanc", "r");
+    // Charger les pièces du joueur blanc
+    FILE* fichierJoueurBlanc = fopen("joueurBlanc", "r");
     for (int i = 0; i < 16; i++) {
         int role, couleur, x, y;
-        fscanf(joueurBlancFile, "%d %d %d %d\n", &role, &couleur, &x, &y);
+        fscanf(fichierJoueurBlanc, "%d %d %d %d\n", &role, &couleur, &x, &y);
         joueurBlanc[i] = creationPiece((Role)role, couleur);
         joueurBlanc[i]->x = x;
         joueurBlanc[i]->y = y;
     }
-    fclose(joueurBlancFile);
-
-    FILE* joueurNoirFile = fopen("joueurNoir", "r");
+    fclose(fichierJoueurBlanc);
+    // Charger les pièces du joueur noir
+    FILE* fichierJoueurNoir = fopen("joueurNoir", "r");
     for (int i = 0; i < 16; i++) {
         int role, couleur, x, y;
-        fscanf(joueurNoirFile, "%d %d %d %d\n", &role, &couleur, &x, &y);
+        fscanf(fichierJoueurNoir, "%d %d %d %d\n", &role, &couleur, &x, &y);
         joueurNoir[i] = creationPiece((Role)role, couleur);
         joueurNoir[i]->x = x;
         joueurNoir[i]->y = y;
     }
-    fclose(joueurNoirFile);
+    fclose(fichierJoueurNoir);
 
-    printf("Successfully loaded game from \"%s\"\n", directoryname);
+    printf("Chargement depuis le réprtoire \"%s\" réalisé avec succès\n", dossierDeSauvegarde);
 
-    // Return to the original directory
-    if (chdir(currentDir) != 0) {
-        perror("Failed to return to the original directory");
+    // Retourne au répertoire d'origine
+    if (chdir(repertoireCourant) != 0) {
+        perror("Impossible de retourner au répertoire d'origine");
+        return EXIT_FAILURE;
     }
+
+    return EXIT_SUCCESS;
 }

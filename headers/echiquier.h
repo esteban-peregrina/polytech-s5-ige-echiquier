@@ -31,6 +31,7 @@ void videEchiquier(Case* Echiquier[8][8]);
 void afficheEchiquier(Case* Echiquier[8][8]);
 
 // Jeu
-void partieEchec();
+void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], Piece *Noirs[16], int couleurJoueurCourant);
+void jeuEchec() ;
 
 #endif // ECHIQUIER_H

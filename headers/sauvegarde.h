@@ -8,7 +8,7 @@
 #include ".././headers/piece.h"
 #include ".././headers/echiquier.h"
 
-void save_echiquier(Case* Echiquier[8][8], Piece* joueurBlanc[16], Piece* joueurNoir[16], char* directoryname);
-void load_echiquier(Case* Echiquier[8][8], Piece* joueurBlanc[16], Piece* joueurNoir[16], char* directoryname);
+int sauvegarderEchiquier(Case* Echiquier[8][8], Piece* joueurBlanc[16], Piece* joueurNoir[16], int couleurJoueurCourant, char* dossierDeSauvegarde);
+int chargerEchiquier(Case* Echiquier[8][8], Piece* joueurBlanc[16], Piece* joueurNoir[16],  int couleurJoueurCourant, char* dossierDeSauvegarde);
 
 #endif // SAUVEGARDE_H
