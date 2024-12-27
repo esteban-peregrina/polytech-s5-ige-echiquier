@@ -1,6 +1,10 @@
 #ifndef ECHIQUIER_H
 #define ECHIQUIER_H
 
+#include <stdbool.h>
+
+#include ".././headers/piece.h"
+
 typedef enum {
     PIECES,            
     COUPS,

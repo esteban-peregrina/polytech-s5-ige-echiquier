@@ -1,8 +1,5 @@
 #include <stdlib.h>
-#include <stdio.h>
-#include <stdbool.h>
 
-#include ".././headers/echiquier.h"
 #include ".././headers/piece.h"
 
 Piece* creationPiece(Role role, int couleur) {

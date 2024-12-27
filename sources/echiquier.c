@@ -1,11 +1,8 @@
-#include <stdbool.h>
 #include <stdio.h>
-#include <termios.h>
-#include <unistd.h>
 #include <stdlib.h>
 
 #include ".././headers/lecture.h"
-#include ".././headers/piece.h"
+#include ".././headers/sauvegarde.h"
 #include ".././headers/echiquier.h"
 
 Case* creationCase(int x, int y) {
@@ -172,6 +169,7 @@ void partieEchec() {
             if (read(STDIN_FILENO, &actionJoueur, 1) != 1) { exit(EXIT_FAILURE); } // Écrit l'entrée utilisateur lue dans &actionJoueur et vérifie que cela à fonctionné
 
             if (actionJoueur == 'q') {
+                save_echiquier(Echiquier, Blancs, Noirs, "sauvegardes");
                 videEchiquier(Echiquier);
                 reset_terminal_mode(&orig_termios);
                 printf("\n");

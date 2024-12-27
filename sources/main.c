@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+#include ".././headers/sauvegarde.h"
 #include ".././headers/piece.h"
 #include ".././headers/echiquier.h"
 

@@ -1,6 +1,11 @@
 #ifndef PIECE_H
 #define PIECE_H
 
+#include <stdio.h>
+#include <stdbool.h>
+
+#include ".././headers/echiquier.h"
+
 #define NOIR 0
 #define BLANC 1
 
