@@ -46,7 +46,7 @@ void calculAtteignablePion(Case* Echiquier[8][8], Piece* self) {
         if (self->y != bordGauche) {
             Piece* pieceDiagonaleGauche = Echiquier[self->x + avant][self->y - droite]->piece;
             if ((pieceDiagonaleGauche) && 
-                (pieceDiagonaleGauche->couleur != self->couleur) && 
+                (pieceDiagonaleGauche->couleur != self->couleur) &&
                 (!pieceDiagonaleGauche->estCapturee)) 
             { insertionCasesAtteignables(self, Echiquier[self->x + avant][self->y - droite]); }
 
@@ -58,15 +58,19 @@ void calculAtteignablePion(Case* Echiquier[8][8], Piece* self) {
         // Vérifie les pions adjacents
         if (self->y != bordGauche) { // Prise à gauche
             Piece* pieceGauche = Echiquier[self->x][self->y-droite]->piece;
-            if ((pieceGauche) && (pieceGauche->role == PION) && 
+            if ((pieceGauche) && 
+                (pieceGauche->role == PION) && 
                 (pieceGauche->couleur != self->couleur) &&
+                (!pieceGauche->estCapturee) &&
                 (pieceGauche->vientDeFaireDoublePas)) 
             { insertionCasesAtteignables(self, Echiquier[self->x + avant][self->y - droite]); }
         }
         if (self->y != bordDroite) { // Prise à droite 
             Piece* pieceDroite = Echiquier[self->x][self->y+droite]->piece;
-            if ((pieceDroite) && pieceDroite->role == PION && 
+            if ((pieceDroite) && 
+                (pieceDroite->role == PION) && 
                 (pieceDroite->couleur != self->couleur) &&
+                (!pieceDroite->estCapturee) &&
                 (pieceDroite->vientDeFaireDoublePas)) 
             { insertionCasesAtteignables(self, Echiquier[self->x + avant][self->y + droite]); }
         }

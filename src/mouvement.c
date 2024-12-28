@@ -19,7 +19,8 @@ Piece* mouvement(Case* Echiquier[8][8], Piece* piece, Case* caseCible, bool estS
     piece->y = yCible;
     
     // Prise en passant
-    if ((piece->role == PION) && (abs(yCible - yPrecedent) == 1) && (!pieceCapturee)) {
+    int rangeeEnPassant = (piece->couleur == BLANC) ? 4 : 3;
+    if ((xPrecedent == rangeeEnPassant) && (piece->role == PION) && (abs(yCible - yPrecedent) == 1) && (!pieceCapturee)) {
         pieceCapturee = Echiquier[xPrecedent][yCible]->piece; // On capture à droite ou à gauche
         if ((pieceCapturee) && (pieceCapturee->vientDeFaireDoublePas)) { Echiquier[xPrecedent][yCible]->piece = NULL; }
         else { pieceCapturee = NULL; } // On annule la prise en passant
