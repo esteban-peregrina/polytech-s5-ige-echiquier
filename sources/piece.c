@@ -510,4 +510,5 @@ void actualiseExposeRoi(Case* Echiquier[8][8], Piece* joueurCourant[16], Piece* 
             }
         }
     }
+
 }
