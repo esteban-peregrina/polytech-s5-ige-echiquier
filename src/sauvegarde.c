@@ -1,6 +1,6 @@
 #include <stdlib.h> // EXIT_FAILURE, EXIT_SUCCESS
 
-#include ".././headers/sauvegarde.h"
+#include ".././include/sauvegarde.h"
 
 int sauvegarderEchiquier(Piece* joueurBlanc[16], Piece* joueurNoir[16], int couleurJoueurCourant, char* dossierDeSauvegarde) {
     char repertoireCourant[1024];

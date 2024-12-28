@@ -6,9 +6,9 @@ CC = gcc
 CFLAGS = -Wall
 
 # Répertoires type
-SRC_DIR = sources
-OBJ_DIR = objects
-BIN_DIR = binaries
+SRC_DIR = src
+OBJ_DIR = build
+BIN_DIR = bin
 
 # Fichiers
 SRCS = $(wildcard $(SRC_DIR)/*.c) 

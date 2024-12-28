@@ -1,6 +1,6 @@
 #include <stdlib.h> // malloc, free, exit
 
-#include ".././headers/piece.h"
+#include ".././include/piece.h"
 
 Piece* creationPiece(Role role, int couleur) {
     /*

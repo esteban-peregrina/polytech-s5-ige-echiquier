@@ -1,11 +1,11 @@
 #include <stdio.h> // printf()
 #include <stdlib.h> // malloc(), free(), exit()
 
-#include ".././headers/affichage.h" // afficheEchiquier()
-#include ".././headers/lecture.h" // set_terminal_raw_mode(), reset_terminal_mode()
-#include ".././headers/sauvegarde.h" // save_echiquier(), load_echiquier()
+#include ".././include/affichage.h" // afficheEchiquier()
+#include ".././include/lecture.h" // set_terminal_raw_mode(), reset_terminal_mode()
+#include ".././include/sauvegarde.h" // save_echiquier(), load_echiquier()
 
-#include ".././headers/echiquier.h"
+#include ".././include/echiquier.h"
 
 Case* creationCase(int x, int y) {
     /*

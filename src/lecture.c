@@ -1,4 +1,4 @@
-#include ".././headers/lecture.h"
+#include ".././include/lecture.h"
 
 /*========= Le code ci-dessous à été généré par ChatGPT =========*/
 

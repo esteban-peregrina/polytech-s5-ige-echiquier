@@ -1,4 +1,4 @@
-#include ".././headers/affichage.h"
+#include ".././include/affichage.h"
 
 void afficheEchiquier(Case* Echiquier[8][8]) {
     /*
