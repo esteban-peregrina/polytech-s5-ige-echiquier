@@ -28,7 +28,11 @@ int sauvegarderEchiquier(Piece* joueurBlanc[16], Piece* joueurNoir[16], int coul
     for (int i = 0; i < 16; i++) { // Stockage des états des pièces du joueur blanc
         Piece* piece = joueurBlanc[i];
         if (piece) {
-            fprintf(fichierJoueurBlanc, "%d %d %d %d %d\n", piece->role, piece->couleur, piece->estCapturee, piece->x, piece->y);
+            int estCapturee;
+            if (piece->estCapturee) {
+                estCapturee = 1;
+            } else { estCapturee = 0;}
+            fprintf(fichierJoueurBlanc, "%d %d %d %d %d\n", piece->role, piece->couleur, estCapturee, piece->x, piece->y);
         }
     }
     fclose(fichierJoueurBlanc);
@@ -38,7 +42,11 @@ int sauvegarderEchiquier(Piece* joueurBlanc[16], Piece* joueurNoir[16], int coul
     for (int i = 0; i < 16; i++) { // Stockage des états des pièces du joueur noir
         Piece* piece = joueurNoir[i];
         if (piece) {
-            fprintf(fichierJoueurNoir, "%d %d %d %d %d\n", piece->role, piece->couleur, piece->estCapturee, piece->x, piece->y);
+            int estCapturee;
+            if (piece->estCapturee) {
+                estCapturee = 1;
+            } else { estCapturee = 0;}
+            fprintf(fichierJoueurNoir, "%d %d %d %d %d\n", piece->role, piece->couleur, estCapturee, piece->x, piece->y);
         }
     }
     fclose(fichierJoueurNoir);
@@ -97,7 +105,9 @@ int chargerEchiquier(Case* Echiquier[8][8], Piece* joueurBlanc[16], Piece* joueu
         joueurBlanc[i] = creationPiece((Role)role, couleur);
         joueurBlanc[i]->x = x;
         joueurBlanc[i]->y = y;
-        joueurBlanc[i]->estCapturee = (bool)estCapturee;
+        if (estCapturee == 0) {
+            joueurBlanc[i]->estCapturee = false;
+        } else { joueurBlanc[i]->estCapturee = true;}
         Echiquier[x][y]->piece = joueurBlanc[i];
     }
     fclose(fichierJoueurBlanc);
@@ -118,7 +128,9 @@ int chargerEchiquier(Case* Echiquier[8][8], Piece* joueurBlanc[16], Piece* joueu
         joueurNoir[i] = creationPiece((Role)role, couleur);
         joueurNoir[i]->x = x;
         joueurNoir[i]->y = y;
-        joueurNoir[i]->estCapturee = (bool)estCapturee;
+        if (estCapturee == 0) {
+            joueurNoir[i]->estCapturee = false;
+        } else { joueurNoir[i]->estCapturee = true;}
         Echiquier[x][y]->piece = joueurNoir[i];
     }
     fclose(fichierJoueurNoir);
