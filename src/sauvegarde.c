@@ -32,7 +32,15 @@ int sauvegarderEchiquier(Piece* joueurBlanc[16], Piece* joueurNoir[16], int coul
             if (piece->estCapturee) {
                 estCapturee = 1;
             } else { estCapturee = 0;}
-            fprintf(fichierJoueurBlanc, "%d %d %d %d %d\n", piece->role, piece->couleur, estCapturee, piece->x, piece->y);
+            int vientDeFaireDoublePas;
+            if (piece->vientDeFaireDoublePas) {
+                vientDeFaireDoublePas = 1;
+            } else { vientDeFaireDoublePas = 0;}
+            int aPrecedemmentBouge;
+            if (piece->aPrecedemmentBouge) {
+                aPrecedemmentBouge = 1;
+            } else { aPrecedemmentBouge = 0;}
+            fprintf(fichierJoueurBlanc, "%d %d %d %d %d %d %d\n", piece->role, piece->couleur, estCapturee, vientDeFaireDoublePas, aPrecedemmentBouge, piece->x, piece->y);
         }
     }
     fclose(fichierJoueurBlanc);
@@ -46,7 +54,15 @@ int sauvegarderEchiquier(Piece* joueurBlanc[16], Piece* joueurNoir[16], int coul
             if (piece->estCapturee) {
                 estCapturee = 1;
             } else { estCapturee = 0;}
-            fprintf(fichierJoueurNoir, "%d %d %d %d %d\n", piece->role, piece->couleur, estCapturee, piece->x, piece->y);
+            int vientDeFaireDoublePas;
+            if (piece->vientDeFaireDoublePas) {
+                vientDeFaireDoublePas = 1;
+            } else { vientDeFaireDoublePas = 0;}
+            int aPrecedemmentBouge;
+            if (piece->aPrecedemmentBouge) {
+                aPrecedemmentBouge = 1;
+            } else { aPrecedemmentBouge = 0;}
+            fprintf(fichierJoueurNoir, "%d %d %d %d %d %d %d\n", piece->role, piece->couleur, estCapturee, vientDeFaireDoublePas, aPrecedemmentBouge, piece->x, piece->y);
         }
     }
     fclose(fichierJoueurNoir);
@@ -100,14 +116,20 @@ int chargerEchiquier(Case* Echiquier[8][8], Piece* joueurBlanc[16], Piece* joueu
         return EXIT_FAILURE;
     }
     for (int i = 0; i < 16; i++) {
-        int role, couleur, estCapturee, x, y;
-        fscanf(fichierJoueurBlanc, "%d %d %d %d %d\n", &role, &couleur, &estCapturee, &x, &y);
+        int role, couleur, estCapturee, vientDeFaireDoublePas, aPrecedemmentBouge, x, y;
+        fscanf(fichierJoueurBlanc, "%d %d %d %d %d %d %d\n", &role, &couleur, &estCapturee, &vientDeFaireDoublePas, &aPrecedemmentBouge, &x, &y);
         joueurBlanc[i] = creationPiece((Role)role, couleur);
         joueurBlanc[i]->x = x;
         joueurBlanc[i]->y = y;
         if (estCapturee == 0) {
             joueurBlanc[i]->estCapturee = false;
         } else { joueurBlanc[i]->estCapturee = true;}
+        if (vientDeFaireDoublePas == 0) {
+            joueurBlanc[i]->vientDeFaireDoublePas = false;
+        } else { joueurBlanc[i]->vientDeFaireDoublePas = true;}
+        if (aPrecedemmentBouge == 0) {
+            joueurBlanc[i]->aPrecedemmentBouge = false;
+        } else { joueurBlanc[i]->aPrecedemmentBouge = true;}
         Echiquier[x][y]->piece = joueurBlanc[i];
     }
     fclose(fichierJoueurBlanc);
@@ -123,14 +145,20 @@ int chargerEchiquier(Case* Echiquier[8][8], Piece* joueurBlanc[16], Piece* joueu
         return EXIT_FAILURE;
     }
     for (int i = 0; i < 16; i++) {
-        int role, couleur, estCapturee, x, y;
-        fscanf(fichierJoueurNoir, "%d %d %d %d %d\n", &role, &couleur, &estCapturee, &x, &y);
+        int role, couleur, estCapturee, vientDeFaireDoublePas, aPrecedemmentBouge, x, y;
+        fscanf(fichierJoueurNoir, "%d %d %d %d %d %d %d\n", &role, &couleur, &estCapturee, &vientDeFaireDoublePas, &aPrecedemmentBouge, &x, &y);
         joueurNoir[i] = creationPiece((Role)role, couleur);
         joueurNoir[i]->x = x;
         joueurNoir[i]->y = y;
         if (estCapturee == 0) {
             joueurNoir[i]->estCapturee = false;
         } else { joueurNoir[i]->estCapturee = true;}
+        if (vientDeFaireDoublePas == 0) {
+            joueurNoir[i]->vientDeFaireDoublePas = false;
+        } else { joueurNoir[i]->vientDeFaireDoublePas = true;}
+        if (aPrecedemmentBouge == 0) {
+            joueurNoir[i]->aPrecedemmentBouge = false;
+        } else { joueurNoir[i]->aPrecedemmentBouge = true;}
         Echiquier[x][y]->piece = joueurNoir[i];
     }
     fclose(fichierJoueurNoir);
