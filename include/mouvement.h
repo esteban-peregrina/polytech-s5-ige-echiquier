@@ -5,6 +5,6 @@
 #include "echiquier.h"
 
 // Retourne la pièce capturée si il y en a une
-Piece* mouvement(Case* Echiquier[8][8], Piece* piece, int xCible, int yCible, bool estSimulation);
+Piece* mouvement(Case* Echiquier[8][8], Piece* piece, Case* caseCible, bool estSimulation);
 
 #endif

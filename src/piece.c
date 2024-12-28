@@ -150,35 +150,42 @@ void actualiseExposeRoi(Case* Echiquier[8][8], Piece* joueurCourant[16], Piece* 
         if (!(pieceCourante->estCapturee) && !(pieceCourante->estBloquee)) { // N'actualise que les pièces encore en jeu et non bloquées 
             for (int coup = 0; coup < pieceCourante->longueurCasesAtteignables; coup++) { // Pour chacun des coups possible par la pièce
                 Case* caseCible = pieceCourante->casesAtteignables[coup];
+                
+                // Sauvegarde des états initiaux
                 int xPrecedent = pieceCourante->x;
                 int yPrecedent = pieceCourante->y;
-                
-                // Sauvegarde états
                 bool precedemmentBouge = pieceCourante->aPrecedemmentBouge;
                 bool doublePas = pieceCourante->vientDeFaireDoublePas;
                 
                 // Simulation du coup
-                Piece* pieceCapturee = mouvement(Echiquier, pieceCourante, caseCible->x, caseCible->y, true);
+                Piece* pieceCapturee = mouvement(Echiquier, pieceCourante, caseCible, true);
                 
                 // Vérification échec
                 actualiseCasesAtteignablesParJoueur(Echiquier, joueurAdverse);
                 Case* caseRoyale = Echiquier[joueurCourant[4]->x][joueurCourant[4]->y];
-                
                 if (caseRoyale->estAtteignableParJoueur[joueurAdverse[4]->couleur] > 0) {
                     suppressionCasesAtteignables(pieceCourante, caseCible);
                     coup--;
                 }
                 
-                // Restauration état
-                mouvement(Echiquier, pieceCourante, xPrecedent, yPrecedent, true);
-                if (pieceCapturee) {
+                // Restauration des états initiaux
+                mouvement(Echiquier, pieceCourante, Echiquier[xPrecedent][yPrecedent], true);
+                if (pieceCapturee) { // Si la simulation avait capturée une pièce
                     pieceCapturee->estCapturee = false;
-                    Echiquier[caseCible->x][caseCible->y]->piece = pieceCapturee;
+                    
+                    if ((pieceCourante->role == PION) && (abs(caseCible->y - yPrecedent) == 1) && (!pieceCapturee)) { // C'était une prise en passant
+                        Echiquier[xPrecedent][caseCible->y]->piece = pieceCapturee;
+                        pieceCapturee->x = xPrecedent;
+                        pieceCapturee->y = caseCible->y;
+                    } else {
+                        Echiquier[caseCible->x][caseCible->y]->piece = pieceCapturee;
+                        pieceCapturee->x = caseCible->x;
+                        pieceCapturee->y = caseCible->y;
+                    }
                 }
                 pieceCourante->aPrecedemmentBouge = precedemmentBouge;
                 pieceCourante->vientDeFaireDoublePas = doublePas;
             }
         }
     }
-
 }

@@ -111,7 +111,6 @@ void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], Piece *Noirs[16], int
                 if (caseCourante != NULL) { caseCourante->estSelectionnee = false; }
                 
                 reset_terminal_mode(&orig_termios);
-                printf("\n");
 
                 char reponse[4]; // 3 caractères et le caractère de fin de chaine
                 printf("Voulez-vous sauvegarder la partie ? (o/n) : ");
@@ -218,14 +217,14 @@ void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], Piece *Noirs[16], int
                         printf("Autre caractère spécial\n");
                     }
                 } else if (actionJoueur == '\n') { // Entrée - Le coup est validé
-                    int xCible = caseCourante->x;
-                    int yCible = caseCourante->y;
-
                     // Gestion du coup
-                    mouvement(Echiquier, pieceCourante, xCible, yCible, false); // On effectue le mouvement
+                    mouvement(Echiquier, pieceCourante, caseCourante, false); // On effectue le mouvement
 
+                    // On réinitialise les paramètres de sélection
                     caseCourante->estSelectionnee = false;
                     pieceCourante->estSelectionnee = false;
+
+                    // On donne la main à l'adversaire
                     menu = PIECES;
                     aJoue = true;
                     
@@ -235,8 +234,8 @@ void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], Piece *Noirs[16], int
                     joueurCourant = (joueurCourant == Blancs) ? Noirs : Blancs;
                     joueurAdverse = (joueurAdverse == Noirs) ? Blancs : Noirs;
                        
-                    // On vide les cases atteignables par la pièce courante pour ne plus les afficher
-                    actualiseCasesAtteignablesParPiece(NULL, pieceCourante); // On ne connait pas encore la piece courante de l'adversaire
+                    // On vide les cases atteignables par la pièce courante pour ne plus les afficher (On ne connait pas encore la piece courante de l'adversaire)
+                    actualiseCasesAtteignablesParPiece(NULL, pieceCourante);
                 }
             }
             // Rétablir les paramètres originaux
