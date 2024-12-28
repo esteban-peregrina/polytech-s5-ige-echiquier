@@ -250,7 +250,7 @@ void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], Piece *Noirs[16], int
             reset_terminal_mode(&orig_termios);
         }
     }
-    (joueurCourant == Blancs) ? printf("Victoire des Noirs (Rouges) !\n") : printf("Victoire des Blancs (Bleues) !\n");
+    (couleurJoueurCourant == BLANC) ? printf("Victoire des Noirs (Rouges) !\n") : printf("Victoire des Blancs (Bleus) !\n");
     videEchiquier(Echiquier); // Libère les cases
     videJoueur(Blancs); // Libère les pièces blanches
     videJoueur(Noirs);  // Libère les pièces noires  
