@@ -1,7 +1,7 @@
 #include "./../include/calcul_atteignable.h"
 
 void calculAtteignablePion(Case* Echiquier[8][8], Piece* self) {
-    //TODO - Promotion possible affichée avec une case jaune ou des caractres +/reine
+    //TODO - Promotion possible affichée avec une case jaune ou des caractres +
     //TODO - Prise en passant (ajout d'un booleen "double pas" ?)
     int origine, droite, avant, bordAvant, bordDroite, bordGauche;
     switch (self->couleur) {
@@ -235,7 +235,6 @@ void calculAtteignableReine(Case* Echiquier[8][8], Piece* self) {
 
 void calculAtteignableRoi(Case* Echiquier[8][8], Piece* self) {
     // TODO - Le roque
-    // TODO - Est attaqué (= atteignable par l'ennnemi) ?
     int mouvements[8][2] = { {1, 0}, {-1, 0}, {0, 1}, {0, -1}, {1, 1}, {1, -1}, {-1, 1}, {-1, -1} };
     for (int i = 0; i < 8; i++) { // Pour chacun des mouvements
         int xCible = self->x + mouvements[i][0];
