@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-#include ".././headers/echiquier.h"
+#include "echiquier.h"
 
 #define NOIR 0
 #define BLANC 1

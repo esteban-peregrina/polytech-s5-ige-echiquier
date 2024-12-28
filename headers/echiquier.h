@@ -3,7 +3,7 @@
 
 #include <stdbool.h>
 
-#include ".././headers/piece.h"
+#include "piece.h"
 
 typedef enum {
     PIECES,            
