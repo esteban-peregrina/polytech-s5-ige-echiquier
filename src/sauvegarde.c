@@ -130,7 +130,7 @@ int chargerEchiquier(Case* Echiquier[8][8], Piece* joueurBlanc[16], Piece* joueu
         if (aPrecedemmentBouge == 0) {
             joueurBlanc[i]->aPrecedemmentBouge = false;
         } else { joueurBlanc[i]->aPrecedemmentBouge = true;}
-        Echiquier[x][y]->piece = joueurBlanc[i];
+        if (!joueurBlanc[i]->estCapturee) { Echiquier[x][y]->piece = joueurBlanc[i]; }
     }
     fclose(fichierJoueurBlanc);
 
@@ -159,7 +159,7 @@ int chargerEchiquier(Case* Echiquier[8][8], Piece* joueurBlanc[16], Piece* joueu
         if (aPrecedemmentBouge == 0) {
             joueurNoir[i]->aPrecedemmentBouge = false;
         } else { joueurNoir[i]->aPrecedemmentBouge = true;}
-        Echiquier[x][y]->piece = joueurNoir[i];
+        if (!joueurNoir[i]->estCapturee) { Echiquier[x][y]->piece = joueurNoir[i]; }
     }
     fclose(fichierJoueurNoir);
 

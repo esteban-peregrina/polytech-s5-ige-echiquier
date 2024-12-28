@@ -39,7 +39,7 @@ void afficheEchiquier(Case* Echiquier[8][8]) {
                         }
                     }
 
-                    if ( (row == CELL_HEIGHT / 2) && (column == CELL_WIDTH / 2) && (contenuCase != NULL) && !(contenuCase->estCapturee)) { // Au centre de la case affichée
+                    if ( (row == CELL_HEIGHT / 2) && (column == CELL_WIDTH / 2) && (contenuCase != NULL)) { // Au centre de la case affichée
                         if (contenuCase->estSelectionnee) {
                             printf("\033[35m%s\033[0m", contenuCase->forme); // On met la piece en vert
                         } else {
