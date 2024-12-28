@@ -22,16 +22,15 @@ typedef struct Case {
     int y;
 } Case;
 
-// Déclaration et suppression de cases
+// Déclaration de cases
 Case* creationCase(int x, int y);
 
 // Opérations sur l'echiquier
 void initialiseEchiquier(Case* Echiquier[8][8]);
 void videEchiquier(Case* Echiquier[8][8]);
-void afficheEchiquier(Case* Echiquier[8][8]);
 
 // Jeu
 void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], Piece *Noirs[16], int couleurJoueurCourant);
-void jeuEchec() ;
+void jeuEchec();
 
 #endif // ECHIQUIER_H

@@ -4,6 +4,7 @@
 #include ".././include/affichage.h" // afficheEchiquier()
 #include ".././include/lecture.h" // set_terminal_raw_mode(), reset_terminal_mode()
 #include ".././include/sauvegarde.h" // save_echiquier(), load_echiquier()
+#include ".././include/joueur.h" // initialiseJoueur(), videJoueur()
 
 #include ".././include/echiquier.h"
 

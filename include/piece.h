@@ -45,22 +45,10 @@ typedef struct Piece {
 // Déclaration et suppresion de pièces
 Piece* creationPiece(Role role, int couleur);
 
-//TODO - Enlever joueurAdverse et roiAllie ?
 // Opérations sur les pièces
-void calculAtteignablePion(Case* Echiquier[8][8], Piece* self);
-void calculAtteignableCavalier(Case* Echiquier[8][8], Piece* self);
-void calculAtteignableTour(Case* Echiquier[8][8], Piece* self);
-void calculAtteignableFou(Case* Echiquier[8][8], Piece* self);
-void calculAtteignableReine(Case* Echiquier[8][8], Piece* self);
-void calculAtteignableRoi(Case* Echiquier[8][8], Piece* self);
-
 void insertionCasesAtteignables(Piece* pieceCourante, Case* caseAtteignable);
 void actualiseCasesAtteignablesParPiece(Piece* pieceCourante, Piece* piecePrecedente);
 void actualiseCasesAtteignablesParJoueur(Case* Echiquier[8][8], Piece* Joueur[16]);
 void actualiseExposeRoi(Case* Echiquier[8][8], Piece* joueurCourant[16], Piece* joueurAdverse[16]);
-
-// Opération sur les joueurs
-void initialiseJoueur(Case* Echiquier[8][8], Piece* Joueur[16], int couleur);
-void videJoueur(Piece* Joueur[16]); //TODO - Libère les pièces d'un joueur
 
 #endif // PIECE_H
