@@ -1,6 +1,7 @@
 #include <stdlib.h> // malloc(), free(), exit()
 
 #include ".././include/calcul_atteignable.h" // calculAtteignablePion(), calculAtteignableCavalier(), calculAtteignableTour(), calculAtteignableFou(), calculAtteignableReine(), calculAtteignableRoi()
+#include ".././include/mouvement.h" // mouvement()
 
 #include ".././include/piece.h"
 
@@ -45,6 +46,9 @@ Piece* creationPiece(Role role, int couleur) {
     pieceCree->estSelectionnee = false; 
     pieceCree->estCapturee = false; 
     pieceCree->estBloquee = false;
+
+    pieceCree->vientDeFaireDoublePas = false;
+    pieceCree->aPrecedemmentBouge = false;
 
     pieceCree->longueurCasesAtteignables = 0;
 
@@ -145,38 +149,34 @@ void actualiseExposeRoi(Case* Echiquier[8][8], Piece* joueurCourant[16], Piece* 
         Piece* pieceCourante = joueurCourant[piece];
         if (!(pieceCourante->estCapturee) && !(pieceCourante->estBloquee)) { // N'actualise que les pièces encore en jeu et non bloquées 
             for (int coup = 0; coup < pieceCourante->longueurCasesAtteignables; coup++) { // Pour chacun des coups possible par la pièce
-                Case* caseCourante = pieceCourante->casesAtteignables[coup]; // Forcément non-nulle car la fonction est appelée juste après actualisation des tableaux de cases atteignables
+                Case* caseCible = pieceCourante->casesAtteignables[coup];
                 int xPrecedent = pieceCourante->x;
                 int yPrecedent = pieceCourante->y;
-
-                int xCible = caseCourante->x;
-                int yCible = caseCourante->y;
-                Piece* contenuCaseCible = caseCourante->piece; // On garde en mémoire la pièce présente sur la case cible
-
-                // Simulation du coup
-                Echiquier[xPrecedent][yPrecedent]->piece = NULL; // On enlève la pièce courante de sa positon précédente
-                if (contenuCaseCible != NULL) { contenuCaseCible->estCapturee = true; } // On capture la pièce si elle existe (on a seulement accès à des cases adverses)
-                caseCourante->piece = pieceCourante; // Écrase l'adrese de la pièce capturée avec celle de la pièce alliée
-                pieceCourante->x = xCible; // On met à jours les coordonnées de la pièce déplacée
-                pieceCourante->y = yCible;
-
-                // On actualise les cases atteignables par l'adversaire après le mouvement potentiel
-                actualiseCasesAtteignablesParJoueur(Echiquier, joueurAdverse); 
                 
-                // Interdiction de mettre en échec
+                // Sauvegarde états
+                bool precedemmentBouge = pieceCourante->aPrecedemmentBouge;
+                bool doublePas = pieceCourante->vientDeFaireDoublePas;
+                
+                // Simulation du coup
+                Piece* pieceCapturee = mouvement(Echiquier, pieceCourante, caseCible->x, caseCible->y, true);
+                
+                // Vérification échec
+                actualiseCasesAtteignablesParJoueur(Echiquier, joueurAdverse);
                 Case* caseRoyale = Echiquier[joueurCourant[4]->x][joueurCourant[4]->y];
+                
                 if (caseRoyale->estAtteignableParJoueur[joueurAdverse[4]->couleur] > 0) {
-                    suppressionCasesAtteignables(pieceCourante, caseCourante);
-                    coup--; // On reprend le même indice car la suppression décale le tableau des cases atteignables 
-                    //! S'assurer que pieceCourante->longueurCasesAtteignables suive et ne soit pas fixe sinon faudra passer par un while
-                } 
-
-                // Retour à la position initiale
-                pieceCourante->x = xPrecedent;
-                pieceCourante->y = yPrecedent;
-                caseCourante->piece = contenuCaseCible;
-                if (contenuCaseCible != NULL) { contenuCaseCible->estCapturee = false; } // On annule la capture si elle a eu lieu
-                Echiquier[xPrecedent][yPrecedent]->piece = pieceCourante; // On annule le mouvement
+                    suppressionCasesAtteignables(pieceCourante, caseCible);
+                    coup--;
+                }
+                
+                // Restauration état
+                mouvement(Echiquier, pieceCourante, xPrecedent, yPrecedent, true);
+                if (pieceCapturee) {
+                    pieceCapturee->estCapturee = false;
+                    Echiquier[caseCible->x][caseCible->y]->piece = pieceCapturee;
+                }
+                pieceCourante->aPrecedemmentBouge = precedemmentBouge;
+                pieceCourante->vientDeFaireDoublePas = doublePas;
             }
         }
     }

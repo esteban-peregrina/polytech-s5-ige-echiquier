@@ -5,6 +5,7 @@
 #include ".././include/lecture.h" // set_terminal_raw_mode(), reset_terminal_mode()
 #include ".././include/sauvegarde.h" // save_echiquier(), load_echiquier()
 #include ".././include/joueur.h" // initialiseJoueur(), videJoueur()
+#include ".././include/mouvement.h" // initialiseJoueur(), videJoueur()
 
 #include ".././include/echiquier.h"
 
@@ -217,19 +218,11 @@ void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], Piece *Noirs[16], int
                         printf("Autre caractère spécial\n");
                     }
                 } else if (actionJoueur == '\n') { // Entrée - Le coup est validé
-                    int xPrecedent = pieceCourante->x;
-                    int yPrecedent = pieceCourante->y;
-                    
                     int xCible = caseCourante->x;
                     int yCible = caseCourante->y;
-                    Piece* contenuCaseCible = caseCourante->piece; // On garde en mémoire la pièce présente sur la case cible
 
                     // Gestion du coup
-                    Echiquier[xPrecedent][yPrecedent]->piece = NULL; // On enlève la pièce courante de sa positon précédente
-                    if (contenuCaseCible != NULL) { contenuCaseCible->estCapturee = true; } // On capture la pièce si elle existe (on a seulement accès à des cases adverses)
-                    caseCourante->piece = pieceCourante; // Écrase l'adrese de la pièce capturée avec celle de la pièce alliée
-                    pieceCourante->x = xCible; // On met à jours les coordonnées de la pièce déplacée
-                    pieceCourante->y = yCible;
+                    mouvement(Echiquier, pieceCourante, xCible, yCible, false); // On effectue le mouvement
 
                     caseCourante->estSelectionnee = false;
                     pieceCourante->estSelectionnee = false;

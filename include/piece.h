@@ -38,6 +38,9 @@ typedef struct Piece {
     bool estCapturee;
     bool estBloquee;
 
+    bool vientDeFaireDoublePas; // Pour la prise en passant
+    bool aPrecedemmentBouge;  // Pour le roque
+
     int longueurCasesAtteignables;
 
 } Piece;

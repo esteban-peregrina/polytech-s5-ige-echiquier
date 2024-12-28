@@ -49,6 +49,27 @@ void calculAtteignablePion(Case* Echiquier[8][8], Piece* self) {
 
         }
     }
+
+    // Prise en passant
+    if ((self->couleur == BLANC && self->x == 4) || (self->couleur == NOIR && self->x == 3)) {
+        // Vérifie les pions adjacents
+        if (self->y > 0) { // Prise à gauche
+            Piece* pieceGauche = Echiquier[self->x][self->y-1]->piece;
+            if (pieceGauche && pieceGauche->role == PION && 
+                pieceGauche->couleur != self->couleur &&
+                pieceGauche->vientDeFaireDoublePas) {
+                    insertionCasesAtteignables(self, Echiquier[self->x + avant][self->y - 1]);
+            }
+        }
+        if (self->y < 7) { // Prise à droite
+            Piece* pieceDroite = Echiquier[self->x][self->y+1]->piece;
+            if (pieceDroite && pieceDroite->role == PION && 
+                pieceDroite->couleur != self->couleur &&
+                pieceDroite->vientDeFaireDoublePas) {
+                    insertionCasesAtteignables(self, Echiquier[self->x + avant][self->y + 1]);
+            }
+        }
+    }
 }
 
 void calculAtteignableCavalier(Case* Echiquier[8][8], Piece* self) {
@@ -244,6 +265,26 @@ void calculAtteignableRoi(Case* Echiquier[8][8], Piece* self) {
             if ( (Echiquier[xCible][yCible]->piece == NULL) || (Echiquier[xCible][yCible]->piece->couleur != self->couleur) ) {
                 insertionCasesAtteignables(self, Echiquier[xCible][yCible]);
             }
+        }
+    }
+
+    // Roque
+    if (!self->aPrecedemmentBouge && !self->estBloquee) {
+        // Petit roque
+        Piece* tourDroite = Echiquier[self->x][7]->piece;
+        if (tourDroite && tourDroite->role == TOUR && 
+            !tourDroite->aPrecedemmentBouge &&
+            !Echiquier[self->x][5]->piece && !Echiquier[self->x][6]->piece) {
+                insertionCasesAtteignables(self, Echiquier[self->x][6]);
+        }
+        
+        // Grand roque
+        Piece* tourGauche = Echiquier[self->x][0]->piece;
+        if (tourGauche && tourGauche->role == TOUR && 
+            !tourGauche->aPrecedemmentBouge &&
+            !Echiquier[self->x][1]->piece && !Echiquier[self->x][2]->piece && 
+            !Echiquier[self->x][3]->piece) {
+                insertionCasesAtteignables(self, Echiquier[self->x][2]);
         }
     }
     
