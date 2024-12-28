@@ -2,7 +2,7 @@
 
 #include ".././include/calcul_atteignable.h" // calculAtteignablePion(), calculAtteignableCavalier(), calculAtteignableTour(), calculAtteignableFou(), calculAtteignableReine(), calculAtteignableRoi()
 #include ".././include/mouvement.h" // mouvement()
-#include ".././include/affichage.h" // afficheEchiquier()
+#include ".././include/affichage.h" // afficheEchiquier() //! À supprimer
 
 #include ".././include/piece.h"
 
@@ -156,7 +156,7 @@ void actualiseExposeRoi(Case* Echiquier[8][8], Piece* joueurCourant[16], Piece* 
                 int yPrecedent = pieceCourante->y;
                 
                 // Simulation du coup
-                Piece* pieceCapturee = mouvement(Echiquier, pieceCourante, caseCible, true);
+                Piece* pieceCapturee = mouvement(Echiquier, pieceCourante, caseCible, true); 
                 
                 // Vérification échec
                 actualiseCasesAtteignablesParJoueur(Echiquier, joueurAdverse);
@@ -170,7 +170,7 @@ void actualiseExposeRoi(Case* Echiquier[8][8], Piece* joueurCourant[16], Piece* 
                 mouvement(Echiquier, pieceCourante, Echiquier[xPrecedent][yPrecedent], true);
 
                 if (pieceCapturee) { // Si la simulation avait capturée une pièce
-                    pieceCapturee->estCapturee = false;
+                    pieceCapturee->estCapturee = false; // La simulation se devait de capturer dans le cas ou cela sauve de l'echec
                     
                     if ((pieceCourante->role == PION) && (abs(caseCible->y - yPrecedent) == 1) && (pieceCapturee->x == xPrecedent)) { // C'était une prise en passant //! Améliorer ?
                         Echiquier[xPrecedent][caseCible->y]->piece = pieceCapturee;

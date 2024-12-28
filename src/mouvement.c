@@ -42,6 +42,8 @@ Piece* mouvement(Case* Echiquier[8][8], Piece* piece, Case* caseCible, bool estS
         }
     }
     */
+
+    if (pieceCapturee) { pieceCapturee->estCapturee = true; }
     
     if (!estSimulation) {
         // Réinitialisation de vientDeFaireDoublePas (donc forcément sur une rangée bien spécifique)
@@ -55,7 +57,6 @@ Piece* mouvement(Case* Echiquier[8][8], Piece* piece, Case* caseCible, bool estS
         }
 
         // Mise à jour des états
-        if (pieceCapturee) { pieceCapturee->estCapturee = true; }
         piece->aPrecedemmentBouge = true;
 
         // Double pas
