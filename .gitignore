@@ -1,6 +1,6 @@
 .vscode/
-binaries/
-objects/
+bin/
+build/
 .devcontainer/
 sauvegardes/
 
