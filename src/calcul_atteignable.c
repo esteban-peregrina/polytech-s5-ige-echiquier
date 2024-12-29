@@ -271,7 +271,7 @@ void calculAtteignableRoi(Case* Echiquier[8][8], Piece* self) {
         }
     }
 
-    /*
+    
     // Roque
     // Remarque : si les conditions du roque sont remplies, alors les cases intermédiaires sont déjà présentes dans le tableau des cases atteignables du roi, de même pour la tour
     int couleurAdverse = (self->couleur == BLANC) ? NOIR : BLANC;
@@ -306,5 +306,5 @@ void calculAtteignableRoi(Case* Echiquier[8][8], Piece* self) {
             insertionCasesAtteignables(self, Echiquier[self->x][2]);
         }
     }
-    */
+    
 }

@@ -198,12 +198,12 @@ void actualiseExposeRoi(Case* Echiquier[8][8], Piece* joueurCourant[16], Piece* 
                         pieceCourante->vientDeRoquer = false;
                         // On replace la tour
                         if (caseCible->y - yPrecedent == 2) { // C'était un petit roque
-                            Piece* tourDroite = Echiquier[xPrecedent][7]->piece;
+                            Piece* tourDroite = Echiquier[xPrecedent][5]->piece;
                             tourDroite->y = 7;
                             Echiquier[xPrecedent][7]->piece = tourDroite;
                             Echiquier[xPrecedent][5]->piece = NULL;
                         } else if (caseCible->y - yPrecedent == -2) { // C'était un grand roque
-                            Piece* tourGauche = Echiquier[xPrecedent][0]->piece;
+                            Piece* tourGauche = Echiquier[xPrecedent][3]->piece;
                             tourGauche->y = 0;
                             Echiquier[xPrecedent][0]->piece = tourGauche;
                             Echiquier[xPrecedent][3]->piece = NULL;

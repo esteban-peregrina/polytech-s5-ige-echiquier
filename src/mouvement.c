@@ -29,7 +29,7 @@ Piece* mouvement(Case* Echiquier[8][8], Piece* piece, Case* caseCible, bool estS
                 if (estSimulation) { piece->vientDePrendreEnPassant = true; } // Sert à rétablir le mouvement correctement
             } else { pieceCapturee = NULL; } // On annule la prise en passant
         }
-        /*
+        
         // Roque
         else if (piece->role == ROI) {
             if (yCible - yPrecedent == 2) {
@@ -48,7 +48,7 @@ Piece* mouvement(Case* Echiquier[8][8], Piece* piece, Case* caseCible, bool estS
                 if (estSimulation) { piece->vientDeRoquer = true; } // Sert à rétablir le mouvement correctement
             }
         }
-        */
+        
     } else { pieceCapturee->estCapturee = true; }
     
     if (!estSimulation) {
