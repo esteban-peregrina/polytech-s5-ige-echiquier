@@ -160,8 +160,6 @@ void actualiseExposeRoi(Case* Echiquier[8][8], Piece* joueurCourant[16], Piece* 
         if (!(pieceCourante->estCapturee) && !(pieceCourante->estBloquee)) {
             for (int coup = 0; coup < pieceCourante->longueurCasesAtteignables; coup++) { // Pour chacun des coups possible par la pièce
                 Case* caseCible = pieceCourante->casesAtteignables[coup];
-                
-                if (pieceCourante->role == ROI) { printf("ROI %d Atteignable : %d %d\n", pieceCourante->couleur, caseCible->x, caseCible->y); }
 
                 // Sauvegarde de la position initiale
                 int xPrecedent = pieceCourante->x;
