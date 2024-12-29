@@ -35,11 +35,20 @@ typedef struct Piece {
     struct Case* casesAtteignables[COUVERTUREMAX];
     
     bool estSelectionnee;
+    
+    // État de la pièce
     bool estCapturee;
     bool estBloquee;
+    bool aPrecedemmentBouge; // Pour la prise en passant et le roque
 
-    bool vientDeFaireDoublePas; // Pour la prise en passant
-    bool aPrecedemmentBouge;  // Pour le roque
+    // Gestion de la prise en passant
+    bool vientDeFaireDoublePas; // Pour la prise en passant 
+    bool vientDePrendreEnPassant; // Pour la prise en passant
+
+    // Gestion du roque
+    bool peutPetitRoquer;
+    bool peutGrandRoquer;
+    bool vientDeRoquer;
 
     int longueurCasesAtteignables;
 
