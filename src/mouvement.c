@@ -24,7 +24,7 @@ Piece* mouvement(Case* Echiquier[8][8], Piece* piece, Case* caseCible, bool estS
         pieceCapturee = Echiquier[xPrecedent][yCible]->piece; // On capture à droite ou à gauche
         if ((pieceCapturee) && (pieceCapturee->vientDeFaireDoublePas)) { 
             Echiquier[xPrecedent][yCible]->piece = NULL;
-            piece->vientDePrendreEnPassant = true; 
+            if (estSimulation) { piece->vientDePrendreEnPassant = true; } // Sert à rétablir le mouvement correctement
         } else { pieceCapturee = NULL; } // On annule la prise en passant
     }
 
