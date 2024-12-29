@@ -6,6 +6,7 @@
 #include ".././include/sauvegarde.h" // save_echiquier(), load_echiquier()
 #include ".././include/joueur.h" // initialiseJoueur(), videJoueur()
 #include ".././include/mouvement.h" // initialiseJoueur(), videJoueur()
+#include ".././include/calcul_atteignable.h" // calculAtteignableCavalier(), calculAtteignableTour(), calculAtteignableFou(), calculAtteignableReine()
 
 #include ".././include/echiquier.h"
 
@@ -112,25 +113,25 @@ void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], Piece *Noirs[16], int
                 
                 reset_terminal_mode(&orig_termios);
 
-                char reponse[4]; // 3 caractères et le caractère de fin de chaine
+                char reponse; 
                 printf("Voulez-vous sauvegarder la partie ? (o/n) : ");
-                scanf("%3s", reponse);
+                scanf("%c", &reponse);
                 
                 bool reponseValide = false;
                 while (!reponseValide) {
-                    if (reponse[0] == 'o') {
+                    if (reponse == 'o') {
                         printf("Enregistrement de la partie...\n");
                         // Initialisations par chargement
                         if (sauvegarderEchiquier(Blancs, Noirs, couleurJoueurCourant, "sauvegardes") == EXIT_FAILURE) {
                             printf("Sauvegarde impossible.\n");
-                            reponse[0] = 'n'; // On commence une nouvelle partie
+                            reponse = 'n'; // On commence une nouvelle partie
                         } else { reponseValide = true; }
-                    } else if (reponse[0] == 'n') {
+                    } else if (reponse == 'n') {
                         printf("Sortie de la partie\n");
                         reponseValide = true;
                     } else {
                         printf("Réponse incorrecte. Veuillez répondre par 'o' ou 'n' : ");
-                        scanf("%3s", reponse);
+                        scanf("%c", &reponse);
                     }
                 }
 
@@ -220,6 +221,50 @@ void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], Piece *Noirs[16], int
                     // Gestion du coup
                     mouvement(Echiquier, pieceCourante, caseCourante, false); // On effectue le mouvement
 
+                    int rangeePromotion = (couleurJoueurCourant == BLANC) ? 7 : 0;
+                    if ((pieceCourante->role == PION) && (caseCourante->x == rangeePromotion)) {
+                         char reponse;
+                        printf("Promotion du pion ! Choisissez une pièce (R,F,T,C) : ");
+                        scanf("%c", &reponse);
+                        
+                        bool reponseValide = false;
+                        while (!reponseValide) {
+                            if (reponse == 'R') {
+                                printf("Promotion en Reine...\n");
+                                pieceCourante->role = REINE;
+                                pieceCourante->forme = "♛";
+                                pieceCourante->calculAtteignable = calculAtteignableReine;
+                                
+                                reponseValide = true;
+                            } else if (reponse == 'F') {
+                                printf("Promotion en Fou...\n");
+                                pieceCourante->role = FOU;
+                                pieceCourante->forme = "♝";
+                                pieceCourante->calculAtteignable = calculAtteignableFou;
+                                
+                                reponseValide = true;
+                            } else if (reponse == 'T') {
+                                printf("Promotion en Tour...\n");
+                                pieceCourante->role = TOUR;
+                                pieceCourante->forme = "♜";
+                                pieceCourante->calculAtteignable = calculAtteignableTour;
+                                
+                                reponseValide = true;
+                            
+                            } else if (reponse == 'C') {
+                                printf("Promotion en Cavalier...\n");
+                                pieceCourante->role = CAVALIER;
+                                pieceCourante->forme = "♞";
+                                pieceCourante->calculAtteignable = calculAtteignableCavalier;
+                                
+                                reponseValide = true;
+                            } else {
+                                printf("Réponse incorrecte. Veuillez répondre par 'R','F','T' ou 'C' : ");
+                                scanf("%c", &reponse);
+                            }
+                        }
+                    }
+
                     // On réinitialise les paramètres de sélection
                     caseCourante->estSelectionnee = false;
                     pieceCourante->estSelectionnee = false;
@@ -261,20 +306,20 @@ void jeuEchec() {
     Piece *Blancs[16], *Noirs[16];  // Déclaration des joueurs
     int couleurJoueurCourant = -1;
 
-    char reponse[4]; // 3 caractères et le caractère de fin de chaine
+    char reponse; 
     printf("Voulez-vous charger une sauvegarde ? (o/n) : ");
-    scanf("%3s", reponse);
+    scanf("%c", &reponse);
 
     bool reponseValide = false;
     while (!reponseValide) {
-        if (reponse[0] == 'o') {
+        if (reponse == 'o') {
             printf("Chargement de la sauvegarde...\n");
             // Initialisations par chargement
             if (chargerEchiquier(Echiquier, Blancs, Noirs, &couleurJoueurCourant, "sauvegardes") == EXIT_FAILURE) {
                 printf("Fichiers de sauvegarde corrompus. Création d'une nouvelle partie.\n");
-                reponse[0] = 'n'; // On commence une nouvelle partie
+                reponse = 'n'; // On commence une nouvelle partie
             } else { reponseValide = true; }
-        } else if (reponse[0] == 'n') {
+        } else if (reponse == 'n') {
             printf("Nouvelle partie...\n");
             // Initialisations par défaut
             initialiseJoueur(Echiquier, Blancs, BLANC);
@@ -283,7 +328,7 @@ void jeuEchec() {
             reponseValide = true;
         } else {
             printf("Réponse incorrecte. Veuillez répondre par 'o' ou 'n' : ");
-            scanf("%3s", reponse);
+            scanf("%c", &reponse);
         }
     }
 
