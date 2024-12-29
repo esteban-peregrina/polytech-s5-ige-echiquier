@@ -29,24 +29,32 @@ Piece* mouvement(Case* Echiquier[8][8], Piece* piece, Case* caseCible, bool estS
                 if (estSimulation) { piece->vientDePrendreEnPassant = true; } // Sert à rétablir le mouvement correctement
             } else { pieceCapturee = NULL; } // On annule la prise en passant
         }
-        
+               
         // Roque
-        else if (piece->role == ROI) {
-            if (yCible - yPrecedent == 2) {
+        else if ((piece->role == ROI) && (yPrecedent == 4)) { //? Le chemin retour de la simulation après un roque ne doit pas être pris en compte ! On peut aussi utiliser aPrecedemmentBouge
+            printf("FLAG SIM : %s\n", estSimulation ? "true" : "false");
+            printf("FLAG COORD : %d, %d\n", xCible, yCible);
+            printf("FLAG 1 %d\n", piece->couleur);
+            if (yCible == 6) {
                 // Petit roque
+                printf("FLAG 1.1 %d\n", piece->couleur);
                 Piece* tourDroite = Echiquier[xCible][7]->piece;
                 tourDroite->y = 5;
                 Echiquier[xCible][5]->piece = tourDroite;
                 Echiquier[xCible][7]->piece = NULL;
                 if (estSimulation) { piece->vientDeRoquer = true; } // Sert à rétablir le mouvement correctement
-            } else if (yCible - yPrecedent == -2) {
+                else { tourDroite->aPrecedemmentBouge = true; }
+            } else if (yCible == 2) {
                 // Grand roque
+                printf("FLAG 1.2 %d\n", piece->couleur);
                 Piece* tourGauche = Echiquier[xCible][0]->piece;
                 tourGauche->y = 3;
                 Echiquier[xCible][3]->piece = tourGauche;
                 Echiquier[xCible][0]->piece = NULL;
                 if (estSimulation) { piece->vientDeRoquer = true; } // Sert à rétablir le mouvement correctement
+                else { tourGauche->aPrecedemmentBouge = true; }
             }
+            printf("FLAG 2 %d\n", piece->couleur);
         }
         
     } else { pieceCapturee->estCapturee = true; }

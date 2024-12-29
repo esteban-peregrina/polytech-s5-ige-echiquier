@@ -3,6 +3,8 @@
 #include ".././include/calcul_atteignable.h" // calculAtteignablePion(), calculAtteignableCavalier(), calculAtteignableTour(), calculAtteignableFou(), calculAtteignableReine(), calculAtteignableRoi()
 #include ".././include/mouvement.h" // mouvement()
 
+#include ".././include/affichage.h" // affichage() // ! DEBUG
+
 #include ".././include/piece.h"
 
 Piece* creationPiece(Role role, int couleur) {
@@ -159,10 +161,12 @@ void actualiseExposeRoi(Case* Echiquier[8][8], Piece* joueurCourant[16], Piece* 
             for (int coup = 0; coup < pieceCourante->longueurCasesAtteignables; coup++) { // Pour chacun des coups possible par la pièce
                 Case* caseCible = pieceCourante->casesAtteignables[coup];
                 
+                if (pieceCourante->role == ROI) { printf("ROI %d Atteignable : %d %d\n", pieceCourante->couleur, caseCible->x, caseCible->y); }
+
                 // Sauvegarde de la position initiale
                 int xPrecedent = pieceCourante->x;
                 int yPrecedent = pieceCourante->y;
-                
+
                 // Simulation du mouvement (et sauvegarde de la pièce capturée)
                 Piece* pieceCapturee = mouvement(Echiquier, pieceCourante, caseCible, true); 
                 
@@ -195,12 +199,12 @@ void actualiseExposeRoi(Case* Echiquier[8][8], Piece* joueurCourant[16], Piece* 
                     if ((pieceCourante->role == ROI) && (pieceCourante->vientDeRoquer)) { // On a roqué
                         pieceCourante->vientDeRoquer = false;
                         // On replace la tour
-                        if (caseCible->y - yPrecedent == 2) { // C'était un petit roque
+                        if (caseCible->y == 6) { // C'était un petit roque
                             Piece* tourDroite = Echiquier[xPrecedent][5]->piece;
                             tourDroite->y = 7;
                             Echiquier[xPrecedent][7]->piece = tourDroite;
                             Echiquier[xPrecedent][5]->piece = NULL;
-                        } else if (caseCible->y - yPrecedent == -2) { // C'était un grand roque
+                        } else if (caseCible->y == 2) { // C'était un grand roque
                             Piece* tourGauche = Echiquier[xPrecedent][3]->piece;
                             tourGauche->y = 0;
                             Echiquier[xPrecedent][0]->piece = tourGauche;
