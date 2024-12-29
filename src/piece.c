@@ -51,9 +51,7 @@ Piece* creationPiece(Role role, int couleur) {
 
     pieceCree->vientDeFaireDoublePas = false; 
     pieceCree->vientDePrendreEnPassant = false;
-
-    pieceCree->peutPetitRoquer = false;
-    pieceCree->peutGrandRoquer = false;
+    
     pieceCree->vientDeRoquer = false;
 
     pieceCree->longueurCasesAtteignables = 0;

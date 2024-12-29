@@ -39,16 +39,14 @@ typedef struct Piece {
     // État de la pièce
     bool estCapturee;
     bool estBloquee;
-    bool aPrecedemmentBouge; // Pour la prise en passant et le roque
+    bool aPrecedemmentBouge; // Pour autoriser la prise en passant et le roque
 
     // Gestion de la prise en passant
-    bool vientDeFaireDoublePas; // Pour la prise en passant 
-    bool vientDePrendreEnPassant; // Pour la prise en passant
+    bool vientDeFaireDoublePas; // Pour autoriser la prise en passant 
+    bool vientDePrendreEnPassant; // Pour simuler la prise en passant
 
     // Gestion du roque
-    bool peutPetitRoquer;
-    bool peutGrandRoquer;
-    bool vientDeRoquer;
+    bool vientDeRoquer; // Pour simuler le roque
 
     int longueurCasesAtteignables;
 
