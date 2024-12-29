@@ -43,18 +43,18 @@ Piece* creationPiece(Role role, int couleur) {
 
     for (int i = 0; i < COUVERTUREMAX; i++) { pieceCree->casesAtteignables[i] = NULL; }
 
-    bool estSelectionnee = false;
+    pieceCree->estSelectionnee = false;
 
-    bool estCapturee = false;
-    bool estBloquee = false;
-    bool aPrecedemmentBouge = false; 
+    pieceCree->estCapturee = false;
+    pieceCree->estBloquee = false;
+    pieceCree->aPrecedemmentBouge = false; 
 
-    bool vientDeFaireDoublePas = false; 
-    bool vientDePrendreEnPassant = false;
+    pieceCree->vientDeFaireDoublePas = false; 
+    pieceCree->vientDePrendreEnPassant = false;
 
-    bool peutPetitRoquer = false;
-    bool peutGrandRoquer = false;
-    bool vientDeRoquer = false;
+    pieceCree->peutPetitRoquer = false;
+    pieceCree->peutGrandRoquer = false;
+    pieceCree->vientDeRoquer = false;
 
     pieceCree->longueurCasesAtteignables = 0;
 
