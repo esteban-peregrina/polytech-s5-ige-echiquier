@@ -69,9 +69,7 @@ void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], Piece *Noirs[16], int
         joueurAdverse = Blancs;
     }
 
-    bool echecEtMat = false;
-
-    while (!echecEtMat) {
+    while (true) {
         actualiseCasesAtteignablesParJoueur(Echiquier, joueurCourant); // On actualise chaque tableau des cases atteignables par les pièces du joueur
         actualiseExposeRoi(Echiquier, joueurCourant, joueurAdverse); // On retire les cases exposant le roi allié à l'échec
 
@@ -81,7 +79,7 @@ void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], Piece *Noirs[16], int
         // On sélectionne la première pièce non bloquée et non capturée
         int indicePieceCourante = 0;
         while ( (indicePieceCourante < 16) && ((joueurCourant[indicePieceCourante]->estBloquee) || (joueurCourant[indicePieceCourante]->estCapturee)) ) { indicePieceCourante++; }
-        if (indicePieceCourante >= 16) { break; } // Echec et mat (aucune pièce disponible)
+        if (indicePieceCourante >= 16) { break; } // Fin de la partie
         Piece* pieceCourante = joueurCourant[indicePieceCourante];
         pieceCourante->estSelectionnee = true;
         
@@ -287,10 +285,22 @@ void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], Piece *Noirs[16], int
             reset_terminal_mode(&orig_termios);
         }
     }
-    (couleurJoueurCourant == BLANC) ? printf("Victoire des Noirs (Rouges) !\n") : printf("Victoire des Blancs (Bleus) !\n");
+    // Pat ou échec et mat
+    afficheEchiquier(Echiquier);
+    Case* caseRoyale = Echiquier[joueurCourant[4]->x][joueurCourant[4]->y];
+    if (couleurJoueurCourant == BLANC) {
+        if (caseRoyale->estAtteignableParJoueur[joueurAdverse[4]->couleur] > 0) { printf("Échec et mat : Victoire des Noirs (Rouges) !\n"); }
+        else { printf("Pat !\n"); }
+    } else {
+        if (caseRoyale->estAtteignableParJoueur[joueurAdverse[4]->couleur] > 0) { printf("Échec et mat : Victoire des Blancs (Bleus) !\n"); } 
+        else { printf("Pat !\n"); }
+    }
+        
     videEchiquier(Echiquier); // Libère les cases
     videJoueur(Blancs); // Libère les pièces blanches
-    videJoueur(Noirs);  // Libère les pièces noires  
+    videJoueur(Noirs);  // Libère les pièces noires 
+    
+    printf("Partie terminée !\n"); 
 }
 
 void jeuEchec() {
