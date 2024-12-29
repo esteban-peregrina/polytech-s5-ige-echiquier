@@ -96,7 +96,6 @@ void calculAtteignableCavalier(Case* Echiquier[8][8], Piece* self) {
 }
 
 void calculAtteignableTour(Case* Echiquier[8][8], Piece* self) {
-    // TODO - Le roque
     int avant, droite, limiteAvant, limiteArriere, limiteDroite, limiteGauche;
     switch (self->couleur) {
         case BLANC :
@@ -260,7 +259,6 @@ void calculAtteignableReine(Case* Echiquier[8][8], Piece* self) {
 }
 
 void calculAtteignableRoi(Case* Echiquier[8][8], Piece* self) {
-    // TODO - Le roque
     int mouvements[8][2] = { {1, 0}, {-1, 0}, {0, 1}, {0, -1}, {1, 1}, {1, -1}, {-1, 1}, {-1, -1} };
     for (int i = 0; i < 8; i++) { // Pour chacun des mouvements
         int xCible = self->x + mouvements[i][0];
@@ -273,24 +271,40 @@ void calculAtteignableRoi(Case* Echiquier[8][8], Piece* self) {
         }
     }
 
+    /*
     // Roque
-    if (!self->aPrecedemmentBouge && !self->estBloquee) {
+    // Remarque : si les conditions du roque sont remplies, alors les cases intermédiaires sont déjà présentes dans le tableau des cases atteignables du roi, de même pour la tour
+    int couleurAdverse = (self->couleur == BLANC) ? NOIR : BLANC;
+    if ((!self->aPrecedemmentBouge) && (!Echiquier[self->x][self->y]->estAtteignableParJoueur[couleurAdverse])) { // Si le roi n'a jamais bougé et n'est pas en échec
         // Petit roque
-        Piece* tourDroite = Echiquier[self->x][7]->piece;
-        if (tourDroite && tourDroite->role == TOUR && 
-            !tourDroite->aPrecedemmentBouge &&
-            !Echiquier[self->x][5]->piece && !Echiquier[self->x][6]->piece) {
-                insertionCasesAtteignables(self, Echiquier[self->x][6]);
+        Piece *tourDroite = Echiquier[self->x][7]->piece;
+        if ((tourDroite) && 
+            (!tourDroite->aPrecedemmentBouge) && // Si elle n'a jamais bougée, c'est forcément notre tour
+            // Si les cases entre le roi et la tour sont vides
+            (!Echiquier[self->x][5]->piece) && 
+            (!Echiquier[self->x][6]->piece) &&
+            // Si les cases ou passe le roi ne sont pas menacées
+            (!Echiquier[self->x][4]->estAtteignableParJoueur[couleurAdverse]) && 
+            (!Echiquier[self->x][5]->estAtteignableParJoueur[couleurAdverse]) && 
+            (!Echiquier[self->x][6]->estAtteignableParJoueur[couleurAdverse]))
+        {
+            insertionCasesAtteignables(self, Echiquier[self->x][6]);
         }
-        
         // Grand roque
-        Piece* tourGauche = Echiquier[self->x][0]->piece;
-        if (tourGauche && tourGauche->role == TOUR && 
-            !tourGauche->aPrecedemmentBouge &&
-            !Echiquier[self->x][1]->piece && !Echiquier[self->x][2]->piece && 
-            !Echiquier[self->x][3]->piece) {
-                insertionCasesAtteignables(self, Echiquier[self->x][2]);
+        Piece *tourGauche = Echiquier[self->x][0]->piece;
+        if ((tourGauche) && 
+            (!tourGauche->aPrecedemmentBouge) && // Si elle n'a jamais bougée, c'est forcément notre tour
+            // Si les cases entre le roi et la tour sont vides
+            (!Echiquier[self->x][1]->piece) && 
+            (!Echiquier[self->x][2]->piece) && 
+            (!Echiquier[self->x][3]->piece) &&
+            // Si les cases ou passe le roi ne sont pas menacées
+            (!Echiquier[self->x][2]->estAtteignableParJoueur[couleurAdverse]) && 
+            (!Echiquier[self->x][3]->estAtteignableParJoueur[couleurAdverse]) &&
+            (!Echiquier[self->x][4]->estAtteignableParJoueur[couleurAdverse]))
+        {
+            insertionCasesAtteignables(self, Echiquier[self->x][2]);
         }
     }
-    
+    */
 }

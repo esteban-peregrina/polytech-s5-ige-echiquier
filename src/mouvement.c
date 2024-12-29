@@ -18,17 +18,38 @@ Piece* mouvement(Case* Echiquier[8][8], Piece* piece, Case* caseCible, bool estS
     piece->x = xCible;
     piece->y = yCible;
     
-    // Prise en passant
-    int rangeeEnPassant = (piece->couleur == BLANC) ? 4 : 3;
-    if ((xPrecedent == rangeeEnPassant) && (piece->role == PION) && (abs(yCible - yPrecedent) == 1) && (!pieceCapturee)) {
-        pieceCapturee = Echiquier[xPrecedent][yCible]->piece; // On capture à droite ou à gauche
-        if ((pieceCapturee) && (pieceCapturee->vientDeFaireDoublePas)) { 
-            Echiquier[xPrecedent][yCible]->piece = NULL;
-            if (estSimulation) { piece->vientDePrendreEnPassant = true; } // Sert à rétablir le mouvement correctement
-        } else { pieceCapturee = NULL; } // On annule la prise en passant
-    }
-
-    if (pieceCapturee) { pieceCapturee->estCapturee = true; }
+    if (!pieceCapturee) {
+        // Prise en passant
+        int rangeeEnPassant = (piece->couleur == BLANC) ? 4 : 3;
+        if ((xPrecedent == rangeeEnPassant) && (piece->role == PION) && (abs(yCible - yPrecedent) == 1)) {
+            pieceCapturee = Echiquier[xPrecedent][yCible]->piece; // On capture à droite ou à gauche
+            if ((pieceCapturee) && (pieceCapturee->vientDeFaireDoublePas)) { 
+                Echiquier[xPrecedent][yCible]->piece = NULL;
+                pieceCapturee->estCapturee = true;
+                if (estSimulation) { piece->vientDePrendreEnPassant = true; } // Sert à rétablir le mouvement correctement
+            } else { pieceCapturee = NULL; } // On annule la prise en passant
+        }
+        /*
+        // Roque
+        else if (piece->role == ROI) {
+            if (yCible - yPrecedent == 2) {
+                // Petit roque
+                Piece* tourDroite = Echiquier[xCible][7]->piece;
+                tourDroite->y = 5;
+                Echiquier[xCible][5]->piece = tourDroite;
+                Echiquier[xCible][7]->piece = NULL;
+                if (estSimulation) { piece->vientDeRoquer = true; } // Sert à rétablir le mouvement correctement
+            } else if (yCible - yPrecedent == -2) {
+                // Grand roque
+                Piece* tourGauche = Echiquier[xCible][0]->piece;
+                tourGauche->y = 3;
+                Echiquier[xCible][3]->piece = tourGauche;
+                Echiquier[xCible][0]->piece = NULL;
+                if (estSimulation) { piece->vientDeRoquer = true; } // Sert à rétablir le mouvement correctement
+            }
+        }
+        */
+    } else { pieceCapturee->estCapturee = true; }
     
     if (!estSimulation) {
         // Réinitialisation de vientDeFaireDoublePas (donc forcément sur une rangée bien spécifique)
