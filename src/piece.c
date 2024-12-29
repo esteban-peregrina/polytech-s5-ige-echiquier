@@ -2,7 +2,6 @@
 
 #include ".././include/calcul_atteignable.h" // calculAtteignablePion(), calculAtteignableCavalier(), calculAtteignableTour(), calculAtteignableFou(), calculAtteignableReine(), calculAtteignableRoi()
 #include ".././include/mouvement.h" // mouvement()
-#include ".././include/affichage.h" // afficheEchiquier() //! À supprimer
 
 #include ".././include/piece.h"
 
@@ -44,12 +43,18 @@ Piece* creationPiece(Role role, int couleur) {
 
     for (int i = 0; i < COUVERTUREMAX; i++) { pieceCree->casesAtteignables[i] = NULL; }
 
-    pieceCree->estSelectionnee = false; 
-    pieceCree->estCapturee = false; 
-    pieceCree->estBloquee = false;
+    bool estSelectionnee = false;
 
-    pieceCree->vientDeFaireDoublePas = false;
-    pieceCree->aPrecedemmentBouge = false;
+    bool estCapturee = false;
+    bool estBloquee = false;
+    bool aPrecedemmentBouge = false; 
+
+    bool vientDeFaireDoublePas = false; 
+    bool vientDePrendreEnPassant = false;
+
+    bool peutPetitRoquer = false;
+    bool peutGrandRoquer = false;
+    bool vientDeRoquer = false;
 
     pieceCree->longueurCasesAtteignables = 0;
 
