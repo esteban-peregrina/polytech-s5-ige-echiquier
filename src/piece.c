@@ -176,13 +176,16 @@ void actualiseExposeRoi(Case* Echiquier[8][8], Piece* joueurCourant[16], Piece* 
                 mouvement(Echiquier, pieceCourante, Echiquier[xPrecedent][yPrecedent], true);
 
                 if (pieceCapturee) { // Si la simulation avait capturée une pièce
-                    pieceCapturee->estCapturee = false; // La simulation se devait de capturer dans le cas ou cela sauve de l'echec
+                    pieceCapturee->estCapturee = false;
                     
                     if ((pieceCourante->role == PION) && (pieceCourante->vientDePrendreEnPassant)) {
+                        pieceCourante->vientDePrendreEnPassant = false;
+                        // On replace le pion capturé en passant
                         Echiquier[xPrecedent][caseCible->y]->piece = pieceCapturee;
                         pieceCapturee->x = xPrecedent;
                         pieceCapturee->y = caseCible->y;
                     } else {
+                        // On replace la pièce capturée
                         Echiquier[caseCible->x][caseCible->y]->piece = pieceCapturee;
                         pieceCapturee->x = caseCible->x;
                         pieceCapturee->y = caseCible->y;
