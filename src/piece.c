@@ -149,21 +149,22 @@ void actualiseCasesAtteignablesParJoueur(Case* Echiquier[8][8], Piece* Joueur[16
 
 void actualiseExposeRoi(Case* Echiquier[8][8], Piece* joueurCourant[16], Piece* joueurAdverse[16]) {
     /*
-    Supprime les cases qui mettent en échec le roi des tableaux de cases atteignables des pièces.
+    Supprime des tableaux de cases atteignables des pièces de joueurCourant les cases qui mettent en échec son roi 
     */
     for (int piece = 0; piece < 16; piece++) { // Pour chacune des pièces du joueur
         Piece* pieceCourante = joueurCourant[piece];
         if (!(pieceCourante->estCapturee) && !(pieceCourante->estBloquee)) { // N'actualise que les pièces encore en jeu et non bloquées 
             for (int coup = 0; coup < pieceCourante->longueurCasesAtteignables; coup++) { // Pour chacun des coups possible par la pièce
                 Case* caseCible = pieceCourante->casesAtteignables[coup];
-                // Sauvegarde des états initiaux
+                
+                // Sauvegarde de la position initiale
                 int xPrecedent = pieceCourante->x;
                 int yPrecedent = pieceCourante->y;
                 
-                // Simulation du coup
+                // Simulation du mouvement
                 Piece* pieceCapturee = mouvement(Echiquier, pieceCourante, caseCible, true); 
                 
-                // Vérification échec
+                // Suppression des cases exposant le roi à l'échec
                 actualiseCasesAtteignablesParJoueur(Echiquier, joueurAdverse);
                 Case* caseRoyale = Echiquier[joueurCourant[4]->x][joueurCourant[4]->y];
                 if (caseRoyale->estAtteignableParJoueur[joueurAdverse[4]->couleur] > 0) {
@@ -177,7 +178,7 @@ void actualiseExposeRoi(Case* Echiquier[8][8], Piece* joueurCourant[16], Piece* 
                 if (pieceCapturee) { // Si la simulation avait capturée une pièce
                     pieceCapturee->estCapturee = false; // La simulation se devait de capturer dans le cas ou cela sauve de l'echec
                     
-                    if ((pieceCourante->role == PION) && (abs(caseCible->y - yPrecedent) == 1) && (pieceCapturee->x == xPrecedent)) { // C'était une prise en passant //! Améliorer ?
+                    if ((pieceCourante->role == PION) && (pieceCourante->vientDePrendreEnPassant)) {
                         Echiquier[xPrecedent][caseCible->y]->piece = pieceCapturee;
                         pieceCapturee->x = xPrecedent;
                         pieceCapturee->y = caseCible->y;
