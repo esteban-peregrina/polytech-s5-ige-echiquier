@@ -22,26 +22,11 @@ Piece* mouvement(Case* Echiquier[8][8], Piece* piece, Case* caseCible, bool estS
     int rangeeEnPassant = (piece->couleur == BLANC) ? 4 : 3;
     if ((xPrecedent == rangeeEnPassant) && (piece->role == PION) && (abs(yCible - yPrecedent) == 1) && (!pieceCapturee)) {
         pieceCapturee = Echiquier[xPrecedent][yCible]->piece; // On capture à droite ou à gauche
-        if ((pieceCapturee) && (pieceCapturee->vientDeFaireDoublePas)) { Echiquier[xPrecedent][yCible]->piece = NULL; }
-        else { pieceCapturee = NULL; } // On annule la prise en passant
+        if ((pieceCapturee) && (pieceCapturee->vientDeFaireDoublePas)) { 
+            Echiquier[xPrecedent][yCible]->piece = NULL;
+            piece->vientDePrendreEnPassant = true; 
+        } else { pieceCapturee = NULL; } // On annule la prise en passant
     }
-    
-    /*
-    // Roque
-    if ( (piece->role == ROI) && (abs(yCible - yPrecedent) == 2) ) {
-        if (yCible > yPrecedent) { // Petit roque
-            Piece* tour = Echiquier[xPrecedent][7]->piece;
-            Echiquier[xPrecedent][7]->piece = NULL;
-            Echiquier[xPrecedent][5]->piece = tour;
-            tour->y = 5;
-        } else { // Grand roque
-            Piece* tour = Echiquier[xPrecedent][0]->piece;
-            Echiquier[xPrecedent][0]->piece = NULL;
-            Echiquier[xPrecedent][3]->piece = tour;
-            tour->y = 3;
-        }
-    }
-    */
 
     if (pieceCapturee) { pieceCapturee->estCapturee = true; }
     
