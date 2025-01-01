@@ -4,7 +4,7 @@
 
 void initialiseJoueur(Case* Echiquier[8][8], Piece* Joueur[16], int couleur) {
     /*
-    Initialise les pièces de chacun des joueurs.
+    Initialise chacune des pièces du joueur.
     */
 
     int rangeePromotion, rangeePions;
