@@ -109,7 +109,7 @@ void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], Piece *Noirs[16], int
             char actionJoueur;
             if (read(STDIN_FILENO, &actionJoueur, 1) != 1) { exit(EXIT_FAILURE); } // Écrit l'entrée utilisateur lue dans &actionJoueur et vérifie que cela ai fonctionné
 
-            // Le joueur décide de quitter la partie
+            // Lorsque le joueur décide de quitter la partie
             if (actionJoueur == 'q') {
                 pieceCourante->estSelectionnee = false;
                 if (caseCourante != NULL) { caseCourante->estSelectionnee = false; }
@@ -145,7 +145,7 @@ void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], Piece *Noirs[16], int
             }
 
             // Lorsque le joueur sélectionne une pièce
-            if (menu == PIECES) {
+            else if (menu == PIECES) {
                 if (actionJoueur == '\033') { // Caractère spécial
                     char seq[2]; // Séquence de caractères
                     if (read(STDIN_FILENO, &seq[0], 1) != 1 || read(STDIN_FILENO, &seq[1], 1) != 1) { exit(EXIT_FAILURE); }
@@ -198,7 +198,7 @@ void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], Piece *Noirs[16], int
                     }
                 }
             // Lorque le joueur sélectionne une case atteignable par la pièce validée
-            } else { //menu == COUPS
+            } else if (menu == COUPS) {
                 if (actionJoueur == '\033') {
                     char seq[2];
                     if (read(STDIN_FILENO, &seq[0], 1) != 1 || read(STDIN_FILENO, &seq[1], 1) != 1) { exit(EXIT_FAILURE); }
@@ -303,7 +303,9 @@ void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], Piece *Noirs[16], int
                     // On vide les cases atteignables par la pièce courante pour ne plus les afficher (On ne connait pas encore la piece courante de l'adversaire)
                     actualiseCasesAtteignablesParPiece(NULL, pieceCourante);
                 }
-            }
+            // On attend la réponse du joueur
+            } else { continue; }
+
             // On rétablit les paramètres originaux
             reset_terminal_mode(&orig_termios);
         }
@@ -367,6 +369,6 @@ void jeuEchec() {
 
     actualiseCasesAtteignablesParJoueur(Echiquier, Blancs);
     actualiseCasesAtteignablesParJoueur(Echiquier, Noirs);
-    
+
     partieEchec(Echiquier, Blancs, Noirs, couleurJoueurCourant);
 }
