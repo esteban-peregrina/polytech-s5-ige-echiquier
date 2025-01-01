@@ -1,7 +1,10 @@
 #include "./../include/calcul_atteignable.h"
 
 void calculAtteignablePion(Case* Echiquier[8][8], Piece* self) {
-    //TODO - Promotion possible affichée avec une case jaune ou des caractres +
+    /*
+    Met à jour le tableau des cases atteignables d'un pion.
+    */
+
     int origine, droite, avant, bordAvant, bordDroite, bordGauche, rangeeEnPassant;
     switch (self->couleur) {
         case BLANC :
@@ -25,8 +28,8 @@ void calculAtteignablePion(Case* Echiquier[8][8], Piece* self) {
     }
 
     // Double pas
-    if (self->x == origine) { // Le pion est sur sa rangée initiale (comme il ne peut jamais revenir en arrière il n'y a pas besoin d'un booléen pour vérifier qu'on joue son tout premier mouvement)
-        if ( (!Echiquier[self->x + 1 * avant][self->y]->piece) && (!Echiquier[self->x + 2 * avant][self->y]->piece) ) { // Il n'y a pas de piece devant
+    if (self->x == origine) { // Le pion est sur sa rangée initiale (comme il ne peut jamais revenir en arrière il n'y a pas de vérifier qu'on joue son tout premier mouvement)
+        if ((!Echiquier[self->x + 1 * avant][self->y]->piece) && (!Echiquier[self->x + 2 * avant][self->y]->piece)) { // Il n'y a pas de piece devant
             insertionCasesAtteignables(self, Echiquier[self->x + 2 * avant][self->y]);
         }
     }
@@ -79,16 +82,16 @@ void calculAtteignablePion(Case* Echiquier[8][8], Piece* self) {
 
 void calculAtteignableCavalier(Case* Echiquier[8][8], Piece* self) {
     /*
-    Met à jour le tableau des cases atteignables par la pièce self.
+    Met à jour le tableau des cases atteignables d'un cavalier.
     */
 
-    int mouvements[8][2] = { {2, 1}, {2, -1}, {-2, 1}, {-2, -1}, {1, 2}, {1, -2}, {-1, 2}, {-1, -2} };
+    int mouvements[8][2] = { {2, 1}, {2, -1}, {-2, 1}, {-2, -1}, {1, 2}, {1, -2}, {-1, 2}, {-1, -2} }; // Ensemble des mouvements possibles pour un cavalier (coordonnées relatives)
     for (int i = 0; i < 8; i++) { // Pour chacun des mouvements
         int xCible = self->x + mouvements[i][0];
         int yCible = self->y + mouvements[i][1];
 
         if (xCible >= 0 && xCible < 8 && yCible >= 0 && yCible < 8) { // La case est dans les limites du plateau
-            if ( (Echiquier[xCible][yCible]->piece == NULL) || (Echiquier[xCible][yCible]->piece->couleur != self->couleur) ) {
+            if ((!Echiquier[xCible][yCible]->piece) || (Echiquier[xCible][yCible]->piece->couleur != self->couleur)) {
                 insertionCasesAtteignables(self, Echiquier[xCible][yCible]);
             }
         }
@@ -96,6 +99,10 @@ void calculAtteignableCavalier(Case* Echiquier[8][8], Piece* self) {
 }
 
 void calculAtteignableTour(Case* Echiquier[8][8], Piece* self) {
+    /*
+    Met à jour le tableau des cases atteignables d'une tour.
+    */
+
     int avant, droite, limiteAvant, limiteArriere, limiteDroite, limiteGauche;
     switch (self->couleur) {
         case BLANC :
@@ -119,7 +126,7 @@ void calculAtteignableTour(Case* Echiquier[8][8], Piece* self) {
     // Déplacement avant
     int xCourant = self->x + avant;
     while (xCourant != limiteAvant) { // La case est dans la limite avant
-        if (Echiquier[xCourant][self->y]->piece != NULL) { // La case n'est pas vide
+        if (Echiquier[xCourant][self->y]->piece) { // La case n'est pas vide
             if (Echiquier[xCourant][self->y]->piece->couleur != self->couleur) { // La case contient une pièce ennemie
                 insertionCasesAtteignables(self, Echiquier[xCourant][self->y]);
             }
@@ -132,7 +139,7 @@ void calculAtteignableTour(Case* Echiquier[8][8], Piece* self) {
     // Déplacement arrière
     xCourant = self->x - avant;
     while (xCourant != limiteArriere) { // La case est dans la limite avant
-        if (Echiquier[xCourant][self->y]->piece != NULL) { // La case n'est pas vide
+        if (Echiquier[xCourant][self->y]->piece) { // La case n'est pas vide
             if (Echiquier[xCourant][self->y]->piece->couleur != self->couleur) { // La case contient une pièce ennemie
                 insertionCasesAtteignables(self, Echiquier[xCourant][self->y]);
             }
@@ -145,7 +152,7 @@ void calculAtteignableTour(Case* Echiquier[8][8], Piece* self) {
     // Déplacement droite
     int yCourant = self->y + droite;
     while (yCourant != limiteDroite) { // La case est dans la limite avant
-        if (Echiquier[self->x][yCourant]->piece != NULL) { // La case n'est pas vide
+        if (Echiquier[self->x][yCourant]->piece) { // La case n'est pas vide
             if (Echiquier[self->x][yCourant]->piece->couleur != self->couleur) { // La case contient une pièce ennemie
                 insertionCasesAtteignables(self, Echiquier[self->x][yCourant]);
             }
@@ -158,7 +165,7 @@ void calculAtteignableTour(Case* Echiquier[8][8], Piece* self) {
     // Déplacement gauche
     yCourant = self->y - droite;
     while (yCourant != limiteGauche) { // La case est dans la limite avant
-        if (Echiquier[self->x][yCourant]->piece != NULL) { // La case n'est pas vide
+        if (Echiquier[self->x][yCourant]->piece) { // La case n'est pas vide
             if (Echiquier[self->x][yCourant]->piece->couleur != self->couleur) { // La case contient une pièce ennemie
                 insertionCasesAtteignables(self, Echiquier[self->x][yCourant]);
             }
@@ -171,6 +178,10 @@ void calculAtteignableTour(Case* Echiquier[8][8], Piece* self) {
 }
 
 void calculAtteignableFou(Case* Echiquier[8][8], Piece* self) {
+    /*
+    Met à jour le tableau des cases atteignables d'un fou.
+    */
+
     int avant, droite, limiteAvant, limiteArriere, limiteDroite, limiteGauche;
     switch (self->couleur) {
         case BLANC :
@@ -195,7 +206,7 @@ void calculAtteignableFou(Case* Echiquier[8][8], Piece* self) {
     int xCourant = self->x + avant;
     int yCourant = self->y + droite;
     while (xCourant != limiteAvant && yCourant != limiteDroite) { // La case est dans la limite avant droite
-        if (Echiquier[xCourant][yCourant]->piece != NULL) { // La case n'est pas vide
+        if (Echiquier[xCourant][yCourant]->piece) { // La case n'est pas vide
             if (Echiquier[xCourant][yCourant]->piece->couleur != self->couleur) { // La case contient une pièce ennemie
                 insertionCasesAtteignables(self, Echiquier[xCourant][yCourant]);
             }
@@ -210,7 +221,7 @@ void calculAtteignableFou(Case* Echiquier[8][8], Piece* self) {
     xCourant = self->x - avant;
     yCourant = self->y + droite;
     while (xCourant != limiteArriere && yCourant != limiteDroite) { // La case est dans la limite arrière droite
-        if (Echiquier[xCourant][yCourant]->piece != NULL) { // La case n'est pas vide
+        if (Echiquier[xCourant][yCourant]->piece) { // La case n'est pas vide
             if (Echiquier[xCourant][yCourant]->piece->couleur != self->couleur) { // La case contient une pièce ennemie
                 insertionCasesAtteignables(self, Echiquier[xCourant][yCourant]);
             }
@@ -225,7 +236,7 @@ void calculAtteignableFou(Case* Echiquier[8][8], Piece* self) {
     xCourant = self->x - avant;
     yCourant = self->y - droite;
     while (xCourant != limiteArriere && yCourant != limiteGauche) { // La case est dans la arrière gauche
-        if (Echiquier[xCourant][yCourant]->piece != NULL) { // La case n'est pas vide
+        if (Echiquier[xCourant][yCourant]->piece) { // La case n'est pas vide
             if (Echiquier[xCourant][yCourant]->piece->couleur != self->couleur) { // La case contient une pièce ennemie
                 insertionCasesAtteignables(self, Echiquier[xCourant][yCourant]);
             }
@@ -240,7 +251,7 @@ void calculAtteignableFou(Case* Echiquier[8][8], Piece* self) {
     xCourant = self->x + avant;
     yCourant = self->y - droite;
     while (xCourant != limiteAvant && yCourant != limiteGauche) { // La case est dans la limite avant
-        if (Echiquier[xCourant][yCourant]->piece != NULL) { // La case n'est pas vide
+        if (Echiquier[xCourant][yCourant]->piece) { // La case n'est pas vide
             if (Echiquier[xCourant][yCourant]->piece->couleur != self->couleur) { // La case contient une pièce ennemie
                 insertionCasesAtteignables(self, Echiquier[xCourant][yCourant]);
             }
@@ -254,18 +265,26 @@ void calculAtteignableFou(Case* Echiquier[8][8], Piece* self) {
 }
 
 void calculAtteignableReine(Case* Echiquier[8][8], Piece* self) {
+    /*
+    Met à jour le tableau des cases atteignables d'une reine.
+    */
+
     calculAtteignableFou(Echiquier, self);
     calculAtteignableTour(Echiquier, self);
 }
 
 void calculAtteignableRoi(Case* Echiquier[8][8], Piece* self) {
+    /*
+    Met à jour le tableau des cases atteignables d'un roi.
+    */
+
     int mouvements[8][2] = { {1, 0}, {-1, 0}, {0, 1}, {0, -1}, {1, 1}, {1, -1}, {-1, 1}, {-1, -1} };
     for (int i = 0; i < 8; i++) { // Pour chacun des mouvements
         int xCible = self->x + mouvements[i][0];
         int yCible = self->y + mouvements[i][1];
 
         if (xCible >= 0 && xCible < 8 && yCible >= 0 && yCible < 8) { // La case est dans les limites du plateau
-            if ( (Echiquier[xCible][yCible]->piece == NULL) || (Echiquier[xCible][yCible]->piece->couleur != self->couleur) ) {
+            if ( (!Echiquier[xCible][yCible]->piece) || (Echiquier[xCible][yCible]->piece->couleur != self->couleur) ) {
                 insertionCasesAtteignables(self, Echiquier[xCible][yCible]);
             }
         }
