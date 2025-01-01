@@ -3,7 +3,7 @@
 #include ".././include/calcul_atteignable.h" // calculAtteignablePion(), calculAtteignableCavalier(), calculAtteignableTour(), calculAtteignableFou(), calculAtteignableReine(), calculAtteignableRoi()
 #include ".././include/mouvement.h" // mouvement()
 
-#include ".././include/affichage.h" // affichage() // ! DEBUG
+#include ".././include/affichage.h" // affichage() - DEBUG
 
 #include ".././include/piece.h"
 
