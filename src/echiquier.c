@@ -32,7 +32,7 @@ Case* creationCase(int x, int y) {
 
 void initialiseEchiquier(Case* Echiquier[8][8]) {
     /*
-    Rempli l'echiquier de cases vides aux couleurs alternées.
+    Rempli l'echiquier de cases vides.
     */
 
     for (int i = 0; i < 8; i++) {
@@ -59,6 +59,8 @@ void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], Piece *Noirs[16], int
     /*
     Démarre une partie d'échec depuis l'état de l'echiquier et du point de vu du joueur courant.
     */
+
+    // --- Initialisation --- //
     Piece **joueurCourant, **joueurAdverse;
 
     if (couleurJoueurCourant == BLANC) {
@@ -69,14 +71,15 @@ void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], Piece *Noirs[16], int
         joueurAdverse = Blancs;
     }
 
+    // --- Partie --- //
     while (true) {
-        actualiseCasesAtteignablesParJoueur(Echiquier, joueurCourant); // On actualise chaque tableau des cases atteignables par les pièces du joueur
+        actualiseCasesAtteignablesParJoueur(Echiquier, joueurCourant); // On actualise chaque tableau des cases absolument atteignables par les pièces du joueur
         actualiseExposeRoi(Echiquier, joueurCourant, joueurAdverse); // On retire les cases exposant le roi allié à l'échec
 
         bool aJoue = false;
         Menu menu = PIECES; // On commence le tour en sélectionnant une pièce
 
-        // On sélectionne la première pièce non bloquée et non capturée
+        // On fait sélectionner la première pièce non bloquée et non capturée
         int indicePieceCourante = 0;
         while ( (indicePieceCourante < 16) && ((joueurCourant[indicePieceCourante]->estBloquee) || (joueurCourant[indicePieceCourante]->estCapturee)) ) { indicePieceCourante++; }
         if (indicePieceCourante >= 16) { break; } // Fin de la partie
@@ -87,10 +90,11 @@ void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], Piece *Noirs[16], int
         Piece* piecePrecedente = NULL;
         actualiseCasesAtteignablesParPiece(pieceCourante, piecePrecedente);
 
-        // On déclare ici pour le compilateur
+        // (Déclarés ici pour le compilateur)
         int indiceCaseCourante = 0;
         Case* caseCourante = NULL;
 
+        // --- Actions du joueur --- //
         while (!aJoue) {
             afficheEchiquier(Echiquier);
             printf("Sélectionnez une pièce à jouer à l'aide des touches directionnelles (appuyez sur 'q' pour quitter)\n");
@@ -103,8 +107,9 @@ void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], Piece *Noirs[16], int
             set_terminal_raw_mode();
 
             char actionJoueur;
-            if (read(STDIN_FILENO, &actionJoueur, 1) != 1) { exit(EXIT_FAILURE); } // Écrit l'entrée utilisateur lue dans &actionJoueur et vérifie que cela à fonctionné
+            if (read(STDIN_FILENO, &actionJoueur, 1) != 1) { exit(EXIT_FAILURE); } // Écrit l'entrée utilisateur lue dans &actionJoueur et vérifie que cela ai fonctionné
 
+            // Le joueur décide de quitter la partie
             if (actionJoueur == 'q') {
                 pieceCourante->estSelectionnee = false;
                 if (caseCourante != NULL) { caseCourante->estSelectionnee = false; }
@@ -139,13 +144,16 @@ void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], Piece *Noirs[16], int
                 exit(EXIT_SUCCESS);
             }
 
+            // Lorsque le joueur sélectionne une pièce
             if (menu == PIECES) {
-                if (actionJoueur == '\033') {
-                    char seq[2];
+                if (actionJoueur == '\033') { // Caractère spécial
+                    char seq[2]; // Séquence de caractères
                     if (read(STDIN_FILENO, &seq[0], 1) != 1 || read(STDIN_FILENO, &seq[1], 1) != 1) { exit(EXIT_FAILURE); }
 
-                    if (seq[0] == '[') {
+                    if (seq[0] == '[') { // Début d'une séquence de caractères pour les flèches
                         switch (seq[1]) {
+
+                            // Lorsque le joueur valide une pièce
                             case 'B': // Flèche bas
                                 // On sélectionne la première case atteignable (il y en a forcément une comme la pièce n'est pas bloquée)
                                 indiceCaseCourante = 0;
@@ -154,6 +162,8 @@ void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], Piece *Noirs[16], int
                                 pieceCourante->estSelectionnee = true;
                                 menu = COUPS;
                                 break;
+
+                            // Lorque le joueur navigue parmi ses pièces disponibles
                             case 'C': // Flèche droite
                                 do {
                                     indicePieceCourante = (indicePieceCourante == 15) ? 0 : indicePieceCourante + 1;
@@ -176,14 +186,18 @@ void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], Piece *Noirs[16], int
                                 pieceCourante->estSelectionnee = true;
                                 actualiseCasesAtteignablesParPiece(pieceCourante, piecePrecedente);
                                 break;
+
+                            // Lorsque le chat du joueur marche sur son clavier
                             default:
                                 printf("Caractère incorrect\n");
                                 break;
                         }
                     } else {
-                        printf("Autre caractère spécial\n");
+                        // Lorsque le chat du joueur marche sur son clavier
+                        printf("Caractère incorrect\n");
                     }
                 }
+            // Lorque le joueur sélectionne une case atteignable par la pièce validée
             } else { //menu == COUPS
                 if (actionJoueur == '\033') {
                     char seq[2];
@@ -191,11 +205,14 @@ void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], Piece *Noirs[16], int
 
                     if (seq[0] == '[') {
                         switch (seq[1]) {
+                            // Lorsque le retourne à la sélection des pièces
                             case 'A': // Flèche haut
                                 caseCourante->estSelectionnee = false;
                                 pieceCourante->estSelectionnee = true;
                                 menu = PIECES;
                                 break;
+                        
+                            // Lorque le joueur navigue parmi les cases atteignables
                             case 'C': // Flèche droite
                                 indiceCaseCourante = (indiceCaseCourante == pieceCourante->longueurCasesAtteignables - 1) ? 0 : indiceCaseCourante + 1;
                                 caseCourante->estSelectionnee = false;
@@ -208,17 +225,23 @@ void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], Piece *Noirs[16], int
                                 caseCourante = pieceCourante->casesAtteignables[indiceCaseCourante];
                                 caseCourante->estSelectionnee = true;
                                 break;
+
+                            // Lorsque le chat du joueur marche sur son clavier
                             default:
                                 printf("Caractère incorrect\n");
                                 break;
                         }
                     } else {
-                        printf("Autre caractère spécial\n");
+                        // Lorsque le chat du joueur marche sur son clavier
+                        printf("Caractère incorrect\n");
                     }
+                
+                // Lorque le joueur valide une case atteignable
                 } else if (actionJoueur == '\n') { // Entrée - Le coup est validé
                     // Gestion du coup
                     mouvement(Echiquier, pieceCourante, caseCourante, false); // On effectue le mouvement
 
+                    // Gestions des promotions
                     int rangeePromotion = (couleurJoueurCourant == BLANC) ? 7 : 0;
                     if ((pieceCourante->role == PION) && (caseCourante->x == rangeePromotion)) {
                          char reponse;
@@ -281,11 +304,11 @@ void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], Piece *Noirs[16], int
                     actualiseCasesAtteignablesParPiece(NULL, pieceCourante);
                 }
             }
-            // Rétablir les paramètres originaux
+            // On rétablit les paramètres originaux
             reset_terminal_mode(&orig_termios);
         }
     }
-    // Pat ou échec et mat
+    // Gestion du pat ou échec et mat
     afficheEchiquier(Echiquier);
     Case* caseRoyale = Echiquier[joueurCourant[4]->x][joueurCourant[4]->y];
     if (couleurJoueurCourant == BLANC) {
@@ -344,5 +367,6 @@ void jeuEchec() {
 
     actualiseCasesAtteignablesParJoueur(Echiquier, Blancs);
     actualiseCasesAtteignablesParJoueur(Echiquier, Noirs);
+    
     partieEchec(Echiquier, Blancs, Noirs, couleurJoueurCourant);
 }
