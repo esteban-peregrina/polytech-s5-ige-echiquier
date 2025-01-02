@@ -55,20 +55,23 @@ void videEchiquier(Case* Echiquier[8][8]) {
     }
 }
 
-void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], Piece *Noirs[16], int couleurJoueurCourant) {
+void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], int* scoreBlancs, Piece *Noirs[16], int* scoreNoirs, int couleurJoueurCourant) {
     /*
     Démarre une partie d'échec depuis l'état de l'echiquier et du point de vu du joueur courant.
     */
 
     // --- Initialisation --- //
     Piece **joueurCourant, **joueurAdverse;
+    int* scoreCourant;
 
     if (couleurJoueurCourant == BLANC) {
         joueurCourant = Blancs;
         joueurAdverse = Noirs;
+        scoreCourant = scoreBlancs;
     } else {
         joueurCourant = Noirs;
         joueurAdverse = Blancs;
+        scoreCourant = scoreNoirs;
     }
 
     // --- Partie --- //
@@ -96,7 +99,7 @@ void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], Piece *Noirs[16], int
 
         // --- Actions du joueur --- //
         while (!aJoue) {
-            afficheEchiquier(Echiquier);
+            afficheEchiquier(Echiquier, (*scoreBlancs), (*scoreNoirs));
             printf("Sélectionnez une pièce à jouer à l'aide des touches directionnelles (appuyez sur 'q' pour quitter)\n");
 
             // Sauvegarder les paramètres originaux du terminal
@@ -125,7 +128,7 @@ void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], Piece *Noirs[16], int
                     if (reponse == 'o') {
                         printf("Enregistrement de la partie...\n");
                         // Initialisations par chargement
-                        if (sauvegarderEchiquier(Blancs, Noirs, couleurJoueurCourant, "sauvegardes") == EXIT_FAILURE) {
+                        if (sauvegarderEchiquier(Blancs, (*scoreBlancs), Noirs, (*scoreNoirs), couleurJoueurCourant, "sauvegardes") == EXIT_FAILURE) {
                             printf("Sauvegarde impossible.\n");
                             reponse = 'n'; // On commence une nouvelle partie
                         } else { reponseValide = true; }
@@ -239,12 +242,12 @@ void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], Piece *Noirs[16], int
                 // Lorque le joueur valide une case atteignable
                 } else if (actionJoueur == '\n') { // Entrée - Le coup est validé
                     // Gestion du coup
-                    mouvement(Echiquier, pieceCourante, caseCourante, false); // On effectue le mouvement
+                    mouvement(Echiquier, pieceCourante, caseCourante, false, scoreCourant); // On effectue le mouvement
 
                     // Gestions des promotions
                     int rangeePromotion = (couleurJoueurCourant == BLANC) ? 7 : 0;
                     if ((pieceCourante->role == PION) && (caseCourante->x == rangeePromotion)) {
-                         char reponse;
+                        char reponse;
                         printf("Promotion du pion ! Choisissez une pièce (R,F,T,C) : ");
                         scanf("%c", &reponse);
                         
@@ -295,11 +298,12 @@ void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], Piece *Noirs[16], int
                     aJoue = true;
                     
                     couleurJoueurCourant = (couleurJoueurCourant == BLANC) ? NOIR : BLANC;
+                    scoreCourant = (scoreCourant == scoreBlancs) ? scoreNoirs : scoreBlancs;
 
                     // On commute les joueurs
                     joueurCourant = (joueurCourant == Blancs) ? Noirs : Blancs;
                     joueurAdverse = (joueurAdverse == Noirs) ? Blancs : Noirs;
-                       
+ 
                     // On vide les cases atteignables par la pièce courante pour ne plus les afficher (On ne connait pas encore la piece courante de l'adversaire)
                     actualiseCasesAtteignablesParPiece(NULL, pieceCourante);
                 }
@@ -311,7 +315,7 @@ void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], Piece *Noirs[16], int
         }
     }
     // Gestion du pat ou échec et mat
-    afficheEchiquier(Echiquier);
+    afficheEchiquier(Echiquier, (*scoreNoirs), (*scoreBlancs));
     Case* caseRoyale = Echiquier[joueurCourant[4]->x][joueurCourant[4]->y];
     if (couleurJoueurCourant == BLANC) {
         if (caseRoyale->estAtteignableParJoueur[joueurAdverse[4]->couleur] > 0) { printf("Échec et mat : Victoire des Noirs (Rouges) !\n"); }
@@ -339,6 +343,8 @@ void jeuEchec() {
     initialiseEchiquier(Echiquier);
 
     Piece *Blancs[16], *Noirs[16];  // Déclaration des joueurs
+    int* scoreNoirs = malloc(sizeof(int));
+    int* scoreBlancs = malloc(sizeof(int));
     int couleurJoueurCourant = -1;
 
     char reponse; 
@@ -350,7 +356,7 @@ void jeuEchec() {
         if (reponse == 'o') {
             printf("Chargement de la sauvegarde...\n");
             // Initialisations par chargement
-            if (chargerEchiquier(Echiquier, Blancs, Noirs, &couleurJoueurCourant, "sauvegardes") == EXIT_FAILURE) {
+            if (chargerEchiquier(Echiquier, Blancs, scoreBlancs, Noirs, scoreNoirs, &couleurJoueurCourant, "sauvegardes") == EXIT_FAILURE) {
                 printf("Fichiers de sauvegarde corrompus. Création d'une nouvelle partie.\n");
                 reponse = 'n'; // On commence une nouvelle partie
             } else { reponseValide = true; }
@@ -359,6 +365,8 @@ void jeuEchec() {
             // Initialisations par défaut
             initialiseJoueur(Echiquier, Blancs, BLANC);
             initialiseJoueur(Echiquier, Noirs, NOIR);
+            *scoreBlancs = 0;
+            *scoreNoirs = 0;
             couleurJoueurCourant = BLANC; // Les blancs commencent
             reponseValide = true;
         } else {
@@ -370,5 +378,5 @@ void jeuEchec() {
     actualiseCasesAtteignablesParJoueur(Echiquier, Blancs);
     actualiseCasesAtteignablesParJoueur(Echiquier, Noirs);
 
-    partieEchec(Echiquier, Blancs, Noirs, couleurJoueurCourant);
+    partieEchec(Echiquier, Blancs, scoreBlancs, Noirs, scoreNoirs, couleurJoueurCourant);
 }

@@ -166,7 +166,7 @@ void actualiseExposeRoi(Case* Echiquier[8][8], Piece* joueurCourant[16], Piece* 
                 int yPrecedent = pieceCourante->y;
 
                 // Simulation du mouvement (et sauvegarde de la pièce capturée)
-                Piece* pieceCapturee = mouvement(Echiquier, pieceCourante, caseCible, true); 
+                Piece* pieceCapturee = mouvement(Echiquier, pieceCourante, caseCible, true, NULL); 
                 
                 // Le cas échéant, suppression de la case exposant le roi à l'échec
                 actualiseCasesAtteignablesParJoueur(Echiquier, joueurAdverse);
@@ -177,7 +177,7 @@ void actualiseExposeRoi(Case* Echiquier[8][8], Piece* joueurCourant[16], Piece* 
                 }
                 
                 // Restauration de l'état initial
-                mouvement(Echiquier, pieceCourante, Echiquier[xPrecedent][yPrecedent], true); // On replace notre pièce
+                mouvement(Echiquier, pieceCourante, Echiquier[xPrecedent][yPrecedent], true, NULL); // On replace notre pièce
                 if (pieceCapturee) { // Si la simulation avait capturée une pièce
                     pieceCapturee->estCapturee = false;
                     

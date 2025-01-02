@@ -1,6 +1,6 @@
 #include ".././include/affichage.h"
 
-void afficheEchiquier(Case* Echiquier[8][8]) {
+void afficheEchiquier(Case* Echiquier[8][8], int scoreBlancs, int scoreNoirs) {
     /*
     Affiche l'echiquier en affichant chaque cases avec une couleur personnalisée en fonction de son état.
     */
@@ -42,11 +42,17 @@ void afficheEchiquier(Case* Echiquier[8][8]) {
                         }
                     }
 
-                    if ( (contenuCase != NULL) && (row == CELL_HEIGHT / 2) && (column == CELL_WIDTH / 2)) { // Au centre de l'affichage d'une case pleine
-                        if (contenuCase->estSelectionnee) {
-                            printf("\033[35m%s\033[0m", contenuCase->forme); // On met la piece en vert
+                    if ((contenuCase != NULL) && (column == CELL_WIDTH / 2)) { // Au centre de l'affichage d'une case pleine
+                        if (row == CELL_HEIGHT / 2) {
+                            if (contenuCase->estSelectionnee) {
+                                printf("\033[35m%s\033[0m", contenuCase->forme); // On met la piece en vert
+                            } else {
+                                contenuCase->couleur == BLANC ? printf("\033[34m%s\033[0m", contenuCase->forme) : printf("\033[31m%s\033[0m", contenuCase->forme); // TODO - Affiche la piece de la bonne couleur
+                            }
+                        } else if (row == CELL_HEIGHT / 2 + 1) { // Valeur en dessous de la pièce
+                                contenuCase->couleur == BLANC ? printf("\033[34m%d\033[0m", (int)contenuCase->role) : printf("\033[31m%d\033[0m", (int)contenuCase->role);
                         } else {
-                            contenuCase->couleur == BLANC ? printf("\033[34m%s\033[0m", contenuCase->forme) : printf("\033[31m%s\033[0m", contenuCase->forme); // TODO - Affiche la piece de la bonne couleur
+                            printf(" ");
                         }
                     } else {
                         printf(" ");
@@ -61,4 +67,6 @@ void afficheEchiquier(Case* Echiquier[8][8]) {
 
     for (int l = 0; l < 8 * CELL_WIDTH + 4; l++) {printf("\033[46m ");} // Bordure inférieure
     printf("\033[0m\n"); // Réinitialise la couleur par défaut et saute la ligne
+    printf("SCORE\nBlancs : %d\nNoirs : %d\n", scoreBlancs, scoreNoirs);
 }
+

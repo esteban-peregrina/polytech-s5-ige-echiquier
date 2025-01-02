@@ -30,7 +30,7 @@ void initialiseEchiquier(Case* Echiquier[8][8]);
 void videEchiquier(Case* Echiquier[8][8]);
 
 // Jeu
-void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], Piece *Noirs[16], int couleurJoueurCourant);
+void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], int* scoreBlancs, Piece *Noirs[16], int* scoreNoirs, int couleurJoueurCourant);
 void jeuEchec();
 
 #endif // ECHIQUIER_H

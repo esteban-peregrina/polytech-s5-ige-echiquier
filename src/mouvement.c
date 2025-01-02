@@ -2,7 +2,7 @@
 
 #include ".././include/mouvement.h"
 
-Piece* mouvement(Case* Echiquier[8][8], Piece* piece, Case* caseCible, bool estSimulation) {
+Piece* mouvement(Case* Echiquier[8][8], Piece* piece, Case* caseCible, bool estSimulation, int* score) {
     int xCible = caseCible->x;
     int yCible = caseCible->y;
 
@@ -73,6 +73,8 @@ Piece* mouvement(Case* Echiquier[8][8], Piece* piece, Case* caseCible, bool estS
         } else {
             piece->vientDeFaireDoublePas = false;
         }
+
+        if (pieceCapturee) { (*score)+= pieceCapturee->role; }
     }
     
     return pieceCapturee;

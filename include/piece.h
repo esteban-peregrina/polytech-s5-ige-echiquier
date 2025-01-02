@@ -12,12 +12,12 @@
 #define COUVERTUREMAX 27
 
 typedef enum {          
-    ROI,
-    REINE,
-    FOU,
-    CAVALIER,
-    TOUR,
-    PION,
+    ROI = 0,
+    REINE = 9,
+    FOU = 4,
+    CAVALIER = 3,
+    TOUR = 5,
+    PION = 1,
 } Role;
 
 typedef struct Case Case; // Pour que le compilateur les reconnaissent
