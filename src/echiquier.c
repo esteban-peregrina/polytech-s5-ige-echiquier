@@ -12,6 +12,9 @@
 
 #include ".././include/echiquier.h"
 
+volatile bool doitArreterTimer = false;
+volatile int couleurJoueurCourant = -1;
+
 Case* creationCase(int x, int y) {
     /*
     Renvoie l'adresse d'une case vide dont la couleur est specifiée.
@@ -57,7 +60,6 @@ void videEchiquier(Case* Echiquier[8][8]) {
     }
 }
 
-volatile bool doitArreterTimer = false;
 void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], int* scoreBlancs, Piece *Noirs[16], int* scoreNoirs, int couleurJoueurCourant) {
     /*
     Démarre une partie d'échec depuis l'état de l'echiquier et du point de vu du joueur courant.
@@ -357,7 +359,7 @@ void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], int* scoreBlancs, Pie
     printf("Partie terminée !\n"); 
     exit(EXIT_SUCCESS);
 }
-volatile int couleurJoueurCourant = -1;
+
 void jeuEchec() {
     /*
     Démarre le jeu d'Echec.
