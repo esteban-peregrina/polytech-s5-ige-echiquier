@@ -1,5 +1,6 @@
 #include <stdio.h> // printf()
 #include <stdlib.h> // malloc(), free(), exit()
+#include <pthread.h> // pthread_t
 
 #include ".././include/affichage.h" // afficheEchiquier()
 #include ".././include/lecture.h" // set_terminal_raw_mode(), reset_terminal_mode()
@@ -7,6 +8,7 @@
 #include ".././include/joueur.h" // initialiseJoueur(), videJoueur()
 #include ".././include/mouvement.h" // initialiseJoueur(), videJoueur()
 #include ".././include/calcul_atteignable.h" // calculAtteignableCavalier(), calculAtteignableTour(), calculAtteignableFou(), calculAtteignableReine()
+#include ".././include/timer.h" // threadTimer(), doitArreterTimer, couleurJoueurCourant
 
 #include ".././include/echiquier.h"
 
@@ -55,10 +57,19 @@ void videEchiquier(Case* Echiquier[8][8]) {
     }
 }
 
+volatile bool doitArreterTimer = false;
 void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], int* scoreBlancs, Piece *Noirs[16], int* scoreNoirs, int couleurJoueurCourant) {
     /*
     Démarre une partie d'échec depuis l'état de l'echiquier et du point de vu du joueur courant.
     */
+
+    printf("\033[H\033[J"); // Efface le terminal
+    pthread_t timerThread;
+    // Lance le thread du timer
+    if (pthread_create(&timerThread, NULL, threadTimer, NULL) != 0) {
+        perror("Echec de la création du thread du timer !\n");
+        exit(EXIT_FAILURE);
+    }
 
     // --- Initialisation --- //
     Piece **joueurCourant, **joueurAdverse;
@@ -73,9 +84,9 @@ void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], int* scoreBlancs, Pie
         joueurAdverse = Blancs;
         scoreCourant = scoreNoirs;
     }
-
     // --- Partie --- //
-    while (true) {
+    bool finPartie = false;
+    while (!finPartie) {
         actualiseCasesAtteignablesParJoueur(Echiquier, joueurCourant); // On actualise chaque tableau des cases absolument atteignables par les pièces du joueur
         actualiseExposeRoi(Echiquier, joueurCourant, joueurAdverse); // On retire les cases exposant le roi allié à l'échec
 
@@ -85,7 +96,19 @@ void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], int* scoreBlancs, Pie
         // On fait sélectionner la première pièce non bloquée et non capturée
         int indicePieceCourante = 0;
         while ( (indicePieceCourante < 16) && ((joueurCourant[indicePieceCourante]->estBloquee) || (joueurCourant[indicePieceCourante]->estCapturee)) ) { indicePieceCourante++; }
-        if (indicePieceCourante >= 16) { break; } // Fin de la partie
+        if (indicePieceCourante >= 16) { 
+            // Gestion du pat ou échec et mat
+            afficheEchiquier(Echiquier, (*scoreNoirs), (*scoreBlancs));
+            Case* caseRoyale = Echiquier[joueurCourant[4]->x][joueurCourant[4]->y];
+            if (couleurJoueurCourant == BLANC) {
+                if (caseRoyale->estAtteignableParJoueur[joueurAdverse[4]->couleur] > 0) { printf("Échec et mat : Victoire des Noirs (Rouges) !\n"); }
+                else { printf("Pat !\n"); }
+            } else {
+                if (caseRoyale->estAtteignableParJoueur[joueurAdverse[4]->couleur] > 0) { printf("Échec et mat : Victoire des Blancs (Bleus) !\n"); } 
+                else { printf("Pat !\n"); }
+            }
+            break;  // On quitte la partie
+        }
         Piece* pieceCourante = joueurCourant[indicePieceCourante];
         pieceCourante->estSelectionnee = true;
         
@@ -114,9 +137,13 @@ void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], int* scoreBlancs, Pie
 
             // Lorsque le joueur décide de quitter la partie
             if (actionJoueur == 'q') {
+                doitArreterTimer = true;
+
+                // Pour la sauvegarde
                 pieceCourante->estSelectionnee = false;
                 if (caseCourante != NULL) { caseCourante->estSelectionnee = false; }
                 
+                // On rétablit les paramètres originaux du terminal
                 reset_terminal_mode(&orig_termios);
 
                 char reponse; 
@@ -127,7 +154,6 @@ void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], int* scoreBlancs, Pie
                 while (!reponseValide) {
                     if (reponse == 'o') {
                         printf("Enregistrement de la partie...\n");
-                        // Initialisations par chargement
                         if (sauvegarderEchiquier(Blancs, (*scoreBlancs), Noirs, (*scoreNoirs), couleurJoueurCourant, "sauvegardes") == EXIT_FAILURE) {
                             printf("Sauvegarde impossible.\n");
                             reponse = 'n'; // On commence une nouvelle partie
@@ -140,11 +166,18 @@ void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], int* scoreBlancs, Pie
                         scanf("%c", &reponse);
                     }
                 }
+                finPartie = true;
+                break; // On quitte la partie
+            }
 
-                videEchiquier(Echiquier); // Libère les cases
-                videJoueur(Blancs); // Libère les pièces blanches
-                videJoueur(Noirs);  // Libère les pièces noires  
-                exit(EXIT_SUCCESS);
+            // Lorsque le temps imparti est écoulé
+            else if (doitArreterTimer) {
+                // On rétablit les paramètres originaux du terminal
+                reset_terminal_mode(&orig_termios);
+
+                printf("Temps écoulé ! Victoire des %s\n", couleurJoueurCourant == BLANC ? "Noirs (Rouges)" : "Blancs (Bleus)");
+                finPartie = true;
+                break; // On quitte la partie
             }
 
             // Lorsque le joueur sélectionne une pièce
@@ -314,24 +347,17 @@ void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], int* scoreBlancs, Pie
             reset_terminal_mode(&orig_termios);
         }
     }
-    // Gestion du pat ou échec et mat
-    afficheEchiquier(Echiquier, (*scoreNoirs), (*scoreBlancs));
-    Case* caseRoyale = Echiquier[joueurCourant[4]->x][joueurCourant[4]->y];
-    if (couleurJoueurCourant == BLANC) {
-        if (caseRoyale->estAtteignableParJoueur[joueurAdverse[4]->couleur] > 0) { printf("Échec et mat : Victoire des Noirs (Rouges) !\n"); }
-        else { printf("Pat !\n"); }
-    } else {
-        if (caseRoyale->estAtteignableParJoueur[joueurAdverse[4]->couleur] > 0) { printf("Échec et mat : Victoire des Blancs (Bleus) !\n"); } 
-        else { printf("Pat !\n"); }
-    }
         
     videEchiquier(Echiquier); // Libère les cases
     videJoueur(Blancs); // Libère les pièces blanches
     videJoueur(Noirs);  // Libère les pièces noires 
+
+    pthread_join(timerThread, NULL); // On attend la fin du thread du timer
     
     printf("Partie terminée !\n"); 
+    exit(EXIT_SUCCESS);
 }
-
+volatile int couleurJoueurCourant = -1;
 void jeuEchec() {
     /*
     Démarre le jeu d'Echec.
@@ -345,7 +371,7 @@ void jeuEchec() {
     Piece *Blancs[16], *Noirs[16];  // Déclaration des joueurs
     int* scoreNoirs = malloc(sizeof(int));
     int* scoreBlancs = malloc(sizeof(int));
-    int couleurJoueurCourant = -1;
+    //volatile int couleurJoueurCourant = -1;
 
     char reponse; 
     printf("Voulez-vous charger une sauvegarde ? (o/n) : ");
@@ -356,7 +382,7 @@ void jeuEchec() {
         if (reponse == 'o') {
             printf("Chargement de la sauvegarde...\n");
             // Initialisations par chargement
-            if (chargerEchiquier(Echiquier, Blancs, scoreBlancs, Noirs, scoreNoirs, &couleurJoueurCourant, "sauvegardes") == EXIT_FAILURE) {
+            if (chargerEchiquier(Echiquier, Blancs, scoreBlancs, Noirs, scoreNoirs, couleurJoueurCourant, "sauvegardes") == EXIT_FAILURE) {
                 printf("Fichiers de sauvegarde corrompus. Création d'une nouvelle partie.\n");
                 reponse = 'n'; // On commence une nouvelle partie
             } else { reponseValide = true; }

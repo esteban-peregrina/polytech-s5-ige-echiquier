@@ -4,6 +4,8 @@
 #include <termios.h>
 #include <unistd.h>
 
+void deplacerCurseur(int x, int y);
+
 /* Fonctions pour désactiver la nécessitée d'appuyer sur "Entrée" après avoir écrit dans le terminal */
 
 // Configuration du terminal

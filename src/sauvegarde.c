@@ -1,5 +1,7 @@
 #include <stdlib.h> // EXIT_FAILURE, EXIT_SUCCESS
 
+#include ".././include/timer.h" // couleurJoueurCourant
+
 #include ".././include/sauvegarde.h"
 
 int sauvegarderEchiquier(Piece* joueurBlanc[16], int scoreBlancs, Piece* joueurNoir[16], int scoreNoirs, int couleurJoueurCourant, char* dossierDeSauvegarde) {
@@ -63,7 +65,7 @@ int sauvegarderEchiquier(Piece* joueurBlanc[16], int scoreBlancs, Piece* joueurN
     return EXIT_SUCCESS;
 }
 
-int chargerEchiquier(Case* Echiquier[8][8], Piece* joueurBlanc[16], int* scoreBlancs, Piece* joueurNoir[16], int* scoreNoirs, int* couleurJoueurCourant, char* dossierDeSauvegarde) {
+int chargerEchiquier(Case* Echiquier[8][8], Piece* joueurBlanc[16], int* scoreBlancs, Piece* joueurNoir[16], int* scoreNoirs, int couleurJoueurCourant, char* dossierDeSauvegarde) {
     char repertoireCourant[1024];
     if (getcwd(repertoireCourant, sizeof(repertoireCourant)) == NULL) {
         perror("Impossible de récupérer le répertoire courant");
@@ -87,7 +89,7 @@ int chargerEchiquier(Case* Echiquier[8][8], Piece* joueurBlanc[16], int* scoreBl
     }
 
     // Chargement de l'état de l'échiquier
-    fscanf(fichierSauvegarde, "%d %d %d\n", couleurJoueurCourant, scoreBlancs, scoreNoirs);
+    fscanf(fichierSauvegarde, "%d %d %d\n", &couleurJoueurCourant, scoreBlancs, scoreNoirs);
 
     for (int joueur = 0; joueur < 2; joueur++) {
         Piece** joueurCourant = NULL;

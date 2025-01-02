@@ -3,7 +3,7 @@ EXEC = program
 
 # Compilateur et ses arguments
 CC = gcc
-CFLAGS = -Wall
+CFLAGS = -Wall -pthread
 
 # Répertoires type
 SRC_DIR = src

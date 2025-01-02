@@ -4,11 +4,11 @@ void afficheEchiquier(Case* Echiquier[8][8], int scoreBlancs, int scoreNoirs) {
     /*
     Affiche l'echiquier en affichant chaque cases avec une couleur personnalisée en fonction de son état.
     */
-
+    
     const int CELL_HEIGHT = 3; // Impair pour avoir un milieu
     const int CELL_WIDTH = CELL_HEIGHT * 2 + 1; // Le ratio largeur:hauteur ASCII est 1:2 mais j'ai besoin d'un centre
 
-    printf("\033[H"); // Vide le terminal
+    printf("\033[2;1H"); // Déplace le curseur en haut à gauche du terminal
     printf("Echiquier :\n");
 
     for (int l = 0; l < 8 * CELL_WIDTH + 4; l++) {printf("\033[46m ");} // Bordure supérieure

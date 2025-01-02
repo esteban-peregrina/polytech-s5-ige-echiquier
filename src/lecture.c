@@ -1,4 +1,10 @@
+#include <stdio.h> // printf()
+
 #include ".././include/lecture.h"
+
+void deplacerCurseur(int x, int y) {
+    printf("\033[%d;%dH", x, y);
+}
 
 /*========= Le code ci-dessous à été généré par ChatGPT =========*/
 
