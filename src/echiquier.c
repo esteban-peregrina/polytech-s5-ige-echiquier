@@ -126,7 +126,9 @@ void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], int* scoreBlancs, Pie
         while (!aJoue) {
             afficheEchiquier(Echiquier, (*scoreBlancs), (*scoreNoirs));
             printf("Sélectionnez une pièce à jouer à l'aide des touches directionnelles (appuyez sur 'q' pour quitter)\n");
-
+            pthread_mutex_lock(&couleurJoueurCourant_mutex);
+            printf("Couleur du joueur courant : %s\n", couleurJoueurCourant == BLANC ? "Blancs (Bleus)" : "Noirs (Rouges)");
+            pthread_mutex_unlock(&couleurJoueurCourant_mutex);
             // Sauvegarder les paramètres originaux du terminal
             struct termios orig_termios;
             tcgetattr(STDIN_FILENO, &orig_termios);
@@ -139,7 +141,11 @@ void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], int* scoreBlancs, Pie
 
             // Lorsque le joueur décide de quitter la partie
             if (actionJoueur == 'q') {
+                pthread_mutex_lock(&doitArreterTimer_mutex);
                 doitArreterTimer = true;
+                pthread_mutex_unlock(&doitArreterTimer_mutex);
+
+                pthread_mutex_lock(&couleurJoueurCourant_mutex);
 
                 // Pour la sauvegarde
                 pieceCourante->estSelectionnee = false;
@@ -168,6 +174,9 @@ void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], int* scoreBlancs, Pie
                         scanf("%c", &reponse);
                     }
                 }
+
+                pthread_mutex_unlock(&couleurJoueurCourant_mutex);
+
                 finPartie = true;
                 break; // On quitte la partie
             }
@@ -177,7 +186,10 @@ void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], int* scoreBlancs, Pie
                 // On rétablit les paramètres originaux du terminal
                 reset_terminal_mode(&orig_termios);
 
+                pthread_mutex_lock(&couleurJoueurCourant_mutex);
                 printf("Temps écoulé ! Victoire des %s\n", couleurJoueurCourant == BLANC ? "Noirs (Rouges)" : "Blancs (Bleus)");
+                pthread_mutex_unlock(&couleurJoueurCourant_mutex);
+                
                 finPartie = true;
                 break; // On quitte la partie
             }
@@ -280,7 +292,9 @@ void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], int* scoreBlancs, Pie
                     mouvement(Echiquier, pieceCourante, caseCourante, false, scoreCourant); // On effectue le mouvement
 
                     // Gestions des promotions
+                    pthread_mutex_lock(&couleurJoueurCourant_mutex);
                     int rangeePromotion = (couleurJoueurCourant == BLANC) ? 7 : 0;
+                    pthread_mutex_unlock(&couleurJoueurCourant_mutex);
                     if ((pieceCourante->role == PION) && (caseCourante->x == rangeePromotion)) {
                         char reponse;
                         printf("Promotion du pion ! Choisissez une pièce (R,F,T,C) : ");
@@ -331,8 +345,11 @@ void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], int* scoreBlancs, Pie
                     // On donne la main à l'adversaire
                     menu = PIECES;
                     aJoue = true;
-                    
+
+                    pthread_mutex_lock(&couleurJoueurCourant_mutex);
                     couleurJoueurCourant = (couleurJoueurCourant == BLANC) ? NOIR : BLANC;
+                    pthread_mutex_unlock(&couleurJoueurCourant_mutex);
+
                     scoreCourant = (scoreCourant == scoreBlancs) ? scoreNoirs : scoreBlancs;
 
                     // On commute les joueurs
@@ -373,11 +390,12 @@ void jeuEchec() {
     Piece *Blancs[16], *Noirs[16];  // Déclaration des joueurs
     int* scoreNoirs = malloc(sizeof(int));
     int* scoreBlancs = malloc(sizeof(int));
-    //volatile int couleurJoueurCourant = -1;
 
     char reponse; 
     printf("Voulez-vous charger une sauvegarde ? (o/n) : ");
     scanf("%c", &reponse);
+
+    pthread_mutex_lock(&couleurJoueurCourant_mutex);
 
     bool reponseValide = false;
     while (!reponseValide) {
@@ -402,6 +420,8 @@ void jeuEchec() {
             scanf("%c", &reponse);
         }
     }
+
+    pthread_mutex_unlock(&couleurJoueurCourant_mutex);
 
     actualiseCasesAtteignablesParJoueur(Echiquier, Blancs);
     actualiseCasesAtteignablesParJoueur(Echiquier, Noirs);
