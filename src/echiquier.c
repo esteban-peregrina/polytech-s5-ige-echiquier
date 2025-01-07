@@ -128,7 +128,7 @@ void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], int* scoreBlancs, Pie
             afficheEchiquier(Echiquier, (*scoreBlancs), (*scoreNoirs));
             printf("Sélectionnez une pièce à jouer à l'aide des touches directionnelles (appuyez sur 'q' pour quitter)\033[K\n");
             pthread_mutex_lock(&couleurJoueurCourant_mutex);
-            printf("Couleur du joueur courant : %s\033[K\n", couleurJoueurCourant == BLANC ? "Blancs (Bleus)" : "Noirs (Rouges)");
+            printf("Joueur courant : %s\033[K\n", couleurJoueurCourant == BLANC ? "Blancs (Bleus)" : "Noirs (Rouges)");
             pthread_mutex_unlock(&couleurJoueurCourant_mutex);
             // Sauvegarder les paramètres originaux du terminal
             struct termios orig_termios;

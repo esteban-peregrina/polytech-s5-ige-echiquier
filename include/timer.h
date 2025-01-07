@@ -1,7 +1,7 @@
 #ifndef TIMER_H
 #define TIMER_H
 
-#define TEMPS_IMPARTI 600 // Temps imparti pour chaque joueur, en secondes (5 minutes)
+#define TEMPS_IMPARTI 600 // Temps imparti pour chaque joueur, en secondes (10 minutes)
 
 #include <stdbool.h> // bool
 #include <pthread.h> // pthread_mutex_t

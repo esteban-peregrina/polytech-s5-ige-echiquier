@@ -31,8 +31,7 @@ void* threadTimer() {
             doitArreterTimer = true;
             pthread_mutex_unlock(&doitArreterTimer_mutex);
         } else {
-            // Save the cursor position
-            printf("\033[s");
+            printf("\033[s"); // Enregistre la position du curseur
 
             deplacerCurseur(1, 1); // On se déplace en haut à gauche du terminal
             printf("\033[K");
@@ -46,7 +45,7 @@ void* threadTimer() {
             printf("Temps restant : %02d:%02d | %02d:%02d", minutesNoirs, secondesNoirs, minutesBlancs, secondesBlancs);
             pthread_mutex_unlock(&couleurJoueurCourant_mutex);
         
-            printf("\033[u");
+            printf("\033[u"); // Restaure la position
             fflush(stdout);  // Ensure the output is printed immediately
         }
 
