@@ -9,7 +9,6 @@
 // TODO - Découper la fonciton "partiEchec()" et créer une fonction "tourDuJoueur()" pour accuiellir l'IA (la différence c'est qu'on donne pas la main au joueur entre deux tours)
 // TODO - Modifier heatmap + valeur lors de la promotion
 // TODO - Un truc ppur regler la taille du terminal au bon endroit
-// ! actualiseCasesAtteignablesParJoueur(Echiquier, joueurAdverse); a ajouter
 
 int main() {
     jeuEchec();

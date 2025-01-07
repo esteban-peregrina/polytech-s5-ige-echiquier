@@ -89,6 +89,7 @@ void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], int* scoreBlancs, Pie
     // --- Partie --- //
     bool finPartie = false;
     while (!finPartie) {
+        actualiseCasesAtteignablesParJoueur(Echiquier, joueurAdverse);
         actualiseCasesAtteignablesParJoueur(Echiquier, joueurCourant); // On actualise chaque tableau des cases absolument atteignables par les pièces du joueur
         actualiseExposeRoi(Echiquier, joueurCourant, joueurAdverse); // On retire les cases exposant le roi allié à l'échec
 
