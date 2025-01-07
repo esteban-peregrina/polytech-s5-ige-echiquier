@@ -60,7 +60,7 @@ void videEchiquier(Case* Echiquier[8][8]) {
     }
 }
 
-void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], int* scoreBlancs, Piece *Noirs[16], int* scoreNoirs, int couleurJoueurCourant) {
+void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], int* scoreBlancs, Piece *Noirs[16], int* scoreNoirs) {
     /*
     Démarre une partie d'échec depuis l'état de l'echiquier et du point de vu du joueur courant.
     */
@@ -103,10 +103,10 @@ void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], int* scoreBlancs, Pie
             afficheEchiquier(Echiquier, (*scoreNoirs), (*scoreBlancs));
             Case* caseRoyale = Echiquier[joueurCourant[4]->x][joueurCourant[4]->y];
             if (couleurJoueurCourant == BLANC) {
-                if (caseRoyale->estAtteignableParJoueur[joueurAdverse[4]->couleur] > 0) { printf("Échec et mat : Victoire des Noirs (Rouges) !\n"); }
+                if (caseRoyale->estAtteignableParJoueur[joueurAdverse[4]->couleur] > 0) { printf("Échec et mat : Victoire des Noirs (Rouges) !\033[K\n"); }
                 else { printf("Pat !\n"); }
             } else {
-                if (caseRoyale->estAtteignableParJoueur[joueurAdverse[4]->couleur] > 0) { printf("Échec et mat : Victoire des Blancs (Bleus) !\n"); } 
+                if (caseRoyale->estAtteignableParJoueur[joueurAdverse[4]->couleur] > 0) { printf("Échec et mat : Victoire des Blancs (Bleus) !\033[K\n"); } 
                 else { printf("Pat !\n"); }
             }
             break;  // On quitte la partie
@@ -125,9 +125,9 @@ void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], int* scoreBlancs, Pie
         // --- Actions du joueur --- //
         while (!aJoue) {
             afficheEchiquier(Echiquier, (*scoreBlancs), (*scoreNoirs));
-            printf("Sélectionnez une pièce à jouer à l'aide des touches directionnelles (appuyez sur 'q' pour quitter)\n");
+            printf("Sélectionnez une pièce à jouer à l'aide des touches directionnelles (appuyez sur 'q' pour quitter)\033[K\n");
             pthread_mutex_lock(&couleurJoueurCourant_mutex);
-            printf("Couleur du joueur courant : %s\n", couleurJoueurCourant == BLANC ? "Blancs (Bleus)" : "Noirs (Rouges)");
+            printf("Couleur du joueur courant : %s\033[K\n", couleurJoueurCourant == BLANC ? "Blancs (Bleus)" : "Noirs (Rouges)");
             pthread_mutex_unlock(&couleurJoueurCourant_mutex);
             // Sauvegarder les paramètres originaux du terminal
             struct termios orig_termios;
@@ -155,7 +155,7 @@ void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], int* scoreBlancs, Pie
                 reset_terminal_mode(&orig_termios);
 
                 char reponse; 
-                printf("Voulez-vous sauvegarder la partie ? (o/n) : ");
+                printf("Voulez-vous sauvegarder la partie ? (o/n) : \033[K");
                 scanf("%c", &reponse);
                 
                 bool reponseValide = false;
@@ -163,14 +163,14 @@ void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], int* scoreBlancs, Pie
                     if (reponse == 'o') {
                         printf("Enregistrement de la partie...\n");
                         if (sauvegarderEchiquier(Blancs, (*scoreBlancs), Noirs, (*scoreNoirs), couleurJoueurCourant, "sauvegardes") == EXIT_FAILURE) {
-                            printf("Sauvegarde impossible.\n");
+                            printf("Sauvegarde impossible.\033[K\n");
                             reponse = 'n'; // On commence une nouvelle partie
                         } else { reponseValide = true; }
                     } else if (reponse == 'n') {
                         printf("Sortie de la partie\n");
                         reponseValide = true;
                     } else {
-                        printf("Réponse incorrecte. Veuillez répondre par 'o' ou 'n' : ");
+                        printf("Réponse incorrecte. Veuillez répondre par 'o' ou 'n' : \033[K");
                         scanf("%c", &reponse);
                     }
                 }
@@ -187,7 +187,7 @@ void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], int* scoreBlancs, Pie
                 reset_terminal_mode(&orig_termios);
 
                 pthread_mutex_lock(&couleurJoueurCourant_mutex);
-                printf("Temps écoulé ! Victoire des %s\n", couleurJoueurCourant == BLANC ? "Noirs (Rouges)" : "Blancs (Bleus)");
+                printf("Temps écoulé ! Victoire des %s\033[K\n", couleurJoueurCourant == BLANC ? "Noirs (Rouges)" : "Blancs (Bleus)");
                 pthread_mutex_unlock(&couleurJoueurCourant_mutex);
                 
                 finPartie = true;
@@ -239,12 +239,12 @@ void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], int* scoreBlancs, Pie
 
                             // Lorsque le chat du joueur marche sur son clavier
                             default:
-                                printf("Caractère incorrect\n");
+                                printf("Caractère incorrect\033[K\n");
                                 break;
                         }
                     } else {
                         // Lorsque le chat du joueur marche sur son clavier
-                        printf("Caractère incorrect\n");
+                        printf("Caractère incorrect\033[K\n");
                     }
                 }
             // Lorque le joueur sélectionne une case atteignable par la pièce validée
@@ -278,12 +278,12 @@ void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], int* scoreBlancs, Pie
 
                             // Lorsque le chat du joueur marche sur son clavier
                             default:
-                                printf("Caractère incorrect\n");
+                                printf("Caractère incorrect\033[K\n");
                                 break;
                         }
                     } else {
                         // Lorsque le chat du joueur marche sur son clavier
-                        printf("Caractère incorrect\n");
+                        printf("Caractère incorrect\033[K\n");
                     }
                 
                 // Lorque le joueur valide une case atteignable
@@ -297,27 +297,27 @@ void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], int* scoreBlancs, Pie
                     pthread_mutex_unlock(&couleurJoueurCourant_mutex);
                     if ((pieceCourante->role == PION) && (caseCourante->x == rangeePromotion)) {
                         char reponse;
-                        printf("Promotion du pion ! Choisissez une pièce (R,F,T,C) : ");
+                        printf("Promotion du pion ! Choisissez une pièce (R,F,T,C) : \033[K");
                         scanf("%c", &reponse);
                         
                         bool reponseValide = false;
                         while (!reponseValide) {
                             if (reponse == 'R') {
-                                printf("Promotion en Reine...\n");
+                                printf("Promotion en Reine...\033[K\n");
                                 pieceCourante->role = REINE;
                                 pieceCourante->forme = "♛";
                                 pieceCourante->calculAtteignable = calculAtteignableReine;
                                 
                                 reponseValide = true;
                             } else if (reponse == 'F') {
-                                printf("Promotion en Fou...\n");
+                                printf("Promotion en Fou...\033[K\n");
                                 pieceCourante->role = FOU;
                                 pieceCourante->forme = "♝";
                                 pieceCourante->calculAtteignable = calculAtteignableFou;
                                 
                                 reponseValide = true;
                             } else if (reponse == 'T') {
-                                printf("Promotion en Tour...\n");
+                                printf("Promotion en Tour...\033[K\n");
                                 pieceCourante->role = TOUR;
                                 pieceCourante->forme = "♜";
                                 pieceCourante->calculAtteignable = calculAtteignableTour;
@@ -325,14 +325,14 @@ void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], int* scoreBlancs, Pie
                                 reponseValide = true;
                             
                             } else if (reponse == 'C') {
-                                printf("Promotion en Cavalier...\n");
+                                printf("Promotion en Cavalier...\033[K\n");
                                 pieceCourante->role = CAVALIER;
                                 pieceCourante->forme = "♞";
                                 pieceCourante->calculAtteignable = calculAtteignableCavalier;
                                 
                                 reponseValide = true;
                             } else {
-                                printf("Réponse incorrecte. Veuillez répondre par 'R','F','T' ou 'C' : ");
+                                printf("Réponse incorrecte. Veuillez répondre par 'R','F','T' ou 'C' : \033[K");
                                 scanf("%c", &reponse);
                             }
                         }
@@ -373,7 +373,7 @@ void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], int* scoreBlancs, Pie
 
     pthread_join(timerThread, NULL); // On attend la fin du thread du timer
     
-    printf("Partie terminée !\n"); 
+    printf("Partie terminée !\033[K\n"); 
     exit(EXIT_SUCCESS);
 }
 
@@ -392,7 +392,7 @@ void jeuEchec() {
     int* scoreBlancs = malloc(sizeof(int));
 
     char reponse; 
-    printf("Voulez-vous charger une sauvegarde ? (o/n) : ");
+    printf("Voulez-vous charger une sauvegarde ? (o/n) : \033[K");
     scanf("%c", &reponse);
 
     pthread_mutex_lock(&couleurJoueurCourant_mutex);
@@ -400,14 +400,14 @@ void jeuEchec() {
     bool reponseValide = false;
     while (!reponseValide) {
         if (reponse == 'o') {
-            printf("Chargement de la sauvegarde...\n");
+            printf("Chargement de la sauvegarde...\033[K\n");
             // Initialisations par chargement
-            if (chargerEchiquier(Echiquier, Blancs, scoreBlancs, Noirs, scoreNoirs, couleurJoueurCourant, "sauvegardes") == EXIT_FAILURE) {
-                printf("Fichiers de sauvegarde corrompus. Création d'une nouvelle partie.\n");
+            if (chargerEchiquier(Echiquier, Blancs, scoreBlancs, Noirs, scoreNoirs, "sauvegardes") == EXIT_FAILURE) {
+                printf("Fichiers de sauvegarde corrompus. Création d'une nouvelle partie.\033[K\n");
                 reponse = 'n'; // On commence une nouvelle partie
             } else { reponseValide = true; }
         } else if (reponse == 'n') {
-            printf("Nouvelle partie...\n");
+            printf("Nouvelle partie...\033[K\n");
             // Initialisations par défaut
             initialiseJoueur(Echiquier, Blancs, BLANC);
             initialiseJoueur(Echiquier, Noirs, NOIR);
@@ -416,7 +416,7 @@ void jeuEchec() {
             couleurJoueurCourant = BLANC; // Les blancs commencent
             reponseValide = true;
         } else {
-            printf("Réponse incorrecte. Veuillez répondre par 'o' ou 'n' : ");
+            printf("Réponse incorrecte. Veuillez répondre par 'o' ou 'n' : \033[K");
             scanf("%c", &reponse);
         }
     }
@@ -426,5 +426,5 @@ void jeuEchec() {
     actualiseCasesAtteignablesParJoueur(Echiquier, Blancs);
     actualiseCasesAtteignablesParJoueur(Echiquier, Noirs);
 
-    partieEchec(Echiquier, Blancs, scoreBlancs, Noirs, scoreNoirs, couleurJoueurCourant);
+    partieEchec(Echiquier, Blancs, scoreBlancs, Noirs, scoreNoirs);
 }

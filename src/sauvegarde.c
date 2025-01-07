@@ -65,7 +65,7 @@ int sauvegarderEchiquier(Piece* joueurBlanc[16], int scoreBlancs, Piece* joueurN
     return EXIT_SUCCESS;
 }
 
-int chargerEchiquier(Case* Echiquier[8][8], Piece* joueurBlanc[16], int* scoreBlancs, Piece* joueurNoir[16], int* scoreNoirs, int couleurJoueurCourant, char* dossierDeSauvegarde) {
+int chargerEchiquier(Case* Echiquier[8][8], Piece* joueurBlanc[16], int* scoreBlancs, Piece* joueurNoir[16], int* scoreNoirs, char* dossierDeSauvegarde) {
     char repertoireCourant[1024];
     if (getcwd(repertoireCourant, sizeof(repertoireCourant)) == NULL) {
         perror("Impossible de récupérer le répertoire courant");
