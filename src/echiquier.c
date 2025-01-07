@@ -427,5 +427,8 @@ void jeuEchec() {
     actualiseCasesAtteignablesParJoueur(Echiquier, Blancs);
     actualiseCasesAtteignablesParJoueur(Echiquier, Noirs);
 
+    printf("Appuyez sur Entrée pour commencer... \033[K\n");
+    while (getchar() != '\n');
+
     partieEchec(Echiquier, Blancs, scoreBlancs, Noirs, scoreNoirs);
 }
