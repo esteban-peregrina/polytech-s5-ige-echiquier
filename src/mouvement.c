@@ -80,13 +80,16 @@ Piece* mouvement(Case* Echiquier[8][8], Piece* piece, Case* caseCible, bool estS
     return pieceCapturee;
 }
 
-void mouvementIA(Case* Echiquier[8][8], Piece** joueurIA, int* scoreIA) {
+void mouvementIA(Case* Echiquier[8][8], Piece** joueurIA, int* scoreIA, int indicePremier) {
     /*
     Fait jouer l'IA en regardant la case la plus interessante.
     */
 
-    Piece* meilleurePiece = joueurIA[0];
+    int indicePieceCourante = 0;
+    while ( (indicePieceCourante < 16) && ((joueurIA[indicePieceCourante]->estBloquee) || (joueurIA[indicePieceCourante]->estCapturee)) ) { indicePieceCourante++; }
+    Piece* meilleurePiece = joueurIA[indicePieceCourante];
     Case* meilleureCase = meilleurePiece->casesAtteignables[0];
+
     int valeurMax = 0;
     for (int piece = 0; piece < 16; piece++) {
         Piece* pieceCourante = joueurIA[piece];
@@ -94,7 +97,7 @@ void mouvementIA(Case* Echiquier[8][8], Piece** joueurIA, int* scoreIA) {
             for (int coup = 0; coup < pieceCourante->longueurCasesAtteignables; coup++) { // Pour chacun des coups possible par la pièce
                 Case* caseCible = pieceCourante->casesAtteignables[coup];
                 
-                if ((caseCible->piece) && (caseCible->piece->role > valeurMax)) {
+                if ((caseCible->piece) && (caseCible->piece->role >= valeurMax)) {
                     meilleurePiece = pieceCourante;
                     meilleureCase = caseCible;
                     valeurMax = caseCible->piece->role;
@@ -103,7 +106,5 @@ void mouvementIA(Case* Echiquier[8][8], Piece** joueurIA, int* scoreIA) {
         }
     }
 
-    if (meilleureCase && meilleurePiece) { // On vérifie qu'on à bien trouvé quelque chose
-        mouvement(Echiquier, meilleurePiece, meilleureCase, false, scoreIA);
-    }
+    mouvement(Echiquier, meilleurePiece, meilleureCase, false, scoreIA);
 }

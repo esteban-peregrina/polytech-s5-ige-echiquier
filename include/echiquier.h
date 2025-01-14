@@ -5,6 +5,10 @@
 
 #include "piece.h"
 
+#define PVP 0
+#define PVE 1
+#define EVE 2
+
 typedef enum {
     PIECES,            
     COUPS,
@@ -30,7 +34,7 @@ void initialiseEchiquier(Case* Echiquier[8][8]);
 void videEchiquier(Case* Echiquier[8][8]);
 
 // Jeu
-void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], int* scoreBlancs, Piece *Noirs[16], int* scoreNoirs, bool estPvP);
+void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], int* scoreBlancs, Piece *Noirs[16], int* scoreNoirs, int type);
 void jeuEchec();
 
 #endif // ECHIQUIER_H

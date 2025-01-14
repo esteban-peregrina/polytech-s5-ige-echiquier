@@ -60,7 +60,7 @@ void videEchiquier(Case* Echiquier[8][8]) {
     }
 }
 
-void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], int* scoreBlancs, Piece *Noirs[16], int* scoreNoirs, bool estPvP) {
+void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], int* scoreBlancs, Piece *Noirs[16], int* scoreNoirs, int type) {
     /*
     Démarre une partie d'échec depuis l'état de l'echiquier et du point de vu du joueur courant.
     */
@@ -113,7 +113,7 @@ void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], int* scoreBlancs, Pie
             break;  // On quitte la partie
         }
 
-        if (estPvP || (joueurCourant == Blancs)) {
+        if (type == PVP || ((type == PVE) && (joueurCourant == Blancs))) { // Si on est en PvP ou que c'est le tour du joueur
             Piece* pieceCourante = joueurCourant[indicePieceCourante];
             pieceCourante->estSelectionnee = true;
             
@@ -375,8 +375,8 @@ void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], int* scoreBlancs, Pie
             }
         } else {
             afficheEchiquier(Echiquier, (*scoreBlancs), (*scoreNoirs));
-            sleep(3); // On considère que l'IA met 3 secondes minimum à réflechir.
-            //mouvementIA(Echiquier, joueurAdverse, scoreNoirs);
+            sleep(1); // On considère que l'IA met 3 secondes minimum à réflechir.
+            mouvementIA(Echiquier, joueurCourant, scoreCourant, indicePieceCourante);
 
             // On donne la main à l'adversaire
             menu = PIECES;
@@ -463,15 +463,20 @@ void jeuEchec() {
     reponseValide = false;
     while (!reponseValide) {
         if (reponse == 'o') {
-            printf("Lancement d'une partie joueur contre joueur. Appuyez sur Entrée pour commencer...\033[K\n");
+            printf("Lancement d'une partie contre l'IA. Appuyez sur Entrée pour commencer...\033[K\n");
             getchar();
             while (getchar() != '\n');
-            partieEchec(Echiquier, Blancs, scoreBlancs, Noirs, scoreNoirs, false);
+            partieEchec(Echiquier, Blancs, scoreBlancs, Noirs, scoreNoirs, PVE);
         } else if (reponse == 'n') {
             printf("Lancement d'une partie joueur contre joueur. Appuyez sur Entrée pour commencer...\033[K\n");
             getchar();
             while (getchar() != '\n');
-            partieEchec(Echiquier, Blancs, scoreBlancs, Noirs, scoreNoirs, true);
+            partieEchec(Echiquier, Blancs, scoreBlancs, Noirs, scoreNoirs, PVP);
+        } else if (reponse == 'b') {
+            printf("Lancement d'une partie IA contre IA. Appuyez sur Entrée pour commencer...\033[K\n");
+            getchar();
+            while (getchar() != '\n');
+            partieEchec(Echiquier, Blancs, scoreBlancs, Noirs, scoreNoirs, EVE);
         } else {
             printf("Réponse incorrecte. Veuillez répondre par 'o' ou 'n' : \033[K");
             scanf("%c", &reponse);
