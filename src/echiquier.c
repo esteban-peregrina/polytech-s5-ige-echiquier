@@ -371,6 +371,8 @@ void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], int* scoreBlancs, Pie
     videEchiquier(Echiquier); // Libère les cases
     videJoueur(Blancs); // Libère les pièces blanches
     videJoueur(Noirs);  // Libère les pièces noires 
+    free(scoreNoirs);
+    free(scoreBlancs);
 
     pthread_join(timerThread, NULL); // On attend la fin du thread du timer
     
