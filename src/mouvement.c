@@ -79,3 +79,31 @@ Piece* mouvement(Case* Echiquier[8][8], Piece* piece, Case* caseCible, bool estS
     
     return pieceCapturee;
 }
+
+void mouvementIA(Case* Echiquier[8][8], Piece** joueurIA, int* scoreIA) {
+    /*
+    Fait jouer l'IA en regardant la case la plus interessante.
+    */
+
+    Piece* meilleurePiece = joueurIA[0];
+    Case* meilleureCase = meilleurePiece->casesAtteignables[0];
+    int valeurMax = 0;
+    for (int piece = 0; piece < 16; piece++) {
+        Piece* pieceCourante = joueurIA[piece];
+        if (!(pieceCourante->estCapturee) && !(pieceCourante->estBloquee)) {
+            for (int coup = 0; coup < pieceCourante->longueurCasesAtteignables; coup++) { // Pour chacun des coups possible par la pièce
+                Case* caseCible = pieceCourante->casesAtteignables[coup];
+                
+                if ((caseCible->piece) && (caseCible->piece->role > valeurMax)) {
+                    meilleurePiece = pieceCourante;
+                    meilleureCase = caseCible;
+                    valeurMax = caseCible->piece->role;
+                }
+            }
+        }
+    }
+
+    if (meilleureCase && meilleurePiece) { // On vérifie qu'on à bien trouvé quelque chose
+        mouvement(Echiquier, meilleurePiece, meilleureCase, false, scoreIA);
+    }
+}
