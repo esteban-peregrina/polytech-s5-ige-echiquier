@@ -1,6 +1,8 @@
-#include <stdlib.h> // abs()
+#include <stdlib.h> // abs(), srand(), rand();
+#include <time.h> // time()
 
 #include ".././include/mouvement.h"
+#include ".././include/calcul_atteignable.h" // calculAtteignableReine()
 
 Piece* mouvement(Case* Echiquier[8][8], Piece* piece, Case* caseCible, bool estSimulation, int* score) {
     int xCible = caseCible->x;
@@ -85,6 +87,7 @@ void mouvementIA(Case* Echiquier[8][8], Piece** joueurIA, int* scoreIA, int indi
     Fait jouer l'IA en regardant la case la plus interessante.
     */
 
+    srand(time(NULL)); // ? - Temporaire
     int indicePieceCourante = 0;
     while ( (indicePieceCourante < 16) && ((joueurIA[indicePieceCourante]->estBloquee) || (joueurIA[indicePieceCourante]->estCapturee)) ) { indicePieceCourante++; }
     Piece* meilleurePiece = joueurIA[indicePieceCourante];
@@ -97,14 +100,23 @@ void mouvementIA(Case* Echiquier[8][8], Piece** joueurIA, int* scoreIA, int indi
             for (int coup = 0; coup < pieceCourante->longueurCasesAtteignables; coup++) { // Pour chacun des coups possible par la pièce
                 Case* caseCible = pieceCourante->casesAtteignables[coup];
                 
-                if ((caseCible->piece) && (caseCible->piece->role >= valeurMax)) {
+                float random = (float)rand() / (float)RAND_MAX;
+                if ( ((caseCible->piece) && (caseCible->piece->role >= valeurMax)) || (random > 0.6) ) {
                     meilleurePiece = pieceCourante;
                     meilleureCase = caseCible;
-                    valeurMax = caseCible->piece->role;
+                    if (caseCible->piece) {valeurMax = caseCible->piece->role; }
                 }
             }
         }
     }
 
     mouvement(Echiquier, meilleurePiece, meilleureCase, false, scoreIA);
+
+    // Gestion des promotions
+    int rangeePromotion = (joueurIA[0]->couleur == BLANC) ? 7 : 0;
+    if ((meilleurePiece->role == PION) && (meilleurePiece->x == rangeePromotion)) {
+        meilleurePiece->role = REINE;
+        meilleurePiece->forme = "♛";
+        meilleurePiece->calculAtteignable = calculAtteignableReine;
+    }
 }
