@@ -110,6 +110,7 @@ void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], int* scoreBlancs, Pie
                 if (caseRoyale->estAtteignableParJoueur[joueurAdverse[4]->couleur] > 0) { printf("Échec et mat : Victoire des Blancs (Bleus) !\033[K\n"); } 
                 else { printf("Pat !\n"); }
             }
+            finPartie = true;
             break;  // On quitte la partie
         }
 
@@ -375,7 +376,7 @@ void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], int* scoreBlancs, Pie
             }
         } else {
             afficheEchiquier(Echiquier, (*scoreBlancs), (*scoreNoirs));
-            sleep(1); // On considère que l'IA met 3 secondes minimum à réflechir.
+            usleep(50000); // On considère que l'IA met 3 secondes minimum à réflechir.
             mouvementIA(Echiquier, joueurCourant, scoreCourant, indicePieceCourante);
                             
             // On donne la main à l'adversaire
