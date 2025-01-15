@@ -160,7 +160,7 @@ void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], int* scoreBlancs, Pie
 
                     char reponse; 
                     printf("Voulez-vous sauvegarder la partie ? (o/n) : \033[K");
-                    scanf("%c", &reponse);
+                    scanf(" %c", &reponse);
                     
                     bool reponseValide = false;
                     while (!reponseValide) {
@@ -175,7 +175,8 @@ void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], int* scoreBlancs, Pie
                             reponseValide = true;
                         } else {
                             printf("Réponse incorrecte. Veuillez répondre par 'o' ou 'n' : \033[K");
-                            scanf("%c", &reponse);
+                            while (getchar() != '\n');
+                            scanf(" %c", &reponse);
                         }
                     }
 
@@ -300,9 +301,12 @@ void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], int* scoreBlancs, Pie
                         int rangeePromotion = (couleurJoueurCourant == BLANC) ? 7 : 0;
                         pthread_mutex_unlock(&couleurJoueurCourant_mutex);
                         if ((pieceCourante->role == PION) && (caseCourante->x == rangeePromotion)) {
+                            // On rétablit les paramètres originaux du terminal
+                            reset_terminal_mode(&orig_termios);
+
                             char reponse;
                             printf("Promotion du pion ! Choisissez une pièce (R,F,T,C) : \033[K");
-                            scanf("%c", &reponse);
+                            scanf(" %c", &reponse);
                             
                             bool reponseValide = false;
                             while (!reponseValide) {
@@ -337,9 +341,13 @@ void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], int* scoreBlancs, Pie
                                     reponseValide = true;
                                 } else {
                                     printf("Réponse incorrecte. Veuillez répondre par 'R','F','T' ou 'C' : \033[K");
-                                    scanf("%c", &reponse);
+                                    while (getchar() != '\n');
+                                    scanf(" %c", &reponse);
                                 }
                             }
+
+                            // Configurer le terminal en mode "raw"
+                            set_terminal_raw_mode();
                         }
                         // On réinitialise les paramètres de sélection
                         caseCourante->estSelectionnee = false;
@@ -423,7 +431,7 @@ void jeuEchec() {
 
     char reponse; 
     printf("Voulez-vous charger une sauvegarde ? (o/n) : \033[K");
-    scanf("%c", &reponse);
+    scanf(" %c", &reponse);
 
     pthread_mutex_lock(&couleurJoueurCourant_mutex);
 
@@ -447,7 +455,8 @@ void jeuEchec() {
             reponseValide = true;
         } else {
             printf("Réponse incorrecte. Veuillez répondre par 'o' ou 'n' : \033[K");
-            scanf("%c", &reponse);
+            while (getchar() != '\n');
+            scanf(" %c", &reponse);
         }
     }
 
@@ -457,28 +466,29 @@ void jeuEchec() {
     actualiseCasesAtteignablesParJoueur(Echiquier, Noirs);
 
     printf("Voulez-vous jouer contre l'IA ? (o/n) : \033[K");
-    scanf("%c", &reponse);
+    scanf(" %c", &reponse);
 
     reponseValide = false;
     while (!reponseValide) {
         if (reponse == 'o') {
             printf("Lancement d'une partie contre l'IA. Appuyez sur Entrée pour commencer...\033[K\n");
-            getchar();
+            getchar(); // Enlève le dernier \n de validation
             while (getchar() != '\n');
             partieEchec(Echiquier, Blancs, scoreBlancs, Noirs, scoreNoirs, PVE);
         } else if (reponse == 'n') {
             printf("Lancement d'une partie joueur contre joueur. Appuyez sur Entrée pour commencer...\033[K\n");
-            getchar();
+            getchar(); // Enlève le dernier \n de validation
             while (getchar() != '\n');
             partieEchec(Echiquier, Blancs, scoreBlancs, Noirs, scoreNoirs, PVP);
         } else if (reponse == 'b') {
             printf("Lancement d'une partie IA contre IA. Appuyez sur Entrée pour commencer...\033[K\n");
-            getchar();
+            getchar(); // Enlève le dernier \n de validation
             while (getchar() != '\n');
             partieEchec(Echiquier, Blancs, scoreBlancs, Noirs, scoreNoirs, EVE);
         } else {
             printf("Réponse incorrecte. Veuillez répondre par 'o' ou 'n' : \033[K");
-            scanf("%c", &reponse);
+            while (getchar() != '\n');
+            scanf(" %c", &reponse);
         }
     }
 

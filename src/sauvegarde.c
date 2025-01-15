@@ -26,6 +26,7 @@ int sauvegarderEchiquier(Piece* joueurBlanc[16], int scoreBlancs, Piece* joueurN
         if (sscanf(buffer, " %c", &reponse) == 1 && (reponse == '1' || reponse == '2' || reponse == '3')) {
             reponseValide = true;
         } else {
+            while (getchar() != '\n');
             printf("Réponse incorrecte. Veuillez répondre par '1', '2' ou '3' : ");
         }
     }
@@ -116,6 +117,7 @@ int chargerEchiquier(Case* Echiquier[8][8], Piece* joueurBlanc[16], int* scoreBl
         if (sscanf(buffer, " %c", &reponse) == 1 && (reponse == '1' || reponse == '2' || reponse == '3')) {
             reponseValide = true;
         } else {
+            while (getchar() != '\n');
             printf("Réponse incorrecte. Veuillez répondre par '1', '2' ou '3' : ");
         }
     }
