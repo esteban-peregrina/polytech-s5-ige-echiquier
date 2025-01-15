@@ -57,6 +57,7 @@ Piece* creationPiece(Role role, int couleur);
 
 // Opérations sur les pièces
 void insertionCasesAtteignables(Piece* pieceCourante, Case* caseAtteignable);
+void suppressionCasesAtteignables(Piece* pieceCourante, Case* caseSupprimable);
 void actualiseCasesAtteignablesParPiece(Piece* pieceCourante, Piece* piecePrecedente);
 void actualiseCasesAtteignablesParJoueur(Case* Echiquier[8][8], Piece* Joueur[16]);
 void actualiseExposeRoi(Case* Echiquier[8][8], Piece* joueurCourant[16], Piece* joueurAdverse[16]);
