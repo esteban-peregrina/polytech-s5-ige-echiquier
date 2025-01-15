@@ -376,7 +376,7 @@ void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], int* scoreBlancs, Pie
             }
         } else {
             afficheEchiquier(Echiquier, (*scoreBlancs), (*scoreNoirs));
-            usleep(50000); // On considère que l'IA met 3 secondes minimum à réflechir.
+            sleep(1); // On considère que l'IA met 1/2 seconde minimum à réflechir.
             mouvementIA(Echiquier, joueurCourant, scoreCourant, indicePieceCourante);
                             
             // On donne la main à l'adversaire
@@ -413,8 +413,6 @@ void jeuEchec() {
     /*
     Démarre le jeu d'Echec.
     */
-    
-    // TODO - Proposer de jouer contre un joueur ou contre une IA
 
     Case* Echiquier[8][8]; // Déclaration de l'echiquier
     initialiseEchiquier(Echiquier);

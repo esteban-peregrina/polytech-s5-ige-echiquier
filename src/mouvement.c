@@ -101,7 +101,7 @@ void mouvementIA(Case* Echiquier[8][8], Piece** joueurIA, int* scoreIA, int indi
                 Case* caseCible = pieceCourante->casesAtteignables[coup];
                 
                 float random = (float)rand() / (float)RAND_MAX;
-                if ( ((caseCible->piece) && (caseCible->piece->role >= valeurMax)) || (random > 0.6) ) {
+                if ( (random > 0.6) || ((caseCible->piece) && (caseCible->piece->role >= valeurMax))) { //? Le sens à de l'importance
                     meilleurePiece = pieceCourante;
                     meilleureCase = caseCible;
                     if (caseCible->piece) {valeurMax = caseCible->piece->role; }
