@@ -1,5 +1,5 @@
 #include <stdlib.h> // EXIT_FAILURE, EXIT_SUCCESS
-#include <string.h> // strcat()
+#include <stdio.h> // snprintf()
 
 #include ".././include/timer.h" // couleurJoueurCourant
 
@@ -11,34 +11,33 @@ int sauvegarderEchiquier(Piece* joueurBlanc[16], int scoreBlancs, Piece* joueurN
     */
 
     char reponse;
-    char buffer[100]; // Pour gérer les entrées utilisateur
-    bool reponseValide = false;
-
+    char nomFichierDeSauvegarde[50];
     printf("Choisissez un emplacement de sauvegarde (1/2/3) : ");
+    scanf(" %c", &reponse);
+    
+    bool reponseValide = false;
     while (!reponseValide) {
-        // Lecture de l'entrée utilisateur
-        if (fgets(buffer, sizeof(buffer), stdin) == NULL) {
-            printf("Erreur lors de la lecture de l'entrée. Veuillez réessayer : ");
-            continue;
-        }
-
-        // Vérification que la réponse est bien un chiffre attendu
-        if (sscanf(buffer, " %c", &reponse) == 1 && (reponse == '1' || reponse == '2' || reponse == '3')) {
+        if (reponse == '1') {
+            snprintf(nomFichierDeSauvegarde, sizeof(nomFichierDeSauvegarde), "emplacement_1"); // Set the filename
+            reponseValide = true;
+        } else if (reponse == '2') {
+            snprintf(nomFichierDeSauvegarde, sizeof(nomFichierDeSauvegarde), "emplacement_2"); // Set the filename
+            reponseValide = true;
+        } else if (reponse == '3') {
+            snprintf(nomFichierDeSauvegarde, sizeof(nomFichierDeSauvegarde), "emplacement_3"); // Set the filename
             reponseValide = true;
         } else {
-            while (getchar() != '\n');
             printf("Réponse incorrecte. Veuillez répondre par '1', '2' ou '3' : ");
+            while (getchar() != '\n');
+            scanf(" %c", &reponse);
         }
     }
 
-    char nomFichierDeSauvegarde[20];
-    snprintf(nomFichierDeSauvegarde, sizeof(nomFichierDeSauvegarde), "emplacement_%c", reponse);
-
-    printf("Fichier de sauvegarde sélectionné : %c, chargement...\n", reponse);
+    printf("Fichier de sauvegarde sélectionné : %c, sauvegarde...\033[K\n", reponse);
     
     char repertoireCourant[1024];
     if (getcwd(repertoireCourant, sizeof(repertoireCourant)) == NULL) {
-        perror("Impossible de récupérer le répertoire courant");
+        perror("Impossible de récupérer le répertoire courant !");
         return EXIT_FAILURE;
     }
 
@@ -47,7 +46,7 @@ int sauvegarderEchiquier(Piece* joueurBlanc[16], int scoreBlancs, Piece* joueurN
     
     // Déplacement au répertoire de sauvegarde
     if (chdir(dossierDeSauvegarde) != 0) {
-        perror("Impossible de changer de répertoire");
+        perror("Impossible de changer de répertoire !");
         return EXIT_FAILURE;
     }
 
@@ -85,11 +84,11 @@ int sauvegarderEchiquier(Piece* joueurBlanc[16], int scoreBlancs, Piece* joueurN
 
     fclose(fichierSauvegarde);
 
-    printf("Enregistrement dans le répertoire \"%s\" réalisé avec succès\n", dossierDeSauvegarde);
+    printf("Enregistrement dans le répertoire \"%s\" réalisé avec succès !\n", dossierDeSauvegarde);
 
     // Retour au répertoire d'origine
     if (chdir(repertoireCourant) != 0) {
-        perror("Impossible de retourner au répertoire d'origine");
+        perror("Impossible de retourner au répertoire d'origine !");
         return EXIT_FAILURE;
     }
 
@@ -102,48 +101,47 @@ int chargerEchiquier(Case* Echiquier[8][8], Piece* joueurBlanc[16], int* scoreBl
     */
     
     char reponse;
-    char buffer[100]; // Pour gérer les entrées utilisateur
-    bool reponseValide = false;
-
+    char nomFichierDeSauvegarde[50];
     printf("Choisissez un emplacement de sauvegarde (1/2/3) : ");
+    scanf(" %c", &reponse);
+    
+    bool reponseValide = false;
     while (!reponseValide) {
-        // Lecture de l'entrée utilisateur
-        if (fgets(buffer, sizeof(buffer), stdin) == NULL) {
-            printf("Erreur lors de la lecture de l'entrée. Veuillez réessayer : ");
-            continue;
-        }
-
-        // Vérification que la réponse est bien un chiffre attendu
-        if (sscanf(buffer, " %c", &reponse) == 1 && (reponse == '1' || reponse == '2' || reponse == '3')) {
+        if (reponse == '1') {
+            snprintf(nomFichierDeSauvegarde, sizeof(nomFichierDeSauvegarde), "emplacement_1"); // Set the filename
+            reponseValide = true;
+        } else if (reponse == '2') {
+            snprintf(nomFichierDeSauvegarde, sizeof(nomFichierDeSauvegarde), "emplacement_2"); // Set the filename
+            reponseValide = true;
+        } else if (reponse == '3') {
+            snprintf(nomFichierDeSauvegarde, sizeof(nomFichierDeSauvegarde), "emplacement_3"); // Set the filename
             reponseValide = true;
         } else {
-            while (getchar() != '\n');
             printf("Réponse incorrecte. Veuillez répondre par '1', '2' ou '3' : ");
+            while (getchar() != '\n');
+            scanf(" %c", &reponse);
         }
     }
 
-    char nomFichierDeSauvegarde[20];
-    snprintf(nomFichierDeSauvegarde, sizeof(nomFichierDeSauvegarde), "emplacement_%c", reponse);
-
-    printf("Fichier de sauvegarde sélectionné : %c, chargement...\n", reponse);
+    printf("Fichier de sauvegarde sélectionné : %c, chargement...\033[K\n", reponse);
 
     char repertoireCourant[1024];
     if (getcwd(repertoireCourant, sizeof(repertoireCourant)) == NULL) {
-        perror("Impossible de récupérer le répertoire courant");
+        perror("Impossible de récupérer le répertoire courant !");
         return EXIT_FAILURE;
     }
 
     // Déplacement au répertoire de sauvegarde
     if (chdir(dossierDeSauvegarde) != 0) {
-        perror("Impossible de changer de répertoire");
+        perror("Impossible de changer de répertoire !");
         return EXIT_FAILURE;
     }
 
     FILE* fichierSauvegarde = fopen(nomFichierDeSauvegarde, "r");
     if (!fichierSauvegarde) {
-        perror("Impossible d'ouvrir le fichier de sauvegarde");
+        perror("Impossible d'ouvrir le fichier de sauvegarde !");
         if (chdir(repertoireCourant) != 0) {
-            perror("Impossible de retourner au répertoire d'origine");
+            perror("Impossible de retourner au répertoire d'origine !");
             return EXIT_FAILURE;
         }
         return EXIT_FAILURE;
@@ -189,11 +187,11 @@ int chargerEchiquier(Case* Echiquier[8][8], Piece* joueurBlanc[16], int* scoreBl
 
     fclose(fichierSauvegarde);
 
-    printf("Chargement depuis le répertoire \"%s\" réalisé avec succès\n", dossierDeSauvegarde);
+    printf("Chargement depuis le répertoire \"%s\" réalisé avec succès !\n", dossierDeSauvegarde);
 
     // Retour au répertoire d'origine
     if (chdir(repertoireCourant) != 0) {
-        perror("Impossible de retourner au répertoire d'origine");
+        perror("Impossible de retourner au répertoire d'origine !");
         return EXIT_FAILURE;
     }
 

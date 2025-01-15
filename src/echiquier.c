@@ -475,16 +475,19 @@ void jeuEchec() {
             getchar(); // Enlève le dernier \n de validation
             while (getchar() != '\n');
             partieEchec(Echiquier, Blancs, scoreBlancs, Noirs, scoreNoirs, PVE);
+            reponseValide = true;
         } else if (reponse == 'n') {
             printf("Lancement d'une partie joueur contre joueur. Appuyez sur Entrée pour commencer...\033[K\n");
             getchar(); // Enlève le dernier \n de validation
             while (getchar() != '\n');
             partieEchec(Echiquier, Blancs, scoreBlancs, Noirs, scoreNoirs, PVP);
+            reponseValide = true;
         } else if (reponse == 'b') {
             printf("Lancement d'une partie IA contre IA. Appuyez sur Entrée pour commencer...\033[K\n");
             getchar(); // Enlève le dernier \n de validation
             while (getchar() != '\n');
             partieEchec(Echiquier, Blancs, scoreBlancs, Noirs, scoreNoirs, EVE);
+            reponseValide = true;
         } else {
             printf("Réponse incorrecte. Veuillez répondre par 'o' ou 'n' : \033[K");
             while (getchar() != '\n');
