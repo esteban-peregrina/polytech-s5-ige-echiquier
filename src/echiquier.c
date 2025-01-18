@@ -482,7 +482,7 @@ void jeuEchec() {
             while (getchar() != '\n');
             partieEchec(Echiquier, Blancs, scoreBlancs, Noirs, scoreNoirs, PVP);
             reponseValide = true;
-        } else if (reponse == 'b') {
+        } else if (reponse == 'b') { // Réponse cachée
             printf("Lancement d'une partie IA contre IA. Appuyez sur Entrée pour commencer...\033[K\n");
             getchar(); // Enlève le dernier \n de validation
             while (getchar() != '\n');
