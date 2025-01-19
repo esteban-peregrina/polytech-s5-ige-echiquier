@@ -168,7 +168,7 @@ void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], int* scoreBlancs, Pie
                             printf("Enregistrement de la partie...\n");
                             if (sauvegarderEchiquier(Blancs, (*scoreBlancs), Noirs, (*scoreNoirs), couleurJoueurCourant, "sauvegardes") == EXIT_FAILURE) {
                                 printf("Sauvegarde impossible.\033[K\n");
-                                reponse = 'n'; // On commence une nouvelle partie
+                                reponse = 'n'; 
                             } else { reponseValide = true; }
                         } else if (reponse == 'n') {
                             printf("Sortie de la partie\n");

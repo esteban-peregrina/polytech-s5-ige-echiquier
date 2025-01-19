@@ -1,7 +1,6 @@
 #ifndef PIECE_H
 #define PIECE_H
 
-#include <stdio.h>
 #include <stdbool.h>
 
 #include "echiquier.h"

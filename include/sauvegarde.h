@@ -1,7 +1,7 @@
 #ifndef SAUVEGARDE_H
 #define SAUVEGARDE_H
 
-#include <stdio.h> // fopen, fclose, fprintf
+#include <stdio.h> // fopen, fclose, fprintf, fscanf, printf
 #include <sys/stat.h> // mkdir
 #include <unistd.h> // chdir
 

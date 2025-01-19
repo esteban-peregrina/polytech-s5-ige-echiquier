@@ -1,3 +1,5 @@
+#include <stdio.h> // printf()
+
 #include ".././include/affichage.h"
 
 void afficheEchiquier(Case* Echiquier[8][8], int scoreBlancs, int scoreNoirs) {
