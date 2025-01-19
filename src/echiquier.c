@@ -385,7 +385,7 @@ void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], int* scoreBlancs, Pie
             }
         } else {
             afficheEchiquier(Echiquier, (*scoreBlancs), (*scoreNoirs));
-            sleep(1); // On considère que l'IA met 1/2 seconde minimum à réflechir.
+            sleep(1); // On considère que l'IA met 1 seconde minimum à réflechir.
             mouvementIA(Echiquier, joueurCourant, scoreCourant, indicePieceCourante);
                             
             // On donne la main à l'adversaire
