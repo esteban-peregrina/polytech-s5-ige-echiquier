@@ -88,9 +88,7 @@ void mouvementIA(Case* Echiquier[8][8], Piece** joueurIA, int* scoreIA, int indi
     */
 
     srand(time(NULL)); // ? - Temporaire
-    int indicePieceCourante = 0;
-    while ( (indicePieceCourante < 16) && ((joueurIA[indicePieceCourante]->estBloquee) || (joueurIA[indicePieceCourante]->estCapturee)) ) { indicePieceCourante++; }
-    Piece* meilleurePiece = joueurIA[indicePieceCourante];
+    Piece* meilleurePiece = joueurIA[indicePremier];
     Case* meilleureCase = meilleurePiece->casesAtteignables[0];
 
     int valeurMax = 0;
