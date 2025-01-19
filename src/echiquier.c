@@ -462,9 +462,6 @@ void jeuEchec() {
 
     pthread_mutex_unlock(&couleurJoueurCourant_mutex);
 
-    actualiseCasesAtteignablesParJoueur(Echiquier, Blancs);
-    actualiseCasesAtteignablesParJoueur(Echiquier, Noirs);
-
     printf("Voulez-vous jouer contre l'IA ? (o/n) : \033[K");
     scanf(" %c", &reponse);
 
