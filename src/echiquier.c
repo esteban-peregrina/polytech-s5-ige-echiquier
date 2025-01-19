@@ -305,26 +305,26 @@ void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], int* scoreBlancs, Pie
                             reset_terminal_mode(&orig_termios);
 
                             char reponse;
-                            printf("Promotion du pion ! Choisissez une pièce (R,F,T,C) : \033[K");
+                            printf("Promotion du pion ! Choisissez une pièce (r,f,t,c) : \033[K");
                             scanf(" %c", &reponse);
                             
                             bool reponseValide = false;
                             while (!reponseValide) {
-                                if (reponse == 'R') {
+                                if (reponse == 'r') {
                                     printf("Promotion en Reine...\033[K\n");
                                     pieceCourante->role = REINE;
                                     pieceCourante->forme = "♛";
                                     pieceCourante->calculAtteignable = calculAtteignableReine;
                                     
                                     reponseValide = true;
-                                } else if (reponse == 'F') {
+                                } else if (reponse == 'f') {
                                     printf("Promotion en Fou...\033[K\n");
                                     pieceCourante->role = FOU;
                                     pieceCourante->forme = "♝";
                                     pieceCourante->calculAtteignable = calculAtteignableFou;
                                     
                                     reponseValide = true;
-                                } else if (reponse == 'T') {
+                                } else if (reponse == 't') {
                                     printf("Promotion en Tour...\033[K\n");
                                     pieceCourante->role = TOUR;
                                     pieceCourante->forme = "♜";
@@ -332,7 +332,7 @@ void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], int* scoreBlancs, Pie
                                     
                                     reponseValide = true;
                                 
-                                } else if (reponse == 'C') {
+                                } else if (reponse == 'c') {
                                     printf("Promotion en Cavalier...\033[K\n");
                                     pieceCourante->role = CAVALIER;
                                     pieceCourante->forme = "♞";
@@ -340,12 +340,13 @@ void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], int* scoreBlancs, Pie
                                     
                                     reponseValide = true;
                                 } else {
-                                    printf("Réponse incorrecte. Veuillez répondre par 'R','F','T' ou 'C' : \033[K");
+                                    printf("Réponse incorrecte. Veuillez répondre par 'r','f','t' ou 'c' : \033[K");
                                     while (getchar() != '\n');
                                     scanf(" %c", &reponse);
                                 }
                             }
 
+                            sleep(1);
                             // Configurer le terminal en mode "raw"
                             set_terminal_raw_mode();
                         }
