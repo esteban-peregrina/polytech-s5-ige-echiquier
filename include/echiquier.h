@@ -34,7 +34,10 @@ void initialiseEchiquier(Case* Echiquier[8][8]);
 void videEchiquier(Case* Echiquier[8][8]);
 
 // Jeu
-void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], int* scoreBlancs, Piece *Noirs[16], int* scoreNoirs, int type);
 void jeuEchec();
+void partieEchec(Case* Echiquier[8][8], Piece *Blancs[16], int* scoreBlancs, Piece *Noirs[16], int* scoreNoirs, int type);
+void tourDuJoueur(Case* Echiquier[8][8], Piece *Blancs[16], int* scoreBlancs, Piece *Noirs[16], int* scoreNoirs, int type);
+void tourDeLaMachine(Case* Echiquier[8][8], Piece *Blancs[16], int* scoreBlancs, Piece *Noirs[16], int* scoreNoirs, int type);
+
 
 #endif // ECHIQUIER_H

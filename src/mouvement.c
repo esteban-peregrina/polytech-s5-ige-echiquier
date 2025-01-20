@@ -76,7 +76,7 @@ Piece* mouvement(Case* Echiquier[8][8], Piece* piece, Case* caseCible, bool estS
             piece->vientDeFaireDoublePas = false;
         }
 
-        if (pieceCapturee) { (*score)+= pieceCapturee->role; }
+        if (pieceCapturee) { (*score)+= (int)pieceCapturee->role; }
     }
     
     return pieceCapturee;
@@ -99,7 +99,7 @@ void mouvementIA(Case* Echiquier[8][8], Piece** joueurIA, int* scoreIA, int indi
                 Case* caseCible = pieceCourante->casesAtteignables[coup];
                 
                 float random = (float)rand() / (float)RAND_MAX;
-                if ( (random > 0.9) || ((caseCible->piece) && (caseCible->piece->role >= valeurMax))) { //? Le sens à de l'importance
+                if ( (random > 0.9) || ((caseCible->piece) && ((int)caseCible->piece->role >= valeurMax))) { //? Le sens à de l'importance
                     meilleurePiece = pieceCourante;
                     meilleureCase = caseCible;
                     if (caseCible->piece) {valeurMax = caseCible->piece->role; }

@@ -1,5 +1,8 @@
 #include <stdlib.h> // EXIT_FAILURE, EXIT_SUCCESS
 #include <stdio.h> // snprintf()
+#include <stdio.h> // fopen(), fclose(), fprintf(), fscanf(), printf()
+#include <sys/stat.h> // mkdir()
+#include <unistd.h> // chdir()
 
 #include ".././include/timer.h" // couleurJoueurCourant
 
@@ -10,7 +13,7 @@ int sauvegarderEchiquier(Piece* joueurBlanc[16], int scoreBlancs, Piece* joueurN
     
     */
 
-    char reponse;
+    char reponse = '\0';
     char nomFichierDeSauvegarde[50];
     printf("Choisissez un emplacement de sauvegarde (1/2/3) : ");
     scanf(" %c", &reponse);
@@ -100,7 +103,7 @@ int chargerEchiquier(Case* Echiquier[8][8], Piece* joueurBlanc[16], int* scoreBl
     
     */
     
-    char reponse;
+    char reponse = '\0';
     char nomFichierDeSauvegarde[50];
     printf("Choisissez un emplacement de sauvegarde (1/2/3) : ");
     scanf(" %c", &reponse);

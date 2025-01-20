@@ -430,7 +430,7 @@ void jeuEchec() {
     int* scoreNoirs = malloc(sizeof(int));
     int* scoreBlancs = malloc(sizeof(int));
 
-    char reponse; 
+    char reponse = '\0'; 
     printf("Voulez-vous charger une sauvegarde ? (o/n) : \033[K");
     scanf(" %c", &reponse);
 
@@ -492,9 +492,4 @@ void jeuEchec() {
             scanf(" %c", &reponse);
         }
     }
-
-
-   
-
-
 }

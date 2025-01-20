@@ -7,6 +7,7 @@
 // TODO - Découper la fonciton "partiEchec()" et créer une fonction "tourDuJoueur()" pour accuiellir l'IA (la différence c'est qu'on donne pas la main au joueur entre deux tours)
 // TODO - Modifier heatmap + valeur lors de la promotion
 // TODO - Un truc pour aider à regler la taille du terminal au bon endroit
+// TODO - Sauvegarder le minuteur !
 
 int main() {
     jeuEchec();
